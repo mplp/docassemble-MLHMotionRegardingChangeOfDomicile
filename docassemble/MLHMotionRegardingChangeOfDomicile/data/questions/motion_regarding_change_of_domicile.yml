@@ -1,0 +1,33 @@
+include:
+  - docassemble.AssemblyLine:assembly_line.yml
+  - docassemble.mlhframework:mlh_interview_framework.yml
+---
+metadata:
+  title: |
+    Motion Regarding Change of Domicile
+  short title: |
+    Change of Domicile Motion
+  description: |-
+    This tool will help you complete the forms to file a Motion Regarding Change of Domicile/Legal Residence.
+
+    If there is a custody or parenting time order for your child, you must get the court’s approval before moving his or her domicile from Michigan.
+  tags:
+    - "Family"
+  authors:
+    - Rami Lorca
+    - Hayden McGuire
+---
+code: |
+  interview_short_title = "Change of Domicile Motion"
+---
+code: |
+  github_repo_name = "docassemble-MLHMotionRegardingChangeOfDomicile"
+---
+code: |
+  al_form_type = "existing_case"
+---
+code: |
+  MLH_time_min = 20
+  MLH_time_max = 60
+---
+
