@@ -3,13 +3,10 @@ include:
   - docassemble.mlhframework:mlh_interview_framework.yml
 ---
 metadata:
-  title: |
-    Motion Regarding Change of Domicile
-  short title: |
-    Change of Domicile Motion
-  description: |-
-    This tool will help you complete the forms to file a Motion Regarding Change of Domicile/Legal Residence.
-
+  title: Motion Regarding Change of Domicile
+  short title: Change of Domicile Motion
+  subtitle: Helps you write a motion asking the court to allow a change in where your child lives.
+  description: |
     If there is a custody or parenting time order for your child, you must get the court’s approval before moving his or her domicile from Michigan.
   tags:
     - "Family"
@@ -17,17 +14,302 @@ metadata:
     - Rami Lorca
     - Hayden McGuire
 ---
-code: |
-  interview_short_title = "Change of Domicile Motion"
----
-code: |
-  github_repo_name = "docassemble-MLHMotionRegardingChangeOfDomicile"
+sections:
+  - review_intro: "Introduction"
+  - review_your_info: "Your Information"
+  - review_children_info: "Children Information"
+  - review_conclusion: "Conclusion"
 ---
 code: |
   al_form_type = "existing_case"
 ---
+id: interview config code block
 code: |
+  github_repo_name = "docassemble-MLHMotionRegardingChangeOfDomicile"
   MLH_time_min = 20
   MLH_time_max = 60
 ---
+objects:
+  - users: ALPeopleList.using(auto_gather=True, complete_attribute="complete", target_number=1)
+  - other_parties: ALPeopleList.using(auto_gather=True, complete_attribute="complete", target_number=1)
+  - children: ALPeopleList.using(auto_gather=True, ask_number=True, complete_attribute="complete")
+  - presiding_judge: ALPeopleList.using(ask_number=True,target_number=1)
+---
+#################### Interview Order Start #####################
+---
+#TO DO: add appropriate sections for other parties
+comment: |
+  Controls order and branching logic for questions specific to this form
+id: interview_order_motion_regarding_change_of_domicile
+mandatory: True
+code: |
+  nav.set_section("review_intro")
+  intro_screen
+  MLH_standard_intro_pages
 
+  nav.set_section("review_prior_case")
+  if not has_existing_case:
+    existing_case_kickout
+  what_you_will_need
+  docket_number
+
+  county_choice
+  court_index
+  the_court
+
+  nav.set_section("review_your_info")
+  user_started_case
+  public_record_fyi
+
+  users.gather()
+
+  nav.set_section("review_children_info")
+  children.gather()
+
+  nav.set_section("review_conclusion")
+
+  efile_notice
+  if esign:
+    signature_date
+  
+  interview_motion_regarding_change_of_domicile = True
+---
+#################### Interview Order End #####################
+---
+mandatory: True
+code: |
+  interview_motion_regarding_change_of_domicile
+  # Store anonymous data for analytics / statistics
+  store_variables_snapshot(
+      persistent=True,
+      data={
+          "zip": showifdef("users[0].address.zip"),
+          "reached_interview_end": True,
+      },
+  )
+  motion_change_of_domicile_download
+---
+# NOTE: for users and other_parties
+generic object: ALIndividual
+code: |
+  x.name.first
+  x.address.address
+  x.phone_number
+  x.complete = True
+---
+# NOTE: ensures there is only 1 party on both sides
+code: |
+  users.there_is_another = False
+---
+code: |
+  other_parties.there_are_any = True
+---
+code: |
+  other_parties.there_is_another = False
+---
+code: |
+  children[i].name.first
+  children[i].birthdate
+  children[i].complete = True
+---
+#################### Overridden AL Questions Start #####################
+---
+id: children names without birthdate
+sets:
+  - children[i].name.first
+  - children[i].name.last
+  - children[i].name.middle
+  - children[i].name.suffix
+question: |
+  What is the name of your ${ ordinal(i) } child?
+subquestion: |
+  % if len(children.complete_elements()) > 0:
+  You have already told us about ${ comma_and_list(children.complete_elements()) }.
+  % endif
+fields:
+  - code: |
+      children[i].name_fields()
+---
+#################### Overridden AL Questions End #####################
+---
+# TO DO: finish adding intro language
+id: intro screen
+question: |
+  Welcome to the Do-It-Yourself Motion Regarding Change of Domicile tool
+subquestion: |
+  This tool can help you prepare the forms to file a *Motion Regarding Change of Domicile* in Michigan.
+---
+id: MLH intro landing
+question: |
+  Need more help?
+subquestion: |
+  This tool will help you prepare forms for your legal issue without a lawyer.
+  
+  You may want to speak to a lawyer if any of these apply to you:
+
+  * You have a child support order **from another state** but now you live in Michigan. In some circumstances, you may be able to have your case transferred to Michigan. However, this tool cannot help you do that.
+  * There is a **bench warrant** against you for **non-payment of support**. This could happen if a motion to show cause was filed against you for non-payment of support, 
+    you did not appear at the hearing, and the court issued a bench warrant against you.
+  * You aren't sure what to do.
+
+  ${ MLH_GUIDE_FULL }
+continue button field: MLH_intro_landing
+---
+id: has_existing_case
+question: |
+  Do you have an existing Michigan family court case?
+subquestion: |
+  If you do not already have an existing Michigan divorce, separate maintenance, paternity, custody, or family support case, return to [Michigan Legal Help](https://michiganlegalhelp.org/) for more information.
+fields:
+  - Do you have an existing Michigan family court case?: has_existing_case
+    datatype: yesnoradio
+---
+id: existing_case_kickout
+event: existing_case_kickout
+question: |
+  You cannot use this tool without a Michigan child support case
+subquestion: |
+  You said you already do not have an existing Michigan divorce, separate maintenance, paternity, custody, or family support case.
+  You must have one to continue to use this tool.
+  
+  If you made a mistake, click the **< ${ MLH_back_button_label }** button to change your answer. Otherwise, you can return to [Michigan Legal Help](https://michiganlegalhelp.org) for other legal information or resources.
+---
+id: what_you_will_need
+question: |
+  What you will need to complete this form
+subquestion: |
+  To complete this form, you will need:
+
+  * the case number,
+  * court information, and
+  * information about the parties from your existing case
+
+  ${ collapse_template(where_info_on_papers_template) }
+continue button field: what_you_will_need
+---
+template: where_info_on_papers_template
+subject: |
+  Where can I find this information?
+content: |
+  Here is an example of where you can find this information on your court papers.
+
+  * The court information is circled in blue, on the top left.
+  * The case number is circled in yellow, on the top right.
+  * The information about the parties is circled in red
+
+  ${ image_court_papers.show(width="100%") }
+---
+# TO DO: finish adding any needed language
+id: MLH intro time
+question: |
+  Using this tool
+subquestion: |
+  It should take you between ${ MLH_time_min } and ${ MLH_time_max } minutes to finish answering questions.
+  After that, your personalized **Motion Regarding Change of Domicile** will be ready to print.
+
+continue button field: MLH_intro_time
+---
+id: docket number
+question: |
+  What is your case number?
+subquestion: |
+  Enter the case number from your divorce case, custody case, or other family support case.
+
+  ${ collapse_template(where_case_number) }
+fields:
+  - Case number: docket_number
+    maxlength: 25
+---
+id: what is the user's role?
+question: |
+  What party are you in your existing case?
+subquestion: |
+  You are called the “moving party” because you are filing this Motion Regarding Change of Domicile.  
+
+  In your court case, you are either the Plaintiff or the Defendant.
+
+  ${ collapse_template(help_user_ask_role_template) }
+fields: 
+  - What party are you in your case?: user_ask_role
+    label above field: True
+    datatype: radio
+    choices:
+      - I am the Plaintiff: plaintiff
+      - I am the Defendant: defendant
+  - note: |
+      Okay, you are the **Plaintiff** in this case. The other 
+      side is the Defendant.
+    show if:
+      variable: user_ask_role
+      is: "plaintiff"
+  - note: |
+      Okay, you are the **Defendant** in this case. The other 
+      side is the Plaintiff.
+    show if:
+      variable: user_ask_role
+      is: "defendant"
+---
+#################### Documents Start #####################
+---
+objects:
+  - mrcd_attachment_main: ALDocument.using(title="Motion Regarding Change of Domicile", filename="Motion Regarding Change of Domicile - FOC 29.pdf", enabled=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+---
+objects:
+  - mrcd_attachment: ALDocumentBundle.using(elements=[mrcd_attachment_main], filename="Motion Regarding Change of Domicile - FOC 29.pdf", title="Motion Regarding Change of Domicile", enabled=True)
+---
+objects:
+  - al_user_bundle: ALDocumentBundle.using(elements=[mrcd_attachment], filename="Motion Regarding Change of Domicile (All Forms).pdf", title="All forms to download for your records", enabled=True)
+  - al_court_bundle: ALDocumentBundle.using(elements=[mrcd_attachment], filename="Motion Regarding Change of Domicile (All Forms).pdf", title="All forms to download for your records", enabled=True)
+---
+attachment:
+  name: Motion Regarding Change of Domicile Attachment
+  filename: Motion Regarding Change of Domicile - FOC 29
+  variable name: mrcd_attachment_main[i]
+  skip undefined: True
+  pdf template file: Motion Regarding Change of Domicile - FOC 29.pdf
+  editable: False
+  fields:
+    - trial_court: ${ trial_court }
+    - trial_court_county: ${ trial_court_county }
+    - docket_number: ${ docket_number }
+    - trial_court_address_on_one_line: ${ trial_court.address.on_one_line() }
+    - trial_court_phone_number: ${ trial_court.phone_number }
+    - moving_party: ${ moving_party }
+    - moving_party_2: ${ moving_party_2 }
+    - moving_party_3: ${ moving_party_3 }
+    - recent_order: ${ recent_order }
+    - joint_custody: ${ joint_custody }
+    - sole_custody: ${ sole_custody }
+    - plaintiff_custody: ${ plaintiff_custody }
+    - defendant_custody: ${ defendant_custody }
+    - plaintiffs_address_block: |
+        ${ plaintiffs }
+        ${ plaintiffs[0].address_on_one }
+        ${ word("Does not have phone") if plaintiffs[0].no_phone_number else plaintiffs[0].phone_numbers() }
+    - defendants_address_block: |
+        ${ defendants }  
+        ${ defendants[0].address.on_one_line() }  
+        ${ word("Does not have phone") if defendants[0].no_phone_number else defendants[0].phone_numbers() }   
+    - third_parties:
+    - children1: ${ children[0] }
+    - children2: ${ children[1] if len(children) > 1 else "" }
+    - children3: ${ children[2] if len(children) > 2 else "" }
+    - children4: ${ children[3] if len(children) > 3 else "" }
+    - children5: ${ children[4] if len(children) > 4 else "" }
+    - children6: ${ children[5] if len(children) > 5 else "" }
+    - children7: ${ children[6] if len(children) > 6 else "" }
+    - requested_order: ${ requested_order }
+    - continue_current_order: ${ continue_current_order }
+    - modify_current_order: ${ modify_current_order }
+    - changes_to_order: ${ changes_to_order }
+    - signature_date: ${ signature_date of esign else "" }
+    - users_signature: ${ f"/s/ {users[0]}" if esign else "" }
+    - presiding_judge: ${ presiding_judge.name }
+    - bar_number: ${ judge_bar_number }
+    - hearing_date: ${ format_date(hearing_date) if has_hearing_info else "" } 
+    - hearing_time: ${ hearing_time if has_hearing_info else "" }
+    - hearing_location: ${ hearing_address_on_one_line if has_hearing_info else "" }
+    - service_date: ${ format_date(service_date) } 
+---
+#################### Documents End #####################
+---
