@@ -10,13 +10,17 @@ metadata:
     If there is a custody or parenting time order for your child, you must get the court’s approval before moving his or her domicile from Michigan.
   tags:
     - "Family"
+    - "Domicile"
   authors:
     - Rami Lorca
     - Hayden McGuire
 ---
 sections:
   - review_intro: "Introduction"
+  - qualifying_questions: "Do you qualify?"
+  - review_prior_case: "Prior Case Information"
   - review_your_info: "Your Information"
+  - review_other_parent_info: "Other Parent's Information"
   - review_children_info: "Children Information"
   - review_conclusion: "Conclusion"
 ---
@@ -26,7 +30,7 @@ code: |
 id: interview config code block
 code: |
   github_repo_name = "docassemble-MLHMotionRegardingChangeOfDomicile"
-  MLH_time_min = 20
+  MLH_time_min = 40
   MLH_time_max = 60
 ---
 objects:
@@ -46,22 +50,30 @@ code: |
   nav.set_section("review_intro")
   intro_screen
   MLH_standard_intro_pages
+  court_permission_required
+  pii_disclaimer
 
-  nav.set_section("review_prior_case")
+  nav.set_section("qualifying_questions")
   if not has_existing_case:
     existing_case_kickout
+  if not third_party_check:
+    third_party_kickout
   what_you_will_need
+  
+  nav.set_section("review_prior_case")
   docket_number
 
-  county_choice
-  court_index
-  the_court
+  trial_court_county
+  user_started_case
+  id not prior_order_yesno:
+    prior_order_kickout
 
   nav.set_section("review_your_info")
-  user_started_case
-  public_record_fyi
+  users.name
+  users.address
 
-  users.gather()
+  nav.set_section("review_other_parent_info")
+  
 
   nav.set_section("review_children_info")
   children.gather()
@@ -76,6 +88,7 @@ code: |
 ---
 #################### Interview Order End #####################
 ---
+# Note: Why is this mandatory true? Ideally we will only have the order block be mandatory and everything we want triggered will trigger from that block. 
 mandatory: True
 code: |
   interview_motion_regarding_change_of_domicile
@@ -133,13 +146,17 @@ fields:
 #################### Overridden AL Questions End #####################
 ---
 # TO DO: finish adding intro language
-id: intro screen
+id: intro_screen
 question: |
   Welcome to the Do-It-Yourself Motion Regarding Change of Domicile tool
 subquestion: |
-  This tool can help you prepare the forms to file a *Motion Regarding Change of Domicile* in Michigan.
+  This tool will help you prepare the forms to file a *Motion Regarding Change of Domicile* in Michigan.
+
+  If there is a custody or parenting time order for your child, you must get the court's approval before moving their domicile from Michigan. 
+continue button field: intro_screen
 ---
-id: MLH intro landing
+id: MLH_intro_landing
+continue button field: MLH_intro_landing
 question: |
   Need more help?
 subquestion: |
@@ -153,15 +170,48 @@ subquestion: |
   * You aren't sure what to do.
 
   ${ MLH_GUIDE_FULL }
-continue button field: MLH_intro_landing
+---
+id: court_permission_required
+continue button field: court_permission_required
+question: |
+  Other times you need court approval?
+subquestion: |
+  You may also need permission from the court to move within Michigan. This depends on things like:
+
+  * The custody and parenting time arrangements
+  * How far your proposed move is
+  * How far you lived from the other parent when your case started
+  * Whether the other parent agrees to the move
+
+  To learn more about when you need the court's permission to move, read [Moving with Children after Separation or Divorce](https://michiganlegalhelp.org/resources/family/moving-children-after-separation-or-divorce).
+---
+id: personal_identifying_information_disclaimer
+question: |
+  To protect privacy, you cannot include perosnal identifying information in public documents that are filed in court. Peronsal Identifying informaotin includes: 
+
+    * Date of birth
+    * Social security or national identification number
+    * Driver's license or state identification number
+    * Passport number
+    * Financial account numbers
+
+  **If a question doesn't specifically ask for personal identifying information, do not include it in your answers.** When this information is necessary, this tool will specifically ask for the information and it will go on a sperate non-public form that you wil file along with the other documents. This DIY tool will automatically produce that form if you need it.
+fields:
+  - Do you understand that you should not enter any personal identifying information unless this tool specifically asks for it?: pii_disclaimed
+  datatype: yesnoradio
 ---
 id: has_existing_case
 question: |
-  Do you have an existing Michigan family court case?
+  Do you have an existing Michigan family law case?
 subquestion: |
-  If you do not already have an existing Michigan divorce, separate maintenance, paternity, custody, or family support case, return to [Michigan Legal Help](https://michiganlegalhelp.org/) for more information.
+  This includes:
+    * Divorce
+    * Separate maintenance
+    * Paternity
+    * Custody
+    * Family support
 fields:
-  - Do you have an existing Michigan family court case?: has_existing_case
+  - no label: has_existing_case
     datatype: yesnoradio
 ---
 id: existing_case_kickout
@@ -173,6 +223,22 @@ subquestion: |
   You must have one to continue to use this tool.
   
   If you made a mistake, click the **< ${ MLH_back_button_label }** button to change your answer. Otherwise, you can return to [Michigan Legal Help](https://michiganlegalhelp.org) for other legal information or resources.
+---
+id: third_party_check
+question: |
+  Is a third party (a non-parent) part of your existing family law case?
+fields:
+  - no_label: third_party_check
+    datatype: yesnoradio
+---
+id: third_party_kickout
+event: third_party_kickout
+question: |
+  We’re sorry, but you cannot use this tool.
+
+  This tool may only be used to file a *Motion Regarding Change of Domicile**  in a Michigan family law case between two parents, with no third party involvement.
+
+  We cannot help you, but your local legal aid program or other lawyer may be able to.  You can use the [Guide to Legal Help on Michigan Legal Help](https://michiganlegalhelp.org/guide-to-legal-help) to find a lawyer or a legal services office near you.
 ---
 id: what_you_will_need
 question: |
@@ -205,7 +271,10 @@ question: |
   Using this tool
 subquestion: |
   It should take you between ${ MLH_time_min } and ${ MLH_time_max } minutes to finish answering questions.
-  After that, your personalized **Motion Regarding Change of Domicile** will be ready to print.
+
+  After that, your personalized forms to file a **Motion Regarding Change of Domicile** will be ready to print.
+
+  You will also get a set of instructions on what you need to do next. 
 
 continue button field: MLH_intro_time
 ---
@@ -220,11 +289,18 @@ fields:
   - Case number: docket_number
     maxlength: 25
 ---
+id: trial court county
+question: |
+  In which county is your family law case happening?
+fields:
+  no label: trial_court_county
+  datatype: text
+---
 id: what is the user's role?
 question: |
   What party are you in your existing case?
 subquestion: |
-  You are called the “moving party” because you are filing this Motion Regarding Change of Domicile.  
+  You are called the “moving party” because you are filing the Motion Regarding Change of Domicile.  
 
   In your court case, you are either the Plaintiff or the Defendant.
 
@@ -249,6 +325,40 @@ fields:
       variable: user_ask_role
       is: "defendant"
 ---
+id: judgment or custody order
+question: |
+  Is there a custody order or judgment in your family law case?
+fields:
+  no_label: prior_order_yesno
+  datatype: yesnoradio
+---
+# Note: I have a strong prefrence for putting all kickouts at the top of the interview. Imo it establishes credibility through a display of valuing the users time. Important if you want repeat users. The LHI interview has this question around this point, this is why it's currently here. 
+id: prior_order_kickout
+event: prior_order_kickout
+question: |
+  We’re sorry, but you cannot use this tool because custody or parenting time of your children is not currently governed by a custody order or judgment.
+  
+  We cannot help you, but your local legal aid program or other lawyer may be able to. You can use the [Guide to Legal Help on Michigan Legal Help](https://michiganlegalhelp.org/guide-to-legal-help) to find a lawyer or a legal services office near you.
+
+  If you think you made a mistake, you can click > Undo and change the answer to the question.
+---
+id: prior order information
+question: |
+  Provide the requested information about the most recent custody order or judgment.
+feilds:
+  - What is the date of the most recent order?: recent_order
+    datatype: date
+  - In the most recent order of judgment, is legal custody sole or joint?: current_custody
+    datatype: radio
+    choices:
+      - Sole
+      - Joint
+  - Do you have sole custody?: user_custodian
+    datatype: yesnoradio
+    show if:
+      variable: current_custody
+      is: Sole 
+---
 #################### Documents Start #####################
 ---
 objects:
@@ -261,6 +371,7 @@ objects:
   - al_user_bundle: ALDocumentBundle.using(elements=[mrcd_attachment], filename="Motion Regarding Change of Domicile (All Forms).pdf", title="All forms to download for your records", enabled=True)
   - al_court_bundle: ALDocumentBundle.using(elements=[mrcd_attachment], filename="Motion Regarding Change of Domicile (All Forms).pdf", title="All forms to download for your records", enabled=True)
 ---
+# Note: Court info other than county is dependent on county, need to plug in MLH's court DB to gather P# and address. Should not be asking user for these values. 
 attachment:
   name: Motion Regarding Change of Domicile Attachment
   filename: Motion Regarding Change of Domicile - FOC 29
