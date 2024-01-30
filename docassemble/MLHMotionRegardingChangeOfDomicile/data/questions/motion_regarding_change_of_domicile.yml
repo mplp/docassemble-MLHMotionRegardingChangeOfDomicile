@@ -69,8 +69,7 @@ code: |
     prior_order_kickout
 
   nav.set_section("review_your_info")
-  users.name
-  users.address
+  users.gather()
 
   nav.set_section("review_other_parent_info")
   
@@ -361,6 +360,7 @@ feilds:
 ---
 #################### Documents Start #####################
 ---
+#TO DO: add new "see attached" variables added to PDF
 objects:
   - mrcd_attachment_main: ALDocument.using(title="Motion Regarding Change of Domicile", filename="Motion Regarding Change of Domicile - FOC 29.pdf", enabled=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
 ---
