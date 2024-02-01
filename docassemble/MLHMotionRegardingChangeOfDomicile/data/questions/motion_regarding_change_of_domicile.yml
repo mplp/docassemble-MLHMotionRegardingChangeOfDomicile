@@ -43,8 +43,6 @@ objects:
 #################### Interview Order Start #####################
 ---
 #TO DO: add appropriate sections for other parties
-comment: |
-  Controls order and branching logic for questions specific to this form
 id: interview_order_motion_regarding_change_of_domicile
 mandatory: True
 code: |
@@ -66,14 +64,13 @@ code: |
 
   trial_court_county
   user_started_case
-  id not prior_order_yesno:
+  if not prior_order_yesno:
     prior_order_kickout
 
   nav.set_section("review_your_info")
   users.gather()
 
   nav.set_section("review_other_parent_info")
-  
 
   nav.set_section("review_children_info")
   children.gather()
@@ -197,7 +194,7 @@ question: |
 
   **If a question doesn't specifically ask for personal identifying information, do not include it in your answers.** When this information is necessary, this tool will specifically ask for the information and it will go on a sperate non-public form that you wil file along with the other documents. This DIY tool will automatically produce that form if you need it.
 fields:
-  - Do you understand that you should not enter any personal identifying information unless this tool specifically asks for it?: pii_disclaimed
+  - Do you understand that you should not enter any personal identifying information unless this tool specifically asks for it?: pii_disclaimer
     datatype: yesnoradio
 ---
 id: has_existing_case
@@ -397,47 +394,47 @@ attachment:
   pdf template file: Motion Regarding Change of Domicile - FOC 29.pdf
   editable: False
   fields:
-    - "trial_court": ${ trial_court }
-    - "trial_court_county": ${ trial_court_county }
-    - "docket_number": ${ docket_number }
-    - "trial_court_address_on_one_line": ${ trial_court.address.on_one_line() }
-    - "trial_court_phone_number": ${ trial_court.phone_number }
-    - "moving_party": ${ moving_party }
-    - "moving_party_2": ${ moving_party_2 }
-    - "moving_party_3": ${ moving_party_3 }
-    - "recent_order": ${ recent_order }
-    - "joint_custody": ${ joint_custody }
-    - "sole_custody": ${ sole_custody }
-    - "plaintiff_custody": ${ plaintiff_custody }
-    - "defendant_custody": ${ defendant_custody }
-    - "plaintiffs_address_block": |
-        ${ plaintiffs }
-        ${ plaintiffs[0].address_on_one }
-        ${ word("Does not have phone") if plaintiffs[0].no_phone_number else plaintiffs[0].phone_numbers() }
-    - "defendants_address_block": |
-        ${ defendants }  
-        ${ defendants[0].address.on_one_line() }  
-        ${ word("Does not have phone") if defendants[0].no_phone_number else defendants[0].phone_numbers() }   
-    - "children1": ${ children[0] }
-    - "children2": ${ children[1] if len(children) > 1 else "" }
-    - "children3": ${ children[2] if len(children) > 2 else "" }
-    - "children4": ${ children[3] if len(children) > 3 else "" }
-    - "children5": ${ children[4] if len(children) > 4 else "" }
-    - "children6": ${ children[5] if len(children) > 5 else "" }
-    - "children7": ${ children[6] if len(children) > 6 else "" }
-    - "children_see_attatched": ${ children_see_attatched }
-    - "requested_order_see_attached": ${ requested_order_see_attached }
-    - "continue_current_order": ${ continue_current_order }
-    - "modify_current_order": ${ modify_current_order }
-    - "changes_to_order_see_attached": ${ changes_to_order_see_attached }
-    - "signature_date": ${ signature_date of esign else "" }
-    - "users_signature": ${ f"/s/ {users[0]}" if esign else "" }
-    - "presiding_judge": ${ presiding_judge.name }
-    - "bar_number": ${ judge_bar_number }
-    - "hearing_date": ${ format_date(hearing_date) if has_hearing_info else "" } 
-    - "hearing_time": ${ hearing_time if has_hearing_info else "" }
-    - "hearing_location": ${ hearing_address_on_one_line if has_hearing_info else "" }
-    - "service_date": ${ format_date(service_date) } 
+    - trial_court: ${ trial_court }
+    - trial_court_county: ${ trial_court_county }
+    - docket_number: ${ docket_number }
+    - trial_court_address_on_one_line: ${ trial_court.address.on_one_line() }
+    - trial_court_phone_number: ${ trial_court.phone_number }
+    - moving_party: ${ moving_party }
+    - moving_party_2: ${ moving_party_2 }
+    - moving_party_3: ${ moving_party_3 }
+    - recent_order: ${ recent_order }
+    - joint_custody: ${ joint_custody }
+    - sole_custody: ${ sole_custody }
+    - plaintiff_custody: ${ plaintiff_custody }
+    - defendant_custody: ${ defendant_custody }
+    - plaintiffs_address_block: |
+          ${ plaintiffs }
+          ${ plaintiffs[0].address_on_one }
+          ${ word("Does not have phone") if plaintiffs[0].no_phone_number else plaintiffs[0].phone_numbers() }
+    - defendants_address_block: |
+          ${ defendants }  
+          ${ defendants[0].address.on_one_line() }  
+          ${ word("Does not have phone") if defendants[0].no_phone_number else defendants[0].phone_numbers() }   
+    - children1: ${ children[0] }
+    - children2: ${ children[1] if len(children) > 1 else "" }
+    - children3: ${ children[2] if len(children) > 2 else "" }
+    - children4: ${ children[3] if len(children) > 3 else "" }
+    - children5: ${ children[4] if len(children) > 4 else "" }
+    - children6: ${ children[5] if len(children) > 5 else "" }
+    - children7: ${ children[6] if len(children) > 6 else "" }
+    - children_see_attached: ${ children_see_attached }
+    - requested_order_see_attached: ${ requested_order_see_attached }
+    - continue_current_order: ${ continue_current_order }
+    - modify_current_order: ${ modify_current_order }
+    - changes_to_order_see_attached: ${ changes_to_order_see_attached }
+    - signature_date: ${ signature_date of esign else "" }
+    - users_signature: ${ f"/s/ {users[0]}" if esign else "" }
+    - presiding_judge: ${ presiding_judge.name }
+    - bar_number: ${ judge_bar_number }
+    - hearing_date: ${ format_date(hearing_date) if has_hearing_info else "" } 
+    - hearing_time: ${ hearing_time if has_hearing_info else "" }
+    - hearing_location: ${ hearing_address_on_one_line if has_hearing_info else "" }
+    - service_date: ${ format_date(service_date) } 
 ---
 #################### Documents End #####################
 ---
