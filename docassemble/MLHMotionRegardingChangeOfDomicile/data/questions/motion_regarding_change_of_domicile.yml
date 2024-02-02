@@ -20,8 +20,8 @@ sections:
   - qualifying_questions: "Do you qualify?"
   - review_prior_case: "Prior Case Information"
   - review_your_info: "Your Information"
-  - review_other_parent_info: "Other Parent's Information"
-  - review_children_info: "Children Information"
+  - review_other_info: "Other Parent's Information"
+  - review_children_info: "Children's Information"
   - review_conclusion: "Conclusion"
 ---
 code: |
@@ -50,19 +50,19 @@ code: |
   intro_screen
   MLH_standard_intro_pages
   court_permission_required
-  pii_disclaimer
 
   nav.set_section("qualifying_questions")
   if not has_existing_case:
     existing_case_kickout
-  if not third_party_check:
+  if third_party_check:
     third_party_kickout
   what_you_will_need
   
   nav.set_section("review_prior_case")
   docket_number
 
-  trial_court_county
+  county_choice
+
   user_started_case
   if not prior_order_yesno:
     prior_order_kickout
@@ -70,8 +70,8 @@ code: |
   nav.set_section("review_your_info")
   users.gather()
 
-  nav.set_section("review_other_parent_info")
-
+  nav.set_section("review_other_info")
+  other_parties.gather()
   nav.set_section("review_children_info")
   children.gather()
 
@@ -171,9 +171,11 @@ subquestion: |
 id: court_permission_required
 continue button field: court_permission_required
 question: |
-  Other times you need court approval?
+  When do you need court permission?
 subquestion: |
-  You may also need permission from the court to move within Michigan. This depends on things like:
+  If there is a custody or parenting time order for your child, you will always need permission from the court to move them outside of Michigan.
+  
+  You may need permission from the court to move within Michigan. This depends on things like:
 
   * The custody and parenting time arrangements
   * How far your proposed move is
@@ -182,31 +184,18 @@ subquestion: |
 
   To learn more about when you need the court's permission to move, read [Moving with Children after Separation or Divorce](https://michiganlegalhelp.org/resources/family/moving-children-after-separation-or-divorce).
 ---
-id: personal_identifying_information_disclaimer
-question: |
-  To protect privacy, you cannot include perosnal identifying information in public documents that are filed in court. Peronsal Identifying informaotin includes: 
-
-    * Date of birth
-    * Social security or national identification number
-    * Driver's license or state identification number
-    * Passport number
-    * Financial account numbers
-
-  **If a question doesn't specifically ask for personal identifying information, do not include it in your answers.** When this information is necessary, this tool will specifically ask for the information and it will go on a sperate non-public form that you wil file along with the other documents. This DIY tool will automatically produce that form if you need it.
-fields:
-  - Do you understand that you should not enter any personal identifying information unless this tool specifically asks for it?: pii_disclaimer
-    datatype: yesnoradio
----
 id: has_existing_case
 question: |
   Do you have an existing Michigan family law case?
 subquestion: |
   This includes:
+
     * Divorce
     * Separate maintenance
     * Paternity
     * Custody
     * Family support
+
 fields:
   - no label: has_existing_case
     datatype: yesnoradio
@@ -223,20 +212,23 @@ subquestion: |
 ---
 id: third_party_check
 question: |
-  Is a third party (a non-parent) part of your existing family law case?
+  Is there a non-parent party in your existing family law case?
 fields:
-  - no_label: third_party_check
+  - "": third_party_check
     datatype: yesnoradio
 ---
 id: third_party_kickout
 event: third_party_kickout
 question: |
   We’re sorry, but you cannot use this tool.
-
-  This tool may only be used to file a *Motion Regarding Change of Domicile**  in a Michigan family law case between two parents, with no third party involvement.
+subquetion: |
+  This tool may only be used to file a *Motion Regarding Change of Domicile*  in a Michigan family law case between two parents, with no third party involvement.
 
   We cannot help you, but your local legal aid program or other lawyer may be able to.  You can use the [Guide to Legal Help on Michigan Legal Help](https://michiganlegalhelp.org/guide-to-legal-help) to find a lawyer or a legal services office near you.
+
+  **If the only parties involved are the parents click undo to change your answer.** 
 ---
+# ToDo: need to fix tempalte. I think error is with image_court_papers
 id: what_you_will_need
 question: |
   What you will need to complete this form
@@ -247,20 +239,20 @@ subquestion: |
   * court information, and
   * information about the parties from your existing case
 
-  ${ collapse_template(where_info_on_papers_template) }
+#  ${ collapse_template(where_info_on_papers_template) }
 continue button field: what_you_will_need
 ---
-template: where_info_on_papers_template
-subject: |
-  Where can I find this information?
-content: |
-  Here is an example of where you can find this information on your court papers.
-
-  * The court information is circled in blue, on the top left.
-  * The case number is circled in yellow, on the top right.
-  * The information about the parties is circled in red
-
-  ${ image_court_papers.show(width="100%") }
+#template: where_info_on_papers_template
+#subject: |
+#  Where can I find this information?
+#content: |
+#  Here is an example of where you can find this information on your court papers.
+#
+#  * The court information is circled in blue, on the top left.
+#  * The case number is circled in yellow, on the top right.
+#  * The information about the parties is circled in red
+#
+#  ${ image_court_papers.show(width="100%") }
 ---
 # TO DO: finish adding any needed language
 id: MLH intro time
@@ -286,13 +278,7 @@ fields:
   - Case number: docket_number
     maxlength: 25
 ---
-id: trial court county
-question: |
-  In which county is your family law case happening?
-fields:
-  no label: trial_court_county
-  datatype: text
----
+# ToDo: add a contextualized visual to assist user correctly answer this question
 id: what is the user's role?
 question: |
   What party are you in your existing case?
@@ -301,7 +287,6 @@ subquestion: |
 
   In your court case, you are either the Plaintiff or the Defendant.
 
-  ${ collapse_template(help_user_ask_role_template) }
 fields: 
   - What party are you in your case?: user_ask_role
     label above field: True
@@ -326,13 +311,19 @@ id: judgment or custody order
 question: |
   Is there a custody order or judgment in your family law case?
 fields:
-  no_label: prior_order_yesno
-  datatype: yesnoradio
+  - "": prior_order_yesno
+    datatype: yesnoradio
+  - What is the date of the most recent order?: recent_order
+    datatype: date
+    show if:
+      variable: prior_order_yesno
+      is: True
 ---
-# Note: I have a strong prefrence for putting all kickouts at the top of the interview. Imo it establishes credibility through a display of valuing the users time. Important if you want repeat users. The LHI interview has this question around this point, this is why it's currently here. 
 id: prior_order_kickout
 event: prior_order_kickout
 question: |
+  This tool requires a prior order.
+subequestion: |
   We’re sorry, but you cannot use this tool because custody or parenting time of your children is not currently governed by a custody order or judgment.
   
   We cannot help you, but your local legal aid program or other lawyer may be able to. You can use the [Guide to Legal Help on Michigan Legal Help](https://michiganlegalhelp.org/guide-to-legal-help) to find a lawyer or a legal services office near you.
@@ -343,8 +334,6 @@ id: prior order information
 question: |
   Provide the requested information about the most recent custody order or judgment.
 feilds:
-  - What is the date of the most recent order?: recent_order
-    datatype: date
   - In the most recent order of judgment, is legal custody sole or joint?: current_custody
     datatype: radio
     choices:
@@ -355,6 +344,48 @@ feilds:
     show if:
       variable: current_custody
       is: Sole 
+---
+# TODO: copied from MLHMotiongRegardinChildSupport, adjust text to what's actually in our form
+id: efile note question
+question: |
+  Completing this process does not file your forms with the court
+subquestion: |
+  You need to file them at court in person, by mail, e-mail, or by e-filing.
+  If you are e-filing, you must use [MiFILE](https://mifile.courts.michigan.gov/).
+  Read the instructions that you will get with your forms for more information.
+
+  ${ collapse_template(am_i_going_to_efile) }
+
+  This tool will create separate forms so you can more easily e-file using MiFILE, if you plan to e-file.
+  This means that you may need to download multiple files to get all of the forms you will need.
+
+  You will be able to get all forms you need by clicking the Download Your Form(s) button on the page at the end of this tool.
+  You will then see a list of documents to download. Make sure you download each of them.
+continue button field: efile_notice
+---
+template: am_i_going_to_efile
+subject: |
+  How do I know if I am going to e-file?
+content: |
+  Not all courts offer e-filing at this time. To find out if your court has e-filing, read the
+  [What is E-Filing?](https://michiganlegalhelp.org/resources/mifile/what-e-filing) article.
+  The article tells you how to find out which courts have e-filing and what kinds of cases those courts are accepting by e-filing.
+
+  Look for the two-letter case type code at the end of your case number.
+  (This could be DM, DC, DS, DP, or a different code.)
+---
+id: Electronic signature question
+question: |
+  Electronic Signature
+subquestion: |
+  This tool can put "*/s/ ${ users[0] }*" where you would sign your name so you do not have to sign the form by hand. The court will accept this as your signature.
+
+  If you plan to e-file, you may want to add your electronic signature, otherwise you will need to print your forms, sign them by hand, and then scan them.
+
+  ${ collapse_template(efiling_info_template) }
+fields:
+  - Would you like to add your electronic signature to your form?: esign
+    datatype: yesnoradio
 ---
 id: download Motion Regarding Change of Domicile - FOC 29
 event: motion_re_change_of_domicile_download
@@ -395,7 +426,7 @@ attachment:
   editable: False
   fields:
     - trial_court: ${ trial_court }
-    - trial_court_county: ${ trial_court_county }
+    - trial_court_county: ${ county_choice }
     - docket_number: ${ docket_number }
     - trial_court_address_on_one_line: ${ trial_court.address.on_one_line() }
     - trial_court_phone_number: ${ trial_court.phone_number }
