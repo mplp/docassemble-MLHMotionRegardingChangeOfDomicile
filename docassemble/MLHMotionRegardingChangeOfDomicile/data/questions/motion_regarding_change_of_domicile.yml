@@ -81,14 +81,13 @@ code: |
   if esign:
     signature_date
   
-  interview_motion_regarding_change_of_domicile = True
+  interview_motion_re_change_of_domicile = True
 ---
 #################### Interview Order End #####################
 ---
-# Note: Why is this mandatory true? Ideally we will only have the order block be mandatory and everything we want triggered will trigger from that block. 
-#mandatory: True
+mandatory: True
 code: |
-  interview_motion_regarding_change_of_domicile
+  interview_motion_re_change_of_domicile
   # Store anonymous data for analytics / statistics
   store_variables_snapshot(
       persistent=True,
@@ -177,10 +176,10 @@ subquestion: |
   
   You may need permission from the court to move within Michigan. This depends on things like:
 
-  * The custody and parenting time arrangements
-  * How far your proposed move is
-  * How far you lived from the other parent when your case started
-  * Whether the other parent agrees to the move
+    * The custody and parenting time arrangements
+    * How far your proposed move is
+    * How far you lived from the other parent when your case started
+    * Whether the other parent agrees to the move
 
   To learn more about when you need the court's permission to move, read [Moving with Children after Separation or Divorce](https://michiganlegalhelp.org/resources/family/moving-children-after-separation-or-divorce).
 ---
@@ -395,9 +394,6 @@ subquestion: |
   Thank you ${users}. Your form is ready to download and deliver.
   
   View, download and send your form below. Click the "Edit answers" button to fix any mistakes.
-
-  ${ action_button_html(url_action('review_final__dc_84_affidavit_and_claim_sm'), label='Edit answers', color='info') }
-  
   
   ${ al_user_bundle.download_list_html() }
   
@@ -406,24 +402,19 @@ subquestion: |
 ---
 #################### Documents Start #####################
 ---
-#TO DO: add new "see attached" variables added to PDF
 objects:
   - mrcd_attachment_main: ALDocument.using(title="Motion Regarding Change of Domicile", filename="Motion Regarding Change of Domicile - FOC 29.pdf", enabled=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
 ---
 objects:
-  - mrcd_attachment: ALDocumentBundle.using(elements=[mrcd_attachment_main], filename="Motion Regarding Change of Domicile - FOC 29.pdf", title="Motion Regarding Change of Domicile", enabled=True)
----
-objects:
-  - al_user_bundle: ALDocumentBundle.using(elements=[mrcd_attachment], filename="Motion Regarding Change of Domicile (All Forms).pdf", title="All forms to download for your records", enabled=True)
-  - al_court_bundle: ALDocumentBundle.using(elements=[mrcd_attachment], filename="Motion Regarding Change of Domicile (All Forms).pdf", title="All forms to download for your records", enabled=True)
+  - al_user_bundle: ALDocumentBundle.using(elements=[mrcd_attachment_main], filename="Motion Regarding Change of Domicile (All Forms).pdf", title="All forms to download for your records", enabled=True)
 ---
 attachment:
-  name: Motion Regarding Change of Domicile Attachment
+  name: Motion Regarding Change of Domicile 
   filename: Motion Regarding Change of Domicile - FOC 29
   variable name: mrcd_attachment_main[i]
   skip undefined: True
-  pdf template file: Motion Regarding Change of Domicile - FOC 29.pdf
   editable: False
+  pdf template file: Motion Regarding Change of Domicile - FOC 29.pdf
   fields:
     - trial_court: ${ trial_court }
     - trial_court_county: ${ county_choice }
