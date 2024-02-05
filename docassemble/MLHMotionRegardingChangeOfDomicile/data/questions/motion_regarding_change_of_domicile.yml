@@ -81,6 +81,8 @@ code: |
 
   nav.set_section("review_moving_reason_info")
   moving_reason_intro_screen
+  moving_reason
+  moving_benefits
 
   nav.set_section("review_domestic_violence_info")
 
@@ -404,6 +406,8 @@ subequestion: |
 #       is: Sole 
 ---
 id: moving_reason_intro_screen
+question: |
+  Why You Want to Move, Part 1  
 subquestion: |
   When deciding whether to allow your move, the judge will consider whether:
 
@@ -416,6 +420,33 @@ subquestion: |
 
   You will now be asked about why you want the court to allow you to move. Your answers will be used to create an *Attachment to your Motion Regarding Change of Domicile/Legal Residence*.
 continue button field: moving_reason_intro_screen
+---
+id: moving reason explanation
+question: |
+  Why You Want to Move, Part 2  
+subquestion: |
+  The court will want to know if you have a legitimate reason or reasons for moving. This is to make sure you aren’t moving just to limit the other parent’s ability to spend time with your child.
+fields:
+  - Please use complete sentences to explain why you want to move: moving_reason
+    input type: area
+---
+id: moving benefits explanation
+question: |
+  Why You Want to Move, Part 3  
+subquestion: |
+  Next, explain how the move will improve your life and your child’s lives. The court may consider things like whether the move:
+  
+  * Is for a better job that will give your family a better standard of living;
+  * Is to a safer neighborhood;
+  * Is to an area with better schools;
+  * Will bring you closer to extended family; and
+  * Other factors unique to you.
+fields:
+  - The move will improve the quality of life for my child and me because...: moving_benefits
+    input type: area
+
+  - Will the move allow the child to maintain a similar relationship with ${ other_parties[0].name }?: maintains_other_parent_relationship
+    datatype: yesnoradio
 ---
 # TODO: copied from MLHMotiongRegardinChildSupport, adjust text to what's actually in our form
 id: efile note question
