@@ -22,6 +22,10 @@ sections:
   - review_your_info: "Your Information"
   - review_other_info: "Other Parent's Information"
   - review_children_info: "Children's Information"
+  - review_moving_reason_info: "Why You Want to Move"
+  - review_domestic_violence_info: "Domestic Violence"
+  - review_new_address_info: "Your New Address"
+  - review_parenting_time_info: "Parenting Time"
   - review_conclusion: "Conclusion"
 ---
 code: |
@@ -75,6 +79,15 @@ code: |
   nav.set_section("review_children_info")
   children.gather()
 
+  nav.set_section("review_moving_reason_info")
+  moving_reason_intro_screen
+
+  nav.set_section("review_domestic_violence_info")
+
+  nav.set_section("review_new_address_info")
+
+  nav.set_section("review_parenting_time_info")
+
   nav.set_section("review_conclusion")
 
   efile_notice
@@ -123,6 +136,22 @@ code: |
 ---
 #################### Overridden AL Questions Start #####################
 ---
+sets:
+  - other_parties[i].name.first
+  - other_parties[i].name.last
+  - other_parties[i].name.middle
+  - other_parties[i].name.suffix
+id: names of opposing parties
+question: |
+  % if user_started_case:
+  Name of **defendant** in this matter
+  % else:
+  Name of **plaintiff** in this matter
+  % endif
+fields:
+  - code: |
+      other_parties[i].name_fields(person_or_business='person')
+---
 id: children names without birthdate
 sets:
   - children[i].name.first
@@ -130,7 +159,11 @@ sets:
   - children[i].name.middle
   - children[i].name.suffix
 question: |
+  % if children.target_number < 2:
+  What is the name of your child?
+  % else:
   What is the name of your ${ ordinal(i) } child?
+  % endif
 subquestion: |
   % if len(children.complete_elements()) > 0:
   You have already told us about ${ comma_and_list(children.complete_elements()) }.
@@ -138,6 +171,17 @@ subquestion: |
 fields:
   - code: |
       children[i].name_fields()
+---
+id: how many children
+question: |
+  How many children do you want this change in domicile or residence for?
+fields:
+  - no label: children.target_number
+    datatype: integer
+    min: 1
+    validation messages:
+      min: |
+        You need to have at least one child you are requesting a change in domicile or residence for.
 ---
 #################### Overridden AL Questions End #####################
 ---
@@ -317,6 +361,21 @@ fields:
     show if:
       variable: prior_order_yesno
       is: True
+  
+  - In the most recent order of judgment, is legal custody sole or joint?: current_custody
+    datatype: radio
+    choices:
+      - Sole
+      - Joint
+    show if:
+      variable: prior_order_yesno
+      is: True
+
+  - Do you have sole custody?: user_custodian
+    datatype: yesnoradio
+    show if: 
+      variable: current_custody
+      is: Sole
 ---
 id: prior_order_kickout
 event: prior_order_kickout
@@ -329,20 +388,34 @@ subequestion: |
 
   If you think you made a mistake, you can click > Undo and change the answer to the question.
 ---
-id: prior order information
-question: |
-  Provide the requested information about the most recent custody order or judgment.
-feilds:
-  - In the most recent order of judgment, is legal custody sole or joint?: current_custody
-    datatype: radio
-    choices:
-      - Sole
-      - Joint
-  - Do you have sole custody?: user_custodian
-    datatype: yesnoradio
-    show if:
-      variable: current_custody
-      is: Sole 
+# id: prior order information
+# question: |
+#   Provide the requested information about the most recent custody order or judgment.
+# feilds:
+#   - In the most recent order of judgment, is legal custody sole or joint?: current_custody
+#     datatype: radio
+#     choices:
+#       - Sole
+#       - Joint
+#   - Do you have sole custody?: user_custodian
+#     datatype: yesnoradio
+#     show if:
+#       variable: current_custody
+#       is: Sole 
+---
+id: moving_reason_intro_screen
+subquestion: |
+  When deciding whether to allow your move, the judge will consider whether:
+
+    1. The move would improve your and your child’s quality of life;
+    2. Each parent has followed the parenting time provisions of your court order;
+    3. You are using the move to limit the other parent’s time with your child;
+    4. New parenting time arrangements will allow your child to keep a similar relationship with the other parent;
+    5. The other parent is fighting against the move just to pay less child support;
+    6. You are moving to escape domestic violence by the other parent.
+
+  You will now be asked about why you want the court to allow you to move. Your answers will be used to create an *Attachment to your Motion Regarding Change of Domicile/Legal Residence*.
+continue button field: moving_reason_intro_screen
 ---
 # TODO: copied from MLHMotiongRegardinChildSupport, adjust text to what's actually in our form
 id: efile note question
