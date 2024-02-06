@@ -83,8 +83,13 @@ code: |
   moving_reason_intro_screen
   moving_reason
   moving_benefits
+  maintains_other_parent_relationship
+  if other_parent_opposition:
+    other_parent_opposition_cs
 
   nav.set_section("review_domestic_violence_info")
+  if domestic_violence:
+    domestic_violence_exp
 
   nav.set_section("review_new_address_info")
 
@@ -132,6 +137,12 @@ code: |
   other_parties.there_is_another = False
 ---
 code: |
+  other_parties[i].name.first
+  other_parties[i].address.address
+  other_parties[i].pronouns
+  other_parties[i].complete = True
+---
+code: |
   children[i].name.first
   children[i].birthdate
   children[i].complete = True
@@ -153,6 +164,15 @@ question: |
 fields:
   - code: |
       other_parties[i].name_fields(person_or_business='person')
+---
+sets:
+  - other_parties[i].pronouns
+id: other parties pronouns
+question: |
+  What are ${ other_parties[i] }'s pronouns?
+fields:
+  - code: |
+      other_parties[i].pronoun_fields()
 ---
 id: children names without birthdate
 sets:
@@ -407,7 +427,7 @@ subequestion: |
 ---
 id: moving_reason_intro_screen
 question: |
-  Why You Want to Move, Part 1  
+  You will now be asked about why you want the court to allow you to move.  
 subquestion: |
   When deciding whether to allow your move, the judge will consider whether:
 
@@ -418,35 +438,88 @@ subquestion: |
     5. The other parent is fighting against the move just to pay less child support;
     6. You are moving to escape domestic violence by the other parent.
 
-  You will now be asked about why you want the court to allow you to move. Your answers will be used to create an *Attachment to your Motion Regarding Change of Domicile/Legal Residence*.
+  Your answers will be used to create an *Attachment to your Motion Regarding Change of Domicile/Legal Residence*.
 continue button field: moving_reason_intro_screen
 ---
 id: moving reason explanation
 question: |
-  Why You Want to Move, Part 2  
+  Why do you want to move?  
 subquestion: |
   The court will want to know if you have a legitimate reason or reasons for moving. This is to make sure you aren’t moving just to limit the other parent’s ability to spend time with your child.
+
+  Please use complete sentences to explain why you want to move.
 fields:
-  - Please use complete sentences to explain why you want to move: moving_reason
+  - no label: moving_reason
     input type: area
 ---
 id: moving benefits explanation
 question: |
-  Why You Want to Move, Part 3  
+  Next, explain how the move will improve your and your child’s lives  
 subquestion: |
-  Next, explain how the move will improve your life and your child’s lives. The court may consider things like whether the move:
+  The court may consider things like whether the move:
   
   * Is for a better job that will give your family a better standard of living;
   * Is to a safer neighborhood;
   * Is to an area with better schools;
   * Will bring you closer to extended family; and
   * Other factors unique to you.
-fields:
-  - The move will improve the quality of life for my child and me because...: moving_benefits
-    input type: area
 
-  - Will the move allow the child to maintain a similar relationship with ${ other_parties[0].name }?: maintains_other_parent_relationship
+  Please complete the following: The move will improve the quality of life for my child and me because...
+fields:
+  - no label: moving_benefits
+    input type: area
+---
+id: move maintains other parent relationship
+question: |
+  Will the move allow the child to maintain a similar relationship with ${ other_parties[0].name }?
+fields:
+  - no label: maintains_other_parent_relationship
     datatype: yesnoradio
+---
+id: other parent opposition
+question: |
+  To the best of your knowledge, does ${ other_parties[0].name } oppose the move?
+fields:
+  - no label: other_parent_opposition
+    datatype: radio
+    choices:
+      - Yes 
+      - No 
+      - I don't know 
+---
+id: other parent opposition child support
+question: |
+  Do you believe ${ other_parties[0].name } opposes the move to avoid paying more child support?
+subquestion: |
+  The amount of child support is based on several factors, including the number of overnights your child spends with each parent. If ${ other_parties[0].name } opposes the move, the court will want to know whether ${ other_parties[0].pronoun_subjective() } is only worried that having less overnights with your child will increase ${ other_parties[0].pronoun_possessive('child support payments') }.
+fields:
+  - no label: other_parent_opposition_cs
+    datatype: radio
+    choices:
+      - Yes 
+      - No 
+      - I don't know
+  - Explain why you think this is true: other_parent_opposition_cs_exp
+    input type: area
+    show if:
+      variable: other_parent_opposition_cs
+      is: Yes 
+---
+id: domestic violence
+question: |
+  Are you moving to escape domestic violence by ${ other_parties[0].name }?
+fields:
+  - no label: domestic_violence
+    datatype: yesnoradio
+---
+id: domestic violence explanation
+question: |
+  Briefly explain how ${ other_parties[0].name } has been violent towards you
+subquestion: |
+  Tell the court if you have a personal protection order or a no contact order. If you have any documents, like a police report or medical record, you can attach those to your motion. They are not required, but will help the judge understand your situation and why you want to move.
+fields:
+  no label: domestic_violence_exp
+  input type: area
 ---
 # TODO: copied from MLHMotiongRegardinChildSupport, adjust text to what's actually in our form
 id: efile note question
