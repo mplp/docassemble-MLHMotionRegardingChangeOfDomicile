@@ -199,10 +199,10 @@ sets:
   - other_parties[i].name.middle
   - other_parties[i].name.suffix
 question: |
-  % if user_started_case:
-  Name of **defendant** in this matter
+  % if user_ask_role == "plaintiff":
+  Name of the **Defendant** in this matter
   % else:
-  Name of **plaintiff** in this matter
+  Name of the **Plaintiff** in this matter
   % endif
 fields:
   - code: |
@@ -426,7 +426,6 @@ subquestion: |
 
 fields:
   - What party are you in your case?: user_ask_role
-    label above field: True
     datatype: radio
     choices:
       - I am the Plaintiff: plaintiff
@@ -443,6 +442,21 @@ fields:
     show if:
       variable: user_ask_role
       is: "defendant"
+validation code: |
+  if user_ask_role == "plaintiff":
+    moving_party = True
+    moving_party_2 = False
+    other_party_role = "defendant"
+    user_started_case = True
+  elif user_ask_role == "defendant":
+    moving_party = False
+    moving_party_2 = True
+    other_party_role = "plaintiff"
+    user_started_case = False
+  else:
+    moving_party = False
+    moving_party_2 = False
+    other_party_role = ""
 ---
 id: judgment or custody order
 question: |
@@ -465,11 +479,34 @@ fields:
       variable: prior_order_yesno
       is: True
 
-  - Do you have sole custody?: user_custodian
-    datatype: yesnoradio
+  - Who has legal custody?: child_custodian
+    datatype: radio
+    choices: 
+      - I do: user
+      - The ${ capitalize(other_party_role) } does: other_party
     show if:
       variable: current_custody
       is: Sole
+validation code: |
+  if current_custody == "Sole":
+    sole_custody = True
+    joint_custody = False
+  elif current_custody == "Joint":
+    sole_custody == False
+    joint_custody == True
+  else:
+    sole_custody = False
+    joint_custody = False
+  
+  if child_custodian == "user":
+    plaintiff_custody = True
+    defendant_custody = False
+  elif child_custodian == "other_party":
+    plaintiff_custody = False
+    defendant_custody = True
+  else:
+    plaintiff_custody = False
+    defendant_custody = False
 ---
 id: prior_order_kickout
 event: prior_order_kickout
@@ -611,7 +648,7 @@ fields:
     choices:
       - Continue the current parenting time order: False
       - Change the current parenting time order: True
-  - Explain what you propose the new parenting time arrangements to be. Use complete sentences: parenting_time_change_exp
+  - Explain what you propose the new parenting time arrangements to be. Use complete sentences: requested_order_see_attached
     input type: area
     show if:
       variable: wants_parenting_time_change
@@ -621,6 +658,16 @@ fields:
     show if:
       variable: wants_parenting_time_change
       is: True
+validation code: |
+  if wants_parenting_time_change == True:
+    continue_current_order = False
+    modify_current_order = True
+  elif wants_parenting_time_change == False:
+    continue_current_order = True
+    modify_current_order = False
+  else:
+    continue_current_order = False
+    modify_current_order = False 
 ---
 # TODO: copied from MLHMotiongRegardinChildSupport, adjust text to what's actually in our form
 id: efile note question
@@ -686,6 +733,7 @@ objects:
 objects:
   - al_user_bundle: ALDocumentBundle.using(elements=[mrcd_attachment_main], filename="Motion Regarding Change of Domicile (All Forms).pdf", title="All forms to download for your records", enabled=True)
 ---
+#NOTE: syntax error being caused by line 730 (signature_date...); the other commented-out lines are causing unknown variable errors
 attachment:
   name: Motion Regarding Change of Domicile
   filename: Motion Regarding Change of Domicile - FOC 29
@@ -701,20 +749,20 @@ attachment:
     - trial_court_phone_number: ${ trial_court.phone_number }
     - moving_party: ${ moving_party }
     - moving_party_2: ${ moving_party_2 }
-    - moving_party_3: ${ moving_party_3 }
+    # - moving_party_3: ${ moving_party_3 }
     - recent_order: ${ recent_order }
     - joint_custody: ${ joint_custody }
     - sole_custody: ${ sole_custody }
     - plaintiff_custody: ${ plaintiff_custody }
     - defendant_custody: ${ defendant_custody }
     - plaintiffs_address_block: |
-        ${ plaintiffs }
-        ${ plaintiffs[0].address_on_one }
-        ${ word("Does not have phone") if plaintiffs[0].no_phone_number else plaintiffs[0].phone_numbers() }
+          ${ plaintiffs }
+          ${ plaintiffs[0].address_on_one }
+          ${ word("Does not have phone") if plaintiffs[0].no_phone_number else plaintiffs[0].phone_numbers() }
     - defendants_address_block: |
-        ${ defendants }  
-        ${ defendants[0].address.on_one_line() }  
-        ${ word("Does not have phone") if defendants[0].no_phone_number else defendants[0].phone_numbers() }
+          ${ defendants }  
+          ${ defendants[0].address.on_one_line() }  
+          ${ word("Does not have phone") if defendants[0].no_phone_number else defendants[0].phone_numbers() }
     - children1: ${ children[0] }
     - children2: ${ children[1] if len(children) > 1 else "" }
     - children3: ${ children[2] if len(children) > 2 else "" }
@@ -722,19 +770,19 @@ attachment:
     - children5: ${ children[4] if len(children) > 4 else "" }
     - children6: ${ children[5] if len(children) > 5 else "" }
     - children7: ${ children[6] if len(children) > 6 else "" }
-    - children_see_attached: ${ children_see_attached }
+    # - children_see_attached: ${ children_see_attached }
     - requested_order_see_attached: ${ requested_order_see_attached }
     - continue_current_order: ${ continue_current_order }
     - modify_current_order: ${ modify_current_order }
-    - changes_to_order_see_attached: ${ changes_to_order_see_attached }
-    - signature_date: ${ signature_date of esign else "" }
+    # - changes_to_order_see_attached: ${ changes_to_order_see_attached }
+    # - signature_date: ${ signature_date of esign else "" }
     - users_signature: ${ f"/s/ {users[0]}" if esign else "" }
     - presiding_judge: ${ presiding_judge.name }
-    - bar_number: ${ judge_bar_number }
-    - hearing_date: ${ format_date(hearing_date) if has_hearing_info else "" }
-    - hearing_time: ${ hearing_time if has_hearing_info else "" }
-    - hearing_location: ${ hearing_address_on_one_line if has_hearing_info else "" }
-    - service_date: ${ format_date(service_date) }
+    # - bar_number: ${ judge_bar_number }
+    # - hearing_date: ${ format_date(hearing_date) if has_hearing_info else "" }
+    # - hearing_time: ${ hearing_time if has_hearing_info else "" }
+    # - hearing_location: ${ hearing_address_on_one_line if has_hearing_info else "" }
+    # - service_date: ${ format_date(service_date) }
 ---
 #################### Documents End #####################
 ---
