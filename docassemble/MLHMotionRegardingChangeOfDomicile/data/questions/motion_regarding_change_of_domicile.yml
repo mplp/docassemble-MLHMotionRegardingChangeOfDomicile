@@ -490,13 +490,10 @@ fields:
 validation code: |
   if current_custody == "Sole":
     sole_custody = True
-    joint_custody = False
-  elif current_custody == "Joint":
-    sole_custody == False
-    joint_custody == True
-  else:
-    sole_custody = False
-    joint_custody = False
+  
+  if current_custody == "Joint":
+    joint_custody_yes = True
+    child_custodian = None
   
   if child_custodian == "user":
     plaintiff_custody = True
@@ -751,7 +748,7 @@ attachment:
     - moving_party_2: ${ moving_party_2 }
     # - moving_party_3: ${ moving_party_3 }
     - recent_order: ${ recent_order }
-    - joint_custody: ${ joint_custody }
+    - joint_custody_yes: ${ joint_custody_yes }
     - sole_custody: ${ sole_custody }
     - plaintiff_custody: ${ plaintiff_custody }
     - defendant_custody: ${ defendant_custody }
