@@ -49,7 +49,7 @@ setup(name='docassemble.MLHMotionRegardingChangeOfDomicile',
       long_description='# docassemble.MLHMotionRegardingChangeOfDomicile\r\n\r\nA motion regarding change of domicile in Michigan\r\n\r\n## Authors:\r\n\r\n* Rami Lorca',
       long_description_content_type='text/markdown',
       author='Rami Lorca',
-      author_email='',
+      author_email='hayden.mcguire113@gmail.com',
       license='The MIT License (MIT)',
       url='https://michiganlegalhelp.org/resources/family/do-it-yourself-motion-change-domicile',
       packages=find_packages(),
@@ -58,3 +58,4 @@ setup(name='docassemble.MLHMotionRegardingChangeOfDomicile',
       zip_safe=False,
       package_data=find_package_data(where='docassemble/MLHMotionRegardingChangeOfDomicile/', package='docassemble.MLHMotionRegardingChangeOfDomicile'),
      )
+

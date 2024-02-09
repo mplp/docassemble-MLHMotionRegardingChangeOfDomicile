@@ -85,7 +85,7 @@ code: |
   moving_reason
   moving_benefits
   maintains_other_parent_relationship
-  if other_parent_opposition:
+  if other_parent_opposition == "Yes":
     other_parent_opposition_cs
 
   nav.set_section("review_domestic_violence_info")
@@ -444,18 +444,18 @@ fields:
       is: "defendant"
 validation code: |
   if user_ask_role == "plaintiff":
-    moving_party = True
-    moving_party_2 = False
+    moving_party_yes = True
+    moving_party2_yes = False
     other_party_role = "defendant"
     user_started_case = True
   elif user_ask_role == "defendant":
-    moving_party = False
-    moving_party_2 = True
+    moving_party_yes = False
+    moving_party2_yes = True
     other_party_role = "plaintiff"
     user_started_case = False
   else:
-    moving_party = False
-    moving_party_2 = False
+    moving_party_yes = False
+    moving_party2_yes = False
     other_party_role = ""
 ---
 id: judgment or custody order
@@ -489,21 +489,21 @@ fields:
       is: Sole
 validation code: |
   if current_custody == "Sole":
-    sole_custody = True
+    sole_custody_yes = True
   
   if current_custody == "Joint":
     joint_custody_yes = True
     child_custodian = None
   
   if child_custodian == "user":
-    plaintiff_custody = True
-    defendant_custody = False
+    plaintiff_custody_yes = True
+    defendant_custody_yes = False
   elif child_custodian == "other_party":
-    plaintiff_custody = False
-    defendant_custody = True
+    plaintiff_custody_yes = False
+    defendant_custody_yes = True
   else:
-    plaintiff_custody = False
-    defendant_custody = False
+    plaintiff_custody_yes = False
+    defendant_custody_yes = False
 ---
 id: prior_order_kickout
 event: prior_order_kickout
@@ -649,7 +649,7 @@ fields:
     input type: area
     show if:
       variable: wants_parenting_time_change
-      is: True
+      is: True 
   - Does ${ other_parties[0].name } agree with this new parenting time schedule?: parenting_time_change_agreement
     datatype: yesnomaybe
     show if:
@@ -657,14 +657,14 @@ fields:
       is: True
 validation code: |
   if wants_parenting_time_change == True:
-    continue_current_order = False
-    modify_current_order = True
+    continue_current_order_yes = False
+    modify_current_order_yes = True
   elif wants_parenting_time_change == False:
-    continue_current_order = True
-    modify_current_order = False
+    continue_current_order_yes = True
+    modify_current_order_yes = False
   else:
-    continue_current_order = False
-    modify_current_order = False 
+    continue_current_order_yes = False
+    modify_current_order_yes = False 
 ---
 # TODO: copied from MLHMotiongRegardinChildSupport, adjust text to what's actually in our form
 id: efile note question
@@ -737,21 +737,20 @@ attachment:
   variable name: mrcd_attachment_main[i]
   skip undefined: True
   editable: False
-  pdf template file: Motion Regarding Change of Domicile - FOC 29.pdf
+  pdf template file: Motion_Regarding_Change_of_Domicile_-_FOC_29.pdf
   fields:
     - trial_court: ${ trial_court }
     - trial_court_county: ${ county_choice }
     - docket_number: ${ docket_number }
     - trial_court_address_on_one_line: ${ trial_court.address.on_one_line() }
     - trial_court_phone_number: ${ trial_court.phone_number }
-    - moving_party: ${ moving_party }
-    - moving_party_2: ${ moving_party_2 }
-    # - moving_party_3: ${ moving_party_3 }
+    - moving_party_yes: ${ moving_party_yes }
+    - moving_party2_yes: ${ moving_party2_yes }
     - recent_order: ${ recent_order }
     - joint_custody_yes: ${ joint_custody_yes }
-    - sole_custody: ${ sole_custody }
-    - plaintiff_custody: ${ plaintiff_custody }
-    - defendant_custody: ${ defendant_custody }
+    - sole_custody_yes: ${ sole_custody_yes }
+    - plaintiff_custody_yes: ${ plaintiff_custody_yes }
+    - defendant_custody_yes: ${ defendant_custody_yes }
     - plaintiffs_address_block: |
           ${ plaintiffs }
           ${ plaintiffs[0].address_on_one }
@@ -769,8 +768,8 @@ attachment:
     - children7: ${ children[6] if len(children) > 6 else "" }
     # - children_see_attached: ${ children_see_attached }
     - requested_order_see_attached: ${ requested_order_see_attached }
-    - continue_current_order: ${ continue_current_order }
-    - modify_current_order: ${ modify_current_order }
+    - continue_current_order_yes: ${ continue_current_order_yes }
+    - modify_current_order_yes: ${ modify_current_order_yes }
     # - changes_to_order_see_attached: ${ changes_to_order_see_attached }
     # - signature_date: ${ signature_date of esign else "" }
     - users_signature: ${ f"/s/ {users[0]}" if esign else "" }
