@@ -753,19 +753,15 @@ attachment:
     - defendant_custody_yes: ${ defendant_custody_yes }
     - plaintiffs_address_block: |
           % if user_ask_role == "plaintiff":
-          ${ users[0].name }
-          ${ users[0].address.on_one_line() }
+          ${ users[0].address_block() }
           % elif user_ask_role == "defendant":
-          ${ other_parties[0].name }
-          ${ other_parties[0].address.on_one_line() }
+          ${ other_parties[0].address_block() }
           % endif
     - defendants_address_block: |
           % if user_ask_role == "defendant":
-          ${ users[0].name }
-          ${ users[0].address.on_one_line() }
+          ${ users[0].address_block() }
           % elif user_ask_role == "plaintiff":
-          ${ other_parties[0].name }
-          ${ other_parties[0].address.on_one_line() }
+          ${ other_parties[0].address_block() }
           % endif
     - children1: ${ children[0] }
     - children2: ${ children[1] if len(children) > 1 else "" }
@@ -775,7 +771,13 @@ attachment:
     - children6: ${ children[5] if len(children) > 5 else "" }
     - children7: ${ children[6] if len(children) > 6 else "" }
     # - children_see_attached: ${ children_see_attached }
-    - requested_order_see_attached: ${ requested_order_see_attached }
+    # wants_parenting_time_change is a yes no question. If they want a change "see attached" will display on the PDF and (once complete) the value of requested_order_see_attached should display on the attachment under paragraph 3.
+    - requested_order_see_attached: |
+        % if wants_parenting_time_change == True:
+        See attached.
+        % else:
+        N/A.
+        % endif
     - continue_current_order_yes: ${ continue_current_order_yes }
     - modify_current_order_yes: ${ modify_current_order_yes }
     # - changes_to_order_see_attached: ${ changes_to_order_see_attached }
