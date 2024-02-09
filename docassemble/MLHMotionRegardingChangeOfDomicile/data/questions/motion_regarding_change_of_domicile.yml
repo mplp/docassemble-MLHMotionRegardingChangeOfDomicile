@@ -752,13 +752,21 @@ attachment:
     - plaintiff_custody_yes: ${ plaintiff_custody_yes }
     - defendant_custody_yes: ${ defendant_custody_yes }
     - plaintiffs_address_block: |
-          ${ plaintiffs }
-          ${ plaintiffs[0].address_on_one }
-          ${ word("Does not have phone") if plaintiffs[0].no_phone_number else plaintiffs[0].phone_numbers() }
+          % if user_ask_role == "plaintiff":
+          ${ users[0].name }
+          ${ users[0].address.on_one_line() }
+          % elif user_ask_role == "defendant":
+          ${ other_parties[0].name }
+          ${ other_parties[0].address.on_one_line() }
+          % endif
     - defendants_address_block: |
-          ${ defendants }  
-          ${ defendants[0].address.on_one_line() }  
-          ${ word("Does not have phone") if defendants[0].no_phone_number else defendants[0].phone_numbers() }
+          % if user_ask_role == "defendant":
+          ${ users[0].name }
+          ${ users[0].address.on_one_line() }
+          % elif user_ask_role == "plaintiff":
+          ${ other_parties[0].name }
+          ${ other_parties[0].address.on_one_line() }
+          % endif
     - children1: ${ children[0] }
     - children2: ${ children[1] if len(children) > 1 else "" }
     - children3: ${ children[2] if len(children) > 2 else "" }
