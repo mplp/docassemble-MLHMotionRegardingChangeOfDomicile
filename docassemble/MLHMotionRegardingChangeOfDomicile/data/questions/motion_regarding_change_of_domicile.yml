@@ -737,10 +737,10 @@ objects:
 # Error msg was "TypeError: ‘IndividualName’ object is not callable"
 #Holds the answers to questions 3-5 from the motion form.
 #objects:
-#  - motion_re_cod_attachment: ALDocument.using(title="motion_re_cod_attachment", filename="motion_re_cod_attachment", enabled=True, has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+#  - mrcd_addendum: ALDocument.using(title="motion_re_cod_attachment", filename="motion_re_cod_attachment", enabled=True, has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
 ---
 objects:
-  - al_user_bundle: ALDocumentBundle.using(elements=[mrcd_attachment_main, orcd_foc_29,orcpt_foc_67], filename="Motion Regarding Change of Domicile (All Forms).pdf", title="All forms to download for your records", enabled=True)
+  - al_user_bundle: ALDocumentBundle.using(elements=[mrcd_attachment_main, orcd_foc_29, orcpt_foc_67], filename="Motion Regarding Change of Domicile (All Forms).pdf", title="All forms to download for your records", enabled=True)
 ---
 #NOTE: syntax error being caused by line 730 (signature_date...); the other commented-out lines are causing unknown variable errors
 attachment:
@@ -782,17 +782,21 @@ attachment:
     - children5: ${ children[4] if len(children) > 4 else "" }
     - children6: ${ children[5] if len(children) > 5 else "" }
     - children7: ${ children[6] if len(children) > 6 else "" }
-    # - children_see_attached: ${ children_see_attached }
-    # wants_parenting_time_change is a yes no question. If they want a change "see attached" will display on the PDF and (once complete) the value of requested_order_see_attached should display on the attachment under paragraph 3.
+    - children_see_attached: "See attached."
     - requested_order_see_attached: |
         % if wants_parenting_time_change == True:
         See attached.
         % else:
-        N/A.
+        N/A
         % endif
     - continue_current_order_yes: ${ continue_current_order_yes }
     - modify_current_order_yes: ${ modify_current_order_yes }
-    # - changes_to_order_see_attached: ${ changes_to_order_see_attached }
+    - changes_to_order_see_attached: |
+        % if modify_current_order_yes == True:
+        See attached.
+        % else:
+        N/A
+        % endif
     # - signature_date: ${ signature_date of esign else "" }
     - users_signature: ${ f"/s/ {users[0]}" if esign else "" }
     - presiding_judge: ${ presiding_judge.name }
@@ -802,10 +806,11 @@ attachment:
     # - hearing_location: ${ hearing_address_on_one_line if has_hearing_info else "" }
     # - service_date: ${ format_date(service_date) }
 ---
+#todo - object error with this attachment. working on fix. 
 #attachment:
 #  name: motion_re_cod_attachment
 #  filename: motion_re_cod_attachment
-#  variable name: motion_re_cod_attachment[i]
+#  variable name: mrcd_addendum[i]
 #  docx template file: motion_re_cod_attachment.docx
 #  skip undefined: True
 #  fields:
