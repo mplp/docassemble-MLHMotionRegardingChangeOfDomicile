@@ -727,23 +727,21 @@ subquestion: |
 objects:
   - mrcd_attachment_main: ALDocument.using(title="Motion Regarding Change of Domicile", filename="Motion Regarding Change of Domicile - FOC 29.pdf", enabled=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
 ---
+# Addendum for Motion Regarding Change of Domicile/Legal Residence
+# Holds answers to questions 3-5
+objects:
+  - mrcd_addendum: ALDocument.using(title="Motion Addendum", filename="motion_re_cod_attachment.docx", enabled=True, has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+---
 objects:
   - orcd_foc_29: ALDocument.using(title="Order Regarding Change of Domicile", filename="FOC 29 - Order Re Change of Domicile Residence.pdf", enabled=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
 ---
 objects:
   - orcpt_foc_67: ALDocument.using(title="Order Regarding Change of Parenting Time", filename="FOC 67 - Order Regarding Change of Parenting Time.pdf", enabled=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
 ---
-#Not working. To re-test must add this object back into array in al_user_bundle
-# Error msg was "TypeError: ‘IndividualName’ object is not callable"
-#Holds the answers to questions 3-5 from the motion form.
-#objects:
-#  - mrcd_addendum: ALDocument.using(title="motion_re_cod_attachment", filename="motion_re_cod_attachment", enabled=True, has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
----
 objects:
-  - al_user_bundle: ALDocumentBundle.using(elements=[mrcd_attachment_main, orcd_foc_29, orcpt_foc_67], filename="Motion Regarding Change of Domicile (All Forms).pdf", title="All forms to download for your records", enabled=True)
+  - al_user_bundle: ALDocumentBundle.using(elements=[mrcd_attachment_main, orcd_foc_29, orcpt_foc_67, mrcd_addendum], filename="Motion Regarding Change of Domicile (All Forms).pdf", title="All forms to download for your records", enabled=True)
 ---
-#NOTE: syntax error being caused by line 730 (signature_date...); the other commented-out lines are causing unknown variable errors
-attachment:
+attachments:
   name: Motion Regarding Change of Domicile
   filename: Motion Regarding Change of Domicile - FOC 29
   variable name: mrcd_attachment_main[i]
@@ -798,7 +796,7 @@ attachment:
         N/A
         % endif
     # - signature_date: ${ signature_date of esign else "" }
-    - users_signature: ${ f"/s/ {users[0]}" if esign else "" }
+    # - users_signature: { RAMI HAS THIS CODE }
     - presiding_judge: ${ presiding_judge.name }
     # - bar_number: ${ judge_bar_number }
     # - hearing_date: ${ format_date(hearing_date) if has_hearing_info else "" }
@@ -806,19 +804,17 @@ attachment:
     # - hearing_location: ${ hearing_address_on_one_line if has_hearing_info else "" }
     # - service_date: ${ format_date(service_date) }
 ---
-#todo - object error with this attachment. working on fix. 
-#attachment:
-#  name: motion_re_cod_attachment
-#  filename: motion_re_cod_attachment
-#  variable name: mrcd_addendum[i]
-#  docx template file: motion_re_cod_attachment.docx
-#  skip undefined: True
-#  fields:
-#    - trial_court_county: ${ county_choice }
-#    - move_destination: ${ new_address.full }
-#    - move_date: ${ moving_date }
+#todo - object error with this attachment. not callable object?
+attachments:
+  name: motion_re_cod_attachment
+  filename: motion_re_cod_attachment
+  docx template file: motion_re_cod_attachment.docx
+  variable name: mrcd_addendum[i]
+  skip undefined: True
+  valid formats: 
+    - pdf
 ---
-attachment:
+attachments:
   name: FOC 67 - Order Re Change of Parenting Time
   filename: FOC 67 - Order Re Change of Parenting Time
   variable name: orcpt_foc_67[i]
@@ -844,7 +840,7 @@ attachment:
         ${ other_parties[0].address_block() }
         % endif
 ---
-attachment:
+attachments:
   name: FOC 29 - Order Re Change of Domicile Residence
   filename: FOC 29 - Order Re Change of Domicile Residence
   variable name: orcd_foc_29[i]
