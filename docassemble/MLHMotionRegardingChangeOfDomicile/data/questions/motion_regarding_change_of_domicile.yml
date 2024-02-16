@@ -728,10 +728,10 @@ objects:
   - mrcd_attachment_main: ALDocument.using(title="Motion Regarding Change of Domicile", filename="Motion Regarding Change of Domicile - FOC 29.pdf", enabled=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
 ---
 objects:
-  - orcd_foc_29: ALDocument.using(title="Order Regarding Change of Domicile", filename="FOC 29 - Order Re Change of Domicile Residence.pdf", enabled=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+  - orcd_foc_29: ALDocument.using(title="Order Regarding Change of Domicile", filename="FOC_29_-_Order_Re_Change_of_Domicile_Residence.pdf", enabled=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
 ---
 objects:
-  - orcpt_foc_67: ALDocument.using(title="Order Regarding Change of Parenting Time", filename="FOC 67 - Order Regarding Change of Parenting Time.pdf", enabled=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+  - orcpt_foc_67: ALDocument.using(title="Order Regarding Change of Parenting Time", filename="FOC_67_-_Order_Regarding_Change_of_Parenting_Time.pdf", enabled=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
 ---
 #Not working. To re-test must add this object back into array in al_user_bundle
 # Error msg was "TypeError: ‘IndividualName’ object is not callable"
@@ -824,7 +824,7 @@ attachment:
   variable name: orcpt_foc_67[i]
   skip undefined: True
   editable: False
-  pdf template file: FOC 67 - Order Re Change of Parenting Time.pdf
+  pdf template file: FOC_67_-_Order_Re_Change_of_Parenting_Time.pdf
   fields:
     - trial_court: ${ trial_court }
     - trial_court_county: ${ county_choice }
@@ -850,7 +850,7 @@ attachment:
   variable name: orcd_foc_29[i]
   skip undefined: True
   editable: False
-  pdf template file: FOC 29 - Order Re Change of Domicile Residence.pdf
+  pdf template file: FOC_29_-_Order_Re_Change_of_Domicile_Residence.pdf
   fields:
     - trial_court: ${ trial_court }
     - trial_court_county: ${ county_choice }
@@ -869,6 +869,42 @@ attachment:
         % elif user_ask_role == "plaintiff":
         ${ other_parties[0].address_block() }
         % endif
+    - after_hearing_yes: ${ after_hearing_yes }
+    - parties_consent_yes: ${ parties_consent_yes }
+    - parties_stipulated_yes: ${ parties_stipulated_yes }
+    - motion_finding_yes: ${ motion_finding_yes }
+    - response_finding_yes: ${ response_finding_yes }
+    - joint_custody_yes: ${ joint_custody_yes }
+    - plaintiff_custody_yes: ${ plaintiff_custody_yes }
+    - defendant_custody_yes: ${ defendant_custody_yes }
+    - domicile_finding_yes: ${ domicile_finding_yes }
+    - environment_will_change_yes: ${ environment_will_change_yes }
+    - environment_wont_change_yes: ${ environment_wont_change_yes }
+    - best_interest_finding_yes: ${ best_interest_finding_yes }
+    - in_best_interest_yes: ${ in_best_interest_yes }
+    - not_best_interest_yes: ${ not_best_interest_yes }
+    - best_interest_domicile_yes: ${ best_interest_domicile_yes }
+    - legal_residence_domicile_yes: ${ legal_residence_domicile_yes }
+    - moving_party_appearance_finding_yes: ${ lmoving_party_appearance_finding_yes }
+    - domicile_order_yes: ${ domicile_order_yes }
+    - ordered_party_name: ${ ordered_party_name }
+    - minors_names: ${ minors_names }
+    - over_100_miles_yes: ${ over_100_miles_yes }
+    - from_michigan_yes: ${ from_michigan_yes }
+    - target_state: ${ target_state }
+    - parenting_time_order_yes: ${ parenting_time_order_yes }
+    - parenting_time_order_date: ${ parenting_time_order_date }
+    - parenting_time_modification: ${ parenting_time_modification }
+    - transportation_cost_order_yes: ${ transportation_cost_order_yes }
+    - plaintiff_transportation_yes: ${ plaintiff_transportation_yes }
+    - defendant_transportation_yes: ${ defendant_transportation_yes }
+    - equal_transportation_order_yes: ${ equal_transportation_order_yes }
+    - transportation_order_as_follows_yes: ${ transportation_order_as_follows_yes }
+    - transportation_details: ${ transportation_details }
+    - motion_order_yes: ${ motion_order_yes }
+    - motion_denied_yes: ${ motion_denied_yes }
+    - motion_dismissed_yes: ${ motion_dismissed_yes }
+    - foc29_service_date: ${ foc29_service_date }
 ---
 #################### Documents End #####################
 ---
