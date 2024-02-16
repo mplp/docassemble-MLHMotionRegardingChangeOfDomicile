@@ -102,6 +102,7 @@ code: |
   nav.set_section("review_conclusion")
   efile_notice
   if esign:
+    # basic_questions_signature_flow
     signature_date
 
   interview_motion_re_change_of_domicile = True
@@ -160,6 +161,12 @@ code: |
 ---
 code: |
   new_address.there_is_another = False
+---
+# code: |
+#   signature_fields = ["users[0].signature"]
+---
+# code: |
+#   signature_fields = [users[0].signature,users[1].signature]
 ---
 #################### Overridden AL Questions Start #####################
 ---
