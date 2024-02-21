@@ -260,6 +260,7 @@ sets:
   - new_address[i].city
   - new_address[i].state
   - new_address[i].country
+  - new_address[i].zip
 question: |
   Where is your new address?
 fields:
@@ -523,21 +524,6 @@ subquestion: |
 
   If you think you made a mistake, you can click > Undo and change the answer to the question.
 ---
-# id: prior order information
-# question: |
-#   Provide the requested information about the most recent custody order or judgment.
-# feilds:
-#   - In the most recent order of judgment, is legal custody sole or joint?: current_custody
-#     datatype: radio
-#     choices:
-#       - Sole
-#       - Joint
-#   - Do you have sole custody?: user_custodian
-#     datatype: yesnoradio
-#     show if:
-#       variable: current_custody
-#       is: Sole
----
 id: moving_reason_intro_screen
 question: |
   You will now be asked about why you want the court to allow you to move.
@@ -652,7 +638,7 @@ fields:
     choices:
       - Continue the current parenting time order: False
       - Change the current parenting time order: True
-  - Explain what you propose the new parenting time arrangements to be. Use complete sentences: requested_order_see_attached
+  - Explain what you propose the new parenting time arrangements to be. Use complete sentences: requested_order
     input type: area
     show if:
       variable: wants_parenting_time_change
@@ -685,10 +671,11 @@ subquestion: |
   ${ collapse_template(am_i_going_to_efile) }
 
   This tool will create separate forms so you can more easily e-file using MiFILE, if you plan to e-file.
-  This means that **you may need to download multiple files to get all of the forms you will need**.
+  
+  This means that **you may need to download multiple files to get all of the forms you will need**. At the end of this interview you will see a list of documents to download. Make sure you download each of them. 
 
-  You will be able to get all forms you need by clicking the **Download Your Form(s)** button on the page at the end of this tool.
-  You will then see a list of documents to download. Make sure you download each of them.
+  You will also be able to get all forms you need by clicking the **Download Your Form(s)** button on the page at the end of this tool.
+
 continue button field: efile_notice
 ---
 template: am_i_going_to_efile
@@ -734,23 +721,21 @@ subquestion: |
 objects:
   - mrcd_attachment_main: ALDocument.using(title="Motion Regarding Change of Domicile", filename="Motion Regarding Change of Domicile - FOC 29.pdf", enabled=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
 ---
+# Addendum for Motion Regarding Change of Domicile/Legal Residence
+# Holds answers to questions 3-5
+objects:
+  - mrcd_addendum: ALDocument.using(title="Motion Addendum", filename="motion_re_cod_attachment.docx", enabled=True, has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+---
 objects:
   - orcd_foc_29: ALDocument.using(title="Order Regarding Change of Domicile", filename="FOC_29_-_Order_Re_Change_of_Domicile_Residence.pdf", enabled=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
 ---
 objects:
   - orcpt_foc_67: ALDocument.using(title="Order Regarding Change of Parenting Time", filename="FOC_67_-_Order_Regarding_Change_of_Parenting_Time.pdf", enabled=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
 ---
-#Not working. To re-test must add this object back into array in al_user_bundle
-# Error msg was "TypeError: ‘IndividualName’ object is not callable"
-#Holds the answers to questions 3-5 from the motion form.
-#objects:
-#  - mrcd_addendum: ALDocument.using(title="motion_re_cod_attachment", filename="motion_re_cod_attachment", enabled=True, has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
----
 objects:
-  - al_user_bundle: ALDocumentBundle.using(elements=[mrcd_attachment_main, orcd_foc_29, orcpt_foc_67], filename="Motion Regarding Change of Domicile (All Forms).pdf", title="All forms to download for your records", enabled=True)
+  - al_user_bundle: ALDocumentBundle.using(elements=[mrcd_attachment_main, orcd_foc_29, orcpt_foc_67, mrcd_addendum], filename="Motion Regarding Change of Domicile (All Forms).pdf", title="All forms to download for your records", enabled=True)
 ---
-#NOTE: syntax error being caused by line 730 (signature_date...); the other commented-out lines are causing unknown variable errors
-attachment:
+attachments:
   name: Motion Regarding Change of Domicile
   filename: Motion Regarding Change of Domicile - FOC 29
   variable name: mrcd_attachment_main[i]
@@ -813,19 +798,16 @@ attachment:
     # - hearing_location: ${ hearing_address_on_one_line if has_hearing_info else "" }
     # - service_date: ${ format_date(service_date) }
 ---
-#todo - object error with this attachment. working on fix. 
-#attachment:
-#  name: motion_re_cod_attachment
-#  filename: motion_re_cod_attachment
-#  variable name: mrcd_addendum[i]
-#  docx template file: motion_re_cod_attachment.docx
-#  skip undefined: True
-#  fields:
-#    - trial_court_county: ${ county_choice }
-#    - move_destination: ${ new_address.full }
-#    - move_date: ${ moving_date }
+attachments:
+  name: motion_re_cod_attachment
+  filename: motion_re_cod_attachment
+  docx template file: motion_re_cod_attachment.docx
+  variable name: mrcd_addendum[i]
+  skip undefined: True
+  valid formats: 
+    - pdf
 ---
-attachment:
+attachments:
   name: FOC 67 - Order Re Change of Parenting Time
   filename: FOC 67 - Order Re Change of Parenting Time
   variable name: orcpt_foc_67[i]
@@ -851,7 +833,7 @@ attachment:
         ${ other_parties[0].address_block() }
         % endif
 ---
-attachment:
+attachments:
   name: FOC 29 - Order Re Change of Domicile Residence
   filename: FOC 29 - Order Re Change of Domicile Residence
   variable name: orcd_foc_29[i]
