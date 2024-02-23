@@ -279,7 +279,7 @@ fields:
     show if:
       variable: new_address_in_us
       is: False
-  - How far is it from ${ other_parties[0].pronoun_possessive('current residence') }, in miles?: distance_from_other_parent
+  - How far is it from ${ other_parties[0].name.first }'s current residence, in miles?: distance_from_other_parent
     datatype: integer
     required: True
   - How far is it from your current residence, in miles?: distance_from_current_residence
