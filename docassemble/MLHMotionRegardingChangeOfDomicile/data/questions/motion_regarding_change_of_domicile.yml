@@ -1,4 +1,4 @@
-include:
+ include:
   - docassemble.AssemblyLine:assembly_line.yml
   - docassemble.mlhframework:mlh_interview_framework.yml
 ---
@@ -423,7 +423,6 @@ fields:
   - Case number: docket_number
     maxlength: 25
 ---
-# ToDo: add a contextualized visual to assist user correctly answer this question
 id: what is the user's role?
 question: |
   What party are you in your existing case?
@@ -702,7 +701,7 @@ fields:
   - Would you like to add your electronic signature to your form?: esign
     datatype: yesnoradio
 ---
-id: download Motion Regarding Change of Domicile - FOC 29
+id: download screen
 event: motion_re_change_of_domicile_download
 question: |
   All done!
@@ -713,35 +712,32 @@ subquestion: |
 
   ${ al_user_bundle.download_list_html() }
 
-
   ${ al_user_bundle.send_button_html(show_editable_checkbox=False) }
 ---
 #################### Documents Start #####################
 ---
 objects:
-  - mrcd_attachment_main: ALDocument.using(title="Motion Regarding Change of Domicile", filename="Motion Regarding Change of Domicile - FOC 29.pdf", enabled=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
----
-# Addendum for Motion Regarding Change of Domicile/Legal Residence
-# Holds answers to questions 3-5
-objects:
-  - mrcd_addendum: ALDocument.using(title="Motion Addendum", filename="motion_re_cod_attachment.docx", enabled=True, has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+  - mrcd_main: ALDocument.using(title="Motion Regarding Change of Domicile", filename="foc_115_motion_re_change_of_domicile.pdf", enabled=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
 ---
 objects:
-  - orcd_foc_29: ALDocument.using(title="Order Regarding Change of Domicile", filename="FOC 29 - Order Re Change of Domicile Residence.pdf", enabled=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+  - mrcd_addendum: ALDocument.using(title="Motion Regarding Change of Domicile Addendum", filename="motion_re_cod_attachment.docx", enabled=True, has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
 ---
 objects:
-  - orcpt_foc_67: ALDocument.using(title="Order Regarding Change of Parenting Time", filename="FOC 67 - Order Re Change of Parenting Time.pdf", enabled=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+  - orcd_foc_29: ALDocument.using(title="Order Regarding Change of Domicile", filename="foc_29_order_re_change_of_domicile.pdf", enabled=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
 ---
 objects:
-  - al_user_bundle: ALDocumentBundle.using(elements=[mrcd_attachment_main, orcd_foc_29, orcpt_foc_67, mrcd_addendum], filename="Motion Regarding Change of Domicile (All Forms).pdf", title="All forms to download for your records", enabled=True)
+  - orpt_foc_67: ALDocument.using(title="Order Regarding Parenting Time", filename="foc_67_order_re_parenting_time.pdf", enabled=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+---
+objects:
+  - al_user_bundle: ALDocumentBundle.using(elements=[mrcd_main, mrcd_addendum, orcd_foc_29, orpt_foc_67], filename="Motion Regarding Change of Domicile (All Forms).pdf", title="All forms to download for your records", enabled=True)
 ---
 attachments:
   name: Motion Regarding Change of Domicile
-  filename: Motion Regarding Change of Domicile - FOC 29
-  variable name: mrcd_attachment_main[i]
+  filename: foc_115_motion_re_change_of_domicile
+  variable name: mrcd_main[i]
   skip undefined: True
   editable: False
-  pdf template file: Motion_Regarding_Change_of_Domicile_-_FOC_29.pdf
+  pdf template file: foc_115_motion_re_change_of_domicile.pdf
   fields:
     - trial_court: ${ trial_court }
     - trial_court_county: ${ county_choice }
@@ -808,12 +804,12 @@ attachments:
     - pdf
 ---
 attachments:
-  name: FOC 67 - Order Re Change of Parenting Time
-  filename: FOC 67 - Order Re Change of Parenting Time
-  variable name: orcpt_foc_67[i]
+  name: foc_67_order_re_parenting_time
+  filename: foc_67_order_re_parenting_time
+  variable name: orpt_foc_67[i]
   skip undefined: True
   editable: False
-  pdf template file: FOC 67 - Order Re Change of Parenting Time.pdf
+  pdf template file: foc_67_order_re_parenting_time.pdf
   fields:
     - trial_court: ${ trial_court }
     - trial_court_county: ${ county_choice }
@@ -834,12 +830,12 @@ attachments:
         % endif
 ---
 attachments:
-  name: FOC 29 - Order Re Change of Domicile Residence
-  filename: FOC 29 - Order Re Change of Domicile Residence
+  name: foc_29_order_re_change_of_domicile
+  filename: foc_29_order_re_change_of_domicile
   variable name: orcd_foc_29[i]
   skip undefined: True
   editable: False
-  pdf template file: FOC 29 - Order Re Change of Domicile Residence.pdf
+  pdf template file: foc_29_order_re_change_of_domicile.pdf
   fields:
     - trial_court: ${ trial_court }
     - trial_court_county: ${ county_choice }
