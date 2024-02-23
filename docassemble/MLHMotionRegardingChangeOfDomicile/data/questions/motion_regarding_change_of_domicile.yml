@@ -1,6 +1,7 @@
  include:
   - docassemble.AssemblyLine:assembly_line.yml
   - docassemble.mlhframework:mlh_interview_framework.yml
+  - review.yml
 ---
 metadata:
   title: Motion Regarding Change of Domicile
@@ -709,6 +710,8 @@ subquestion: |
   Thank you ${users}. Your form is ready to download and deliver.
 
   View, download and send your form below. Click the "Edit answers" button to fix any mistakes.
+
+  ${ action_button_html(url_action('review_form'), label='Edit answers', color='info') }
 
   ${ al_user_bundle.download_list_html() }
 
