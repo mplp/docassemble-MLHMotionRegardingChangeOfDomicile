@@ -1,0 +1,92 @@
+---
+event: review_form
+id: review screen
+question: |
+  Review your answers
+
+review:
+  - Edit: users.revisit
+    button: |-
+      **You**
+
+      % for item in users:
+      - ${ item }
+      % endfor
+  - Edit: other_parties.revisit
+    button: |-
+      **The Other side of your case**
+
+      % for item in other_parties:
+      - ${ item }
+      % endfor
+  - Edit: children.revisit
+    button: |-
+      **Children**
+
+      % for item in children:
+      - ${ item }
+      % endfor
+  - Edit: docket_number
+    button: |
+      **What is your case number?**
+
+      ${ showifdef('docket_number') }
+  # county_choice edit not displaying 
+  - Edit:
+      - county_choice
+      - recompute:
+        - court_index
+        - the_court
+    button: |
+      **What court is your case in?**
+
+      ${ the_court } - ${ county_choice } County
+  - Edit:
+      - user_ask_role
+      - recompute:
+        - plaintiffs
+        - defendants
+    button: |
+      **What party are you in your existing case?**
+
+      ${ showifdef('user_ask_role').capitalize() }
+  - Edit: 
+      - recent_order
+    button: |
+      **What date was the most recent judgment entered?**: ${ recent_order }
+  - Edit:
+      - moving_reason
+    button: |
+      **Why do you want to move?**: ${ showifdef('moving_reason') }
+  - Edit:
+      - moving_benefits
+    button: |
+      **What are the benefits to the children from this move?**: ${ showifdef(moving_benefits) }
+  - Edit:
+      - maintains_other_parent_relationship
+    button: |
+      **Will the children maintain a similar relationship with their other parent?**: ${ showifdef(maintains_other_parent_relationship) }
+  - Edit: 
+      - other_parent_opposition
+    button: |
+     **Does the other parent oppose the move?**: ${ showifdef(other_parent_opposition) }
+  - Edit:
+      - other_parent_opposition_cs
+    button: |
+      **Do you think they oppose the move because of its impacts child support payments?**: ${ showifdef(other_parent_opposition_cs) }
+  - Edit: 
+      - domestic_violence
+      - domestic_violence_exp
+    button: |
+      **Are you moving to escape domestic violence?**: ${ showifdef(domestic_violence) }
+  - Edit:
+      - moving_date
+    button: |
+      **What date do you want to move?": ${ showifdef(moving_date) }
+  - Edit:
+    - wants_parenting_time_change
+    - requested_order
+    - parenting_time_change_agreement
+    button: |
+      **Are you asking to court to change the parenting time?**: ${ showifdef(wants_parenting_time_change) }
+---      
