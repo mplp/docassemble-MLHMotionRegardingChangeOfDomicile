@@ -39,6 +39,12 @@ code: |
   MLH_time_min = 40
   MLH_time_max = 60
 ---
+# Need code block assigning court information based on county_choice
+#code:
+#  trial_court_county = the_court.address.county.upper()
+#  trial_court_address_on_one_line = the_court.address.on_one_line()
+#  trial_court_phone_number = the_court.phone
+---
 objects:
   - users: ALPeopleList.using(auto_gather=True, complete_attribute="complete", target_number=1)
   - other_parties: ALPeopleList.using(auto_gather=True, complete_attribute="complete", target_number=1)
@@ -103,7 +109,6 @@ code: |
   nav.set_section("review_conclusion")
   efile_notice
   if esign:
-    # basic_questions_signature_flow
     signature_date
 
   motion_re_change_of_domicile_download
@@ -163,12 +168,6 @@ code: |
 ---
 code: |
   new_address.there_is_another = False
----
-# code: |
-#   signature_fields = ["users[0].signature"]
----
-# code: |
-#   signature_fields = [users[0].signature,users[1].signature]
 ---
 #################### Overridden AL Questions Start #####################
 ---
@@ -720,7 +719,7 @@ objects:
   - mrcd_main: ALDocument.using(title="Motion Regarding Change of Domicile", filename="foc_115_motion_re_change_of_domicile.pdf", enabled=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
 ---
 objects:
-  - mrcd_addendum: ALDocument.using(title="Motion Regarding Change of Domicile Addendum", filename="motion_re_cod_attachment.docx", enabled=True, has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+  - mrcd_addendum: ALDocument.using(title="Addendum for Motion Regarding Change of Domicile", filename="motion_re_cod_attachment.docx", enabled=True, has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
 ---
 objects:
   - orcd_foc_29: ALDocument.using(title="Order Regarding Change of Domicile", filename="foc_29_order_re_change_of_domicile.pdf", enabled=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
