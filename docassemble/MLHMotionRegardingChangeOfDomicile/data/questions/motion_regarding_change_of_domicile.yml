@@ -109,7 +109,6 @@ code: |
   nav.set_section("review_conclusion")
   efile_notice
   if esign:
-    # basic_questions_signature_flow
     signature_date
 
   motion_re_change_of_domicile_download
@@ -169,12 +168,6 @@ code: |
 ---
 code: |
   new_address.there_is_another = False
----
-# code: |
-#   signature_fields = ["users[0].signature"]
----
-# code: |
-#   signature_fields = [users[0].signature,users[1].signature]
 ---
 #################### Overridden AL Questions Start #####################
 ---
@@ -294,7 +287,6 @@ fields:
 ---
 #################### Overridden AL Questions End #####################
 ---
-# TO DO: finish adding intro language
 id: intro_screen
 question: |
   Welcome to the Do-It-Yourself Motion Regarding Change of Domicile tool
@@ -406,7 +398,6 @@ continue button field: what_you_will_need
 #
 #  ${ image_court_papers.show(width="100%") }
 ---
-# TO DO: finish adding any needed language
 id: MLH intro time
 question: |
   Using this tool
@@ -665,7 +656,6 @@ validation code: |
     continue_current_order_yes = False
     modify_current_order_yes = False 
 ---
-# TODO: copied from MLHMotiongRegardinChildSupport, adjust text to what's actually in our form
 id: efile note question
 question: |
   Completing this process does not file your forms with the court
