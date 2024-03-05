@@ -347,12 +347,11 @@ fields:
 id: existing_case_kickout
 event: existing_case_kickout
 question: |
-  You cannot use this tool without a Michigan child support case
+  You cannot use this tool without a Michigan family law case
 subquestion: |
-  You said you already do not have an existing Michigan divorce, separate maintenance, paternity, custody, or family support case.
-  You must have one to continue to use this tool.
+  You said you do not already have an existing Michigan divorce, separate maintenance, paternity, custody, or family support case. You must have one to continue to use this tool.
 
-  If you made a mistake, click the **< ${ MLH_back_button_label }** button to change your answer. Otherwise, you can return to [Michigan Legal Help](https://michiganlegalhelp.org) for other legal information or resources.
+  If you made a mistake, click the **${ MLH_back_button_label }** button to change your answer. Otherwise, you can return to [Michigan Legal Help](https://michiganlegalhelp.org) for other legal information or resources.
 ---
 id: third_party_check
 question: |
@@ -370,7 +369,7 @@ subquestion: |
 
   We cannot help you, but your local legal aid program or other lawyer may be able to.  You can use the [Guide to Legal Help on Michigan Legal Help](https://michiganlegalhelp.org/guide-to-legal-help) to find a lawyer or a legal services office near you.
 
-  If the only parties involved are the parents click the **Undo** button to change your answer.
+  If the only parties involved are the parents click the **${ MLH_back_button_label }** button to change your answer.
 ---
 # ToDo: need to fix template. I think error is with image_court_papers
 id: what_you_will_need
