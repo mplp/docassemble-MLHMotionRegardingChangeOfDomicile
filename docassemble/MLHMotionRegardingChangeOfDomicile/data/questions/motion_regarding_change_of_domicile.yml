@@ -317,9 +317,9 @@ continue button field: court_permission_required
 question: |
   When do you need court permission?
 subquestion: |
-  If there is a custody or parenting time order for your child, you will always need permission from the court to move them outside of Michigan.
+  If there is a custody or parenting time order for your child, you will **always** need permission from the court to move them **outside of Michigan.**
 
-  You may need permission from the court to move within Michigan. This depends on things like:
+  You **may** need permission from the court to move **within Michigan.** This depends on things like:
 
     * The custody and parenting time arrangements
     * How far your proposed move is
