@@ -208,9 +208,9 @@ sets:
   - other_parties[i].name.suffix
 question: |
   % if user_ask_role == "plaintiff":
-  Name of the **Defendant** in this matter
+  Enter the **Defendant's** name.
   % else:
-  Name of the **Plaintiff** in this matter
+  Enter the **Plaintiff's** name.
   % endif
 fields:
   - code: |
