@@ -78,7 +78,9 @@ code: |
   user_started_case
   if not prior_order_yesno:
     prior_order_kickout
-
+  
+  set_custody
+  
   nav.set_section("review_your_info")
   users.gather()
 
@@ -484,7 +486,8 @@ fields:
     show if:
       variable: current_custody
       is: Sole
-validation code: |
+---
+code: |
   if current_custody == "Sole":
     sole_custody_yes = True
   
@@ -501,6 +504,8 @@ validation code: |
   else:
     plaintiff_custody_yes = False
     defendant_custody_yes = False
+  
+  set_custody = True
 ---
 id: prior_order_kickout
 event: prior_order_kickout
