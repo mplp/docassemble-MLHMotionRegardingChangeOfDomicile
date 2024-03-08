@@ -8,7 +8,7 @@ metadata:
   short title: Change of Domicile Motion
   subtitle: Helps you write a motion asking the court to allow a change in where your child lives.
   description: |
-    If there is a custody or parenting-time order for your child, you must get the court’s approval before moving his or her domicile from Michigan.
+    If there is a custody or parenting-time order for your child, you must get the court’s approval before moving his or her domicile from Michigan. 
   tags:
     - "Family"
     - "Domicile"
@@ -198,9 +198,6 @@ fields:
   - code: |
       users[0].address_fields(country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=True)
   - Phone: users[0].phone_number
-validation code: |
-  if not phone_number_is_valid(users[0].phone_number):
-    validation_error('Please enter a valid phone number.', field='users[0].phone_number')
 ---
 id: names of opposing parties
 sets:
@@ -293,7 +290,7 @@ id: intro_screen
 question: |
   Welcome to the Do-It-Yourself Motion Regarding Change of Domicile tool
 subquestion: |
-  This tool will help you prepare the forms to file a *Motion Regarding Change of Domicile* in Michigan.
+  This tool will help you prepare the forms to file a **Motion Regarding Change of Domicile** in Michigan.
 
   If there is a custody or parenting-time order for your child, you must get the court's approval before moving their domicile from Michigan.
 continue button field: intro_screen
@@ -360,7 +357,7 @@ event: third_party_kickout
 question: |
   We’re sorry, but you cannot use this tool.
 subquestion: |
-  This tool may only be used to file a *Motion Regarding Change of Domicile*  in a Michigan family law case between two parents, with no third party involvement.
+  This tool may only be used to file a **Motion Regarding Change of Domicile**  in a Michigan family law case between two parents, with no third party involvement.
 
   We cannot help you, but your local legal aid program or other lawyer may be able to.  You can use the ${ MLH_GUIDE_FULL } to find a lawyer or a legal services office near you.
 
@@ -419,7 +416,7 @@ id: what is the user's role?
 question: |
   What party are you in your existing case?
 subquestion: |
-  You are called the “moving party” because you are filing the Motion Regarding Change of Domicile.  
+  You are called the “moving party” because you are the party filing the **Motion Regarding Change of Domicile**.  
 
   In your court case, you are either the Plaintiff or the Defendant.
 
@@ -531,7 +528,6 @@ subquestion: |
     5. The other parent is fighting against the move just to pay less child support;
     6. You are moving to escape domestic violence by the other parent.
 
-  Your answers will be used to create an *Attachment to your Motion Regarding Change of Domicile/Legal Residence*.
 continue button field: moving_reason_intro_screen
 ---
 id: moving reason explanation
@@ -626,6 +622,8 @@ question: |
   Do you want a change in parenting-time?
 subquestion: |
   Sometimes a move will require a change in a parenting-time schedule. You must ask the court to change the current parenting-time order if you won’t be able to continue it after you move.
+  
+   ${ collapse_template(friend_of_the_court) } 
 fields:
   - I want to ask the court to...: wants_parenting_time_change
     datatype: radio
@@ -638,7 +636,11 @@ fields:
       variable: wants_parenting_time_change
       is: True 
   - Does ${ other_parties[0].name } agree with this new parenting-time schedule?: parenting_time_change_agreement
-    datatype: yesnomaybe
+    datatype: radio
+    choices:
+      - Yes
+      - No
+      - I don't know  
     show if:
       variable: wants_parenting_time_change
       is: True
@@ -652,6 +654,12 @@ validation code: |
   else:
     continue_current_order_yes = False
     modify_current_order_yes = False 
+---
+template: friend_of_the_court
+subject: |
+  More information about parenting-time schedules.
+content: |
+  Some friend of the court offices have standards parenting-time schedules you can use.  There are also sample parenting-time schedules on the Michigan Legal Help website,    including a sample long distance parenting-time schedule. 
 ---
 id: efile note question
 question: |
