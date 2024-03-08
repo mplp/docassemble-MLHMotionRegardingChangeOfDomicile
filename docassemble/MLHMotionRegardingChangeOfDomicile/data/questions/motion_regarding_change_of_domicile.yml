@@ -246,11 +246,12 @@ sets:
   - children[i].name.last
   - children[i].name.middle
   - children[i].name.suffix
+  - children[i].birthdate
 question: |
   % if children.target_number < 2:
-  What is the name of your child?
+  What is the name and birthdate of your child?
   % else:
-  What is the name of your ${ ordinal(i) } child?
+  What is the name and birthdate of your ${ ordinal(i) } child?
   % endif
 subquestion: |
   % if len(children.complete_elements()) > 0:
@@ -259,6 +260,8 @@ subquestion: |
 fields:
   - code: |
       children[i].name_fields()
+  - Birthdate: children[i].birthdate
+    datatype: date
 ---
 id: how many children
 question: |
