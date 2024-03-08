@@ -8,7 +8,7 @@ metadata:
   short title: Change of Domicile Motion
   subtitle: Helps you write a motion asking the court to allow a change in where your child lives.
   description: |
-    If there is a custody or parenting time order for your child, you must get the court’s approval before moving his or her domicile from Michigan.
+    If there is a custody or parenting-time order for your child, you must get the court’s approval before moving his or her domicile from Michigan.
   tags:
     - "Family"
     - "Domicile"
@@ -295,7 +295,7 @@ question: |
 subquestion: |
   This tool will help you prepare the forms to file a *Motion Regarding Change of Domicile* in Michigan.
 
-  If there is a custody or parenting time order for your child, you must get the court's approval before moving their domicile from Michigan.
+  If there is a custody or parenting-time order for your child, you must get the court's approval before moving their domicile from Michigan.
 continue button field: intro_screen
 ---
 id: MLH_intro_landing
@@ -312,11 +312,11 @@ continue button field: court_permission_required
 question: |
   When do you need court permission?
 subquestion: |
-  If there is a custody or parenting time order for your child, you will **always** need permission from the court to move them **outside of Michigan.**
+  If there is a custody or parenting-time order for your child, you will **always** need permission from the court to move them **outside of Michigan.**
 
   You **may** need permission from the court to move **within Michigan.** This depends on things like:
 
-    * The custody and parenting time arrangements
+    * The custody and parenting-time arrangements
     * How far your proposed move is
     * How far you lived from the other parent when your case started
     * Whether the other parent agrees to the move
@@ -512,7 +512,7 @@ event: prior_order_kickout
 question: |
   This tool requires a prior order.
 subquestion: |
-  We’re sorry, but you cannot use this tool because custody or parenting time of your children is not currently governed by a custody order or judgment.
+  We’re sorry, but you cannot use this tool because custody or parenting-time of your children is not currently governed by a custody order or judgment.
 
   We cannot help you, but your local legal aid program or other lawyer may be able to. You can use the ${ MLH_GUIDE_FULL } to find a lawyer or a legal services office near you.
 
@@ -525,9 +525,9 @@ subquestion: |
   The judge will consider whether:
 
     1. The move would improve your and your child’s quality of life;
-    2. Each parent has followed the parenting time provisions of your court order;
+    2. Each parent has followed the parenting-time provisions of your court order;
     3. You are using the move to limit the other parent’s time with your child;
-    4. New parenting time arrangements will allow your child to keep a similar relationship with the other parent;
+    4. New parenting-time arrangements will allow your child to keep a similar relationship with the other parent;
     5. The other parent is fighting against the move just to pay less child support;
     6. You are moving to escape domestic violence by the other parent.
 
@@ -623,21 +623,21 @@ fields:
 ---
 id: wants parenting time change
 question: |
-  Do you want a change in parenting time?
+  Do you want a change in parenting-time?
 subquestion: |
-  Sometimes a move will require a change in a parenting time schedule. You must ask the court to change the current parenting time order if you won’t be able to continue it after you move.
+  Sometimes a move will require a change in a parenting-time schedule. You must ask the court to change the current parenting-time order if you won’t be able to continue it after you move.
 fields:
   - I want to ask the court to...: wants_parenting_time_change
     datatype: radio
     choices:
-      - Continue the current parenting time order: False
-      - Change the current parenting time order: True
-  - Explain what you propose the new parenting time arrangements to be. Use complete sentences.: requested_order
+      - Continue the current parenting-time order: False
+      - Change the current parenting-time order: True
+  - Explain what you propose the new parenting-time arrangements to be. Use complete sentences.: requested_order
     input type: area
     show if:
       variable: wants_parenting_time_change
       is: True 
-  - Does ${ other_parties[0].name } agree with this new parenting time schedule?: parenting_time_change_agreement
+  - Does ${ other_parties[0].name } agree with this new parenting-time schedule?: parenting_time_change_agreement
     datatype: yesnomaybe
     show if:
       variable: wants_parenting_time_change
@@ -767,16 +767,11 @@ attachments:
     - children6: ${ children[5] if len(children) > 5 else "" }
     - children7: ${ children[6] if len(children) > 6 else "" }
     - children_see_attached: "See attached."
-    - requested_order_see_attached: |
-        % if wants_parenting_time_change == True:
-        See attached.
-        % else:
-        N/A
-        % endif
+    - requested_order_see_attached: "See attached." 
     - continue_current_order_yes: ${ continue_current_order_yes }
     - modify_current_order_yes: ${ modify_current_order_yes }
     - changes_to_order_see_attached: |
-        % if modify_current_order_yes == True:
+        % if wants_parenting_time_change == True:
         See attached.
         % else:
         N/A
