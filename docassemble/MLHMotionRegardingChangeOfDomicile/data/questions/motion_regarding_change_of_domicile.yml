@@ -195,16 +195,16 @@ subquestion: |
   If you don't want the Plaintiff to know your current address and phone number, you can use a post office box or the address and telephone number of a relative or friend who has agreed to let you do this.
   % endif
 fields:
+  - Phone number: users[0].phone_number
   - code: |
       users[0].address_fields(country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=True)
-  - Phone: users[0].phone_number
 ---
-id: names of opposing parties
+id: name of opposing parties
 sets:
-  - other_parties[i].name.first
-  - other_parties[i].name.last
-  - other_parties[i].name.middle
-  - other_parties[i].name.suffix
+  - other_parties[0].name.first
+  - other_parties[0].name.last
+  - other_parties[0].name.middle
+  - other_parties[0].name.suffix
 question: |
   % if user_ask_role == "plaintiff":
   Enter the **Defendant's** name.
@@ -215,14 +215,30 @@ fields:
   - code: |
       other_parties[i].name_fields(person_or_business='person')
 ---
+id: other partys contact information 
+sets:
+  - other_parties[0].address.address
+  - other_parties[0].address.city
+  - other_parties[0].address.zip
+  - other_parties[0].address.unit
+  - other_parties[0].address.state
+  - other_parties[0].address.country
+  - other_parties[0].phone_number
+question: |
+  What is ${ other_parties[0].possessive('address') }?
+fields:
+  - Phone number: other_parties[0].phone_number
+  - code: |
+      other_parties[0].address_fields(country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=True)         
+---
 id: other parties pronouns
 sets:
-  - other_parties[i].pronouns
+  - other_parties[0].pronouns
 question: |
-  What are ${ other_parties[i] }'s pronouns?
+  What are ${ other_parties[0] }'s pronouns?
 fields:
   - code: |
-      other_parties[i].pronoun_fields()
+      other_parties[0].pronoun_fields()
 ---
 id: children names without birthdate
 sets:
@@ -347,9 +363,11 @@ subquestion: |
 ---
 id: third_party_check
 question: |
-  Is there a third party (a non-parent party) in your existing family law case?
+  Is there a third party in your existing family law case?
+subquestion: |
+  A third party could be grandparents, stepparents, or a non-parent.
 fields:
-  - "": third_party_check
+  - no label: third_party_check
     datatype: yesnoradio
 ---
 id: third_party_kickout
@@ -458,7 +476,7 @@ id: judgment or custody order
 question: |
   Is there a custody order or judgment in your family law case?
 fields:
-  - "": prior_order_yesno
+  - no label: prior_order_yesno
     datatype: yesnoradio
   - What is the date of the most recent order?: recent_order
     datatype: date
