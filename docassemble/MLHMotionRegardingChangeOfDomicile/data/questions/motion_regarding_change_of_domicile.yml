@@ -632,7 +632,7 @@ fields:
     choices:
       - Continue the current parenting time order: False
       - Change the current parenting time order: True
-  - Explain what you propose the new parenting time arrangements to be. Use complete sentences: requested_order
+  - Explain what you propose the new parenting time arrangements to be. Use complete sentences.: requested_order
     input type: area
     show if:
       variable: wants_parenting_time_change
