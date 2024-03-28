@@ -39,12 +39,6 @@ code: |
   MLH_time_min = 40
   MLH_time_max = 60
 ---
-# Need code block assigning court information based on county_choice
-#code:
-#  trial_court_county = the_court.address.county.upper()
-#  trial_court_address_on_one_line = the_court.address.on_one_line()
-#  trial_court_phone_number = the_court.phone
----
 objects:
   - users: ALPeopleList.using(auto_gather=True, complete_attribute="complete", target_number=1)
   - other_parties: ALPeopleList.using(auto_gather=True, complete_attribute="complete", target_number=1)
@@ -74,6 +68,8 @@ code: |
   docket_number
 
   county_choice
+  court_index
+  the_court
 
   user_started_case
   if not prior_order_yesno:
@@ -138,6 +134,10 @@ code: |
   x.address.address
   x.phone_number
   x.complete = True
+---
+# Tells court_index which court to choose
+code: |
+  court_index = next(court_list.filter_courts_by_2([county_choice], ['circuit'], column_1='address_county', column_2='type'))[0]
 ---
 #NOTE: for user's new address
 code: |
@@ -764,11 +764,11 @@ attachments:
   editable: False
   pdf template file: foc_115_motion_re_change_of_domicile.pdf
   fields:
-    - trial_court: ${ trial_court }
+    - trial_court: ${ the_court.number }
     - trial_court_county: ${ county_choice }
     - docket_numbers: ${ docket_number }
-    - trial_court_address_on_one_line: ${ trial_court.address.on_one_line() }
-    - trial_court_phone_number: ${ trial_court.phone_number }
+    - trial_court_address_on_one_line: ${ the_court.address.on_one_line() }
+    - trial_court_phone_number: ${ the_court.phone }
     - moving_party_yes: ${ moving_party_yes }
     - moving_party2_yes: ${ moving_party2_yes }
     - recent_order: ${ recent_order }
@@ -831,11 +831,11 @@ attachments:
   editable: False
   pdf template file: foc_67_order_re_parenting_time.pdf
   fields:
-    - trial_court: ${ trial_court }
+    - trial_court: ${ the_court.number }
     - trial_court_county: ${ county_choice }
     - docket_numbers: ${ docket_number }
-    - trial_court_address_on_one_line: ${ trial_court.address.on_one_line() }
-    - trial_court_phone_number: ${ trial_court.phone_number }
+    - trial_court_address_on_one_line: ${ the_court.address.on_one_line() }
+    - trial_court_phone_number: ${ the_court.phone }
     - plaintiffs_address_block: |
         % if user_ask_role == "plaintiff":
         ${ users[0].address_block() }
@@ -857,11 +857,11 @@ attachments:
   editable: False
   pdf template file: foc_29_order_re_change_of_domicile.pdf
   fields:
-    - trial_court: ${ trial_court }
+    - trial_court: ${ the_court.number }
     - trial_court_county: ${ county_choice }
     - docket_numbers: ${ docket_number }
-    - trial_court_address_on_one_line: ${ trial_court.address.on_one_line() }
-    - trial_court_phone_number: ${ trial_court.phone_number }
+    - trial_court_address_on_one_line: ${ the_court.address.on_one_line() }
+    - trial_court_phone_number: ${ the_court.phone }
     - plaintiffs_address_block: |
         % if user_ask_role == "plaintiff":
         ${ users[0].address_block() }
