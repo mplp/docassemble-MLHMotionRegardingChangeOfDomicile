@@ -8,7 +8,7 @@ metadata:
   short title: Change of Domicile Motion
   subtitle: Helps you write a motion asking the court to allow a change in where your child lives.
   description: |
-    If there is a custody or parenting time order for your child, you must get the court’s approval before moving his or her domicile from Michigan.
+    If there is a custody or parenting-time order for your child, you must get the court’s approval before moving his or her domicile from Michigan. 
   tags:
     - "Family"
     - "Domicile"
@@ -39,12 +39,6 @@ code: |
   MLH_time_min = 40
   MLH_time_max = 60
 ---
-# Need code block assigning court information based on county_choice
-#code:
-#  trial_court_county = the_court.address.county.upper()
-#  trial_court_address_on_one_line = the_court.address.on_one_line()
-#  trial_court_phone_number = the_court.phone
----
 objects:
   - users: ALPeopleList.using(auto_gather=True, complete_attribute="complete", target_number=1)
   - other_parties: ALPeopleList.using(auto_gather=True, complete_attribute="complete", target_number=1)
@@ -74,6 +68,8 @@ code: |
   docket_number
 
   county_choice
+  court_index
+  the_court
 
   user_started_case
   if not prior_order_yesno:
@@ -139,6 +135,10 @@ code: |
   x.phone_number
   x.complete = True
 ---
+# Tells court_index which court to choose
+code: |
+  court_index = next(court_list.filter_courts_by_2([county_choice], ['circuit'], column_1='address_county', column_2='type'))[0]
+---
 #NOTE: for user's new address
 code: |
   new_address[i].city
@@ -195,19 +195,16 @@ subquestion: |
   If you don't want the Plaintiff to know your current address and phone number, you can use a post office box or the address and telephone number of a relative or friend who has agreed to let you do this.
   % endif
 fields:
+  - Phone number: users[0].phone_number
   - code: |
       users[0].address_fields(country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=True)
-  - Phone: users[0].phone_number
-validation code: |
-  if not phone_number_is_valid(users[0].phone_number):
-    validation_error('Please enter a valid phone number.', field='users[0].phone_number')
 ---
-id: names of opposing parties
+id: name of opposing parties
 sets:
-  - other_parties[i].name.first
-  - other_parties[i].name.last
-  - other_parties[i].name.middle
-  - other_parties[i].name.suffix
+  - other_parties[0].name.first
+  - other_parties[0].name.last
+  - other_parties[0].name.middle
+  - other_parties[0].name.suffix
 question: |
   % if user_ask_role == "plaintiff":
   Enter the **Defendant's** name.
@@ -218,14 +215,30 @@ fields:
   - code: |
       other_parties[i].name_fields(person_or_business='person')
 ---
+id: other partys contact information 
+sets:
+  - other_parties[0].address.address
+  - other_parties[0].address.city
+  - other_parties[0].address.zip
+  - other_parties[0].address.unit
+  - other_parties[0].address.state
+  - other_parties[0].address.country
+  - other_parties[0].phone_number
+question: |
+  What is ${ other_parties[0].possessive('address') }?
+fields:
+  - Phone number: other_parties[0].phone_number
+  - code: |
+      other_parties[0].address_fields(country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=True)         
+---
 id: other parties pronouns
 sets:
-  - other_parties[i].pronouns
+  - other_parties[0].pronouns
 question: |
-  What are ${ other_parties[i] }'s pronouns?
+  What are ${ other_parties[0] }'s pronouns?
 fields:
   - code: |
-      other_parties[i].pronoun_fields()
+      other_parties[0].pronoun_fields()
 ---
 id: children names without birthdate
 sets:
@@ -233,11 +246,12 @@ sets:
   - children[i].name.last
   - children[i].name.middle
   - children[i].name.suffix
+  - children[i].birthdate
 question: |
   % if children.target_number < 2:
-  What is the name of your child?
+  What is the name and birthdate of your child?
   % else:
-  What is the name of your ${ ordinal(i) } child?
+  What is the name and birthdate of your ${ ordinal(i) } child?
   % endif
 subquestion: |
   % if len(children.complete_elements()) > 0:
@@ -246,6 +260,8 @@ subquestion: |
 fields:
   - code: |
       children[i].name_fields()
+  - Birthdate: children[i].birthdate
+    datatype: date
 ---
 id: how many children
 question: |
@@ -293,9 +309,9 @@ id: intro_screen
 question: |
   Welcome to the Do-It-Yourself Motion Regarding Change of Domicile tool
 subquestion: |
-  This tool will help you prepare the forms to file a *Motion Regarding Change of Domicile* in Michigan.
+  This tool will help you prepare the forms to file a **Motion Regarding Change of Domicile** in Michigan.
 
-  If there is a custody or parenting time order for your child, you must get the court's approval before moving their domicile from Michigan.
+  If there is a custody or parenting-time order for your child, you must get the court's approval before moving their domicile from Michigan.
 continue button field: intro_screen
 ---
 id: MLH_intro_landing
@@ -312,11 +328,11 @@ continue button field: court_permission_required
 question: |
   When do you need court permission?
 subquestion: |
-  If there is a custody or parenting time order for your child, you will **always** need permission from the court to move them **outside of Michigan.**
+  If there is a custody or parenting-time order for your child, you will **always** need permission from the court to move them **outside of Michigan.**
 
   You **may** need permission from the court to move **within Michigan.** This depends on things like:
 
-    * The custody and parenting time arrangements
+    * The custody and parenting-time arrangements
     * How far your proposed move is
     * How far you lived from the other parent when your case started
     * Whether the other parent agrees to the move
@@ -344,15 +360,17 @@ event: existing_case_kickout
 question: |
   You cannot use this tool without a Michigan family law case
 subquestion: |
-  You said you do not already have an existing Michigan divorce, separate maintenance, paternity, custody, or family support case. You must have one to continue to use this tool.
+  You said you do not have an existing Michigan divorce, separate maintenance, paternity, custody, or family support case. You must have one to continue to use this tool.
 
   If you made a mistake, click the **${ MLH_back_button_label }** button to change your answer. Otherwise, you can return to [Michigan Legal Help](https://michiganlegalhelp.org) for other legal information or resources.
 ---
 id: third_party_check
 question: |
-  Is there a third party (a non-parent party) in your existing family law case?
+  Is there a third party in your existing family law case?
+subquestion: |
+  A third party could be grandparents, stepparents, or a non-parent.
 fields:
-  - "": third_party_check
+  - no label: third_party_check
     datatype: yesnoradio
 ---
 id: third_party_kickout
@@ -360,9 +378,9 @@ event: third_party_kickout
 question: |
   We’re sorry, but you cannot use this tool.
 subquestion: |
-  This tool may only be used to file a *Motion Regarding Change of Domicile*  in a Michigan family law case between two parents, with no third party involvement.
+  This tool may only be used to file a **Motion Regarding Change of Domicile**  in a Michigan family law case between two parents, with no third party involvement.
 
-  We cannot help you, but your local legal aid program or other lawyer may be able to.  You can use the [Guide to Legal Help on Michigan Legal Help](https://michiganlegalhelp.org/guide-to-legal-help) to find a lawyer or a legal services office near you.
+  We cannot help you, but your local legal aid program or other lawyer may be able to.  You can use the ${ MLH_GUIDE_FULL } to find a lawyer or a legal services office near you.
 
   If the only parties involved are the parents click the **${ MLH_back_button_label }** button to change your answer.
 ---
@@ -419,7 +437,7 @@ id: what is the user's role?
 question: |
   What party are you in your existing case?
 subquestion: |
-  You are called the “moving party” because you are filing the Motion Regarding Change of Domicile.  
+  You are called the “moving party” because you are the party filing the **Motion Regarding Change of Domicile**.  
 
   In your court case, you are either the Plaintiff or the Defendant.
 
@@ -461,7 +479,7 @@ id: judgment or custody order
 question: |
   Is there a custody order or judgment in your family law case?
 fields:
-  - "": prior_order_yesno
+  - no label: prior_order_yesno
     datatype: yesnoradio
   - What is the date of the most recent order?: recent_order
     datatype: date
@@ -512,11 +530,11 @@ event: prior_order_kickout
 question: |
   This tool requires a prior order.
 subquestion: |
-  We’re sorry, but you cannot use this tool because custody or parenting time of your children is not currently governed by a custody order or judgment.
+  We’re sorry, but you cannot use this tool because custody or parenting-time of your children is not currently governed by a custody order or judgment.
 
-  We cannot help you, but your local legal aid program or other lawyer may be able to. You can use the [Guide to Legal Help on Michigan Legal Help](https://michiganlegalhelp.org/guide-to-legal-help) to find a lawyer or a legal services office near you.
+  We cannot help you, but your local legal aid program or other lawyer may be able to. You can use the ${ MLH_GUIDE_FULL } to find a lawyer or a legal services office near you.
 
-  If you think you made a mistake, you can click > Undo and change the answer to the question.
+  If you think you made a mistake, you can click ${ MLH_back_button_label } and change the answer to the question.
 ---
 id: moving_reason_intro_screen
 question: |
@@ -525,13 +543,12 @@ subquestion: |
   The judge will consider whether:
 
     1. The move would improve your and your child’s quality of life;
-    2. Each parent has followed the parenting time provisions of your court order;
+    2. Each parent has followed the parenting-time provisions of your court order;
     3. You are using the move to limit the other parent’s time with your child;
-    4. New parenting time arrangements will allow your child to keep a similar relationship with the other parent;
+    4. New parenting-time arrangements will allow your child to keep a similar relationship with the other parent;
     5. The other parent is fighting against the move just to pay less child support;
     6. You are moving to escape domestic violence by the other parent.
 
-  Your answers will be used to create an *Attachment to your Motion Regarding Change of Domicile/Legal Residence*.
 continue button field: moving_reason_intro_screen
 ---
 id: moving reason explanation
@@ -547,7 +564,7 @@ fields:
 ---
 id: moving benefits explanation
 question: |
-  Next, explain how the move will improve your and your child’s lives
+  Explain how the move will improve your and your child’s lives
 subquestion: |
   The court may consider things like whether the move:
 
@@ -623,22 +640,28 @@ fields:
 ---
 id: wants parenting time change
 question: |
-  Do you want a change in parenting time?
+  Do you want a change in parenting-time?
 subquestion: |
-  Sometimes a move will require a change in a parenting time schedule. You must ask the court to change the current parenting time order if you won’t be able to continue it after you move.
+  Sometimes a move will require a change in a parenting-time schedule. You must ask the court to change the current parenting-time order if you won’t be able to continue it after you move.
+  
+   ${ collapse_template(friend_of_the_court) } 
 fields:
   - I want to ask the court to...: wants_parenting_time_change
     datatype: radio
     choices:
-      - Continue the current parenting time order: False
-      - Change the current parenting time order: True
-  - Explain what you propose the new parenting time arrangements to be. Use complete sentences: requested_order
+      - Continue the current parenting-time order: False
+      - Change the current parenting-time order: True
+  - Explain what you propose the new parenting-time arrangements to be. Use complete sentences.: requested_order
     input type: area
     show if:
       variable: wants_parenting_time_change
       is: True 
-  - Does ${ other_parties[0].name } agree with this new parenting time schedule?: parenting_time_change_agreement
-    datatype: yesnomaybe
+  - Does ${ other_parties[0].name } agree with this new parenting-time schedule?: parenting_time_change_agreement
+    datatype: radio
+    choices:
+      - Yes
+      - No
+      - I don't know  
     show if:
       variable: wants_parenting_time_change
       is: True
@@ -652,6 +675,12 @@ validation code: |
   else:
     continue_current_order_yes = False
     modify_current_order_yes = False 
+---
+template: friend_of_the_court
+subject: |
+  More information about parenting-time schedules.
+content: |
+  Some friend of the court offices have standards parenting-time schedules you can use.  There are also sample parenting-time schedules on the Michigan Legal Help website,    including a sample long distance parenting-time schedule. 
 ---
 id: efile note question
 question: |
@@ -735,11 +764,11 @@ attachments:
   editable: False
   pdf template file: foc_115_motion_re_change_of_domicile.pdf
   fields:
-    - trial_court: ${ trial_court }
+    - trial_court: ${ the_court.number }
     - trial_court_county: ${ county_choice }
     - docket_numbers: ${ docket_number }
-    - trial_court_address_on_one_line: ${ trial_court.address.on_one_line() }
-    - trial_court_phone_number: ${ trial_court.phone_number }
+    - trial_court_address_on_one_line: ${ the_court.address.on_one_line() }
+    - trial_court_phone_number: ${ the_court.phone }
     - moving_party_yes: ${ moving_party_yes }
     - moving_party2_yes: ${ moving_party2_yes }
     - recent_order: ${ recent_order }
@@ -767,16 +796,11 @@ attachments:
     - children6: ${ children[5] if len(children) > 5 else "" }
     - children7: ${ children[6] if len(children) > 6 else "" }
     - children_see_attached: "See attached."
-    - requested_order_see_attached: |
-        % if wants_parenting_time_change == True:
-        See attached.
-        % else:
-        N/A
-        % endif
+    - requested_order_see_attached: "See attached." 
     - continue_current_order_yes: ${ continue_current_order_yes }
     - modify_current_order_yes: ${ modify_current_order_yes }
     - changes_to_order_see_attached: |
-        % if modify_current_order_yes == True:
+        % if wants_parenting_time_change == True:
         See attached.
         % else:
         N/A
@@ -807,11 +831,11 @@ attachments:
   editable: False
   pdf template file: foc_67_order_re_parenting_time.pdf
   fields:
-    - trial_court: ${ trial_court }
+    - trial_court: ${ the_court.number }
     - trial_court_county: ${ county_choice }
     - docket_numbers: ${ docket_number }
-    - trial_court_address_on_one_line: ${ trial_court.address.on_one_line() }
-    - trial_court_phone_number: ${ trial_court.phone_number }
+    - trial_court_address_on_one_line: ${ the_court.address.on_one_line() }
+    - trial_court_phone_number: ${ the_court.phone }
     - plaintiffs_address_block: |
         % if user_ask_role == "plaintiff":
         ${ users[0].address_block() }
@@ -833,11 +857,11 @@ attachments:
   editable: False
   pdf template file: foc_29_order_re_change_of_domicile.pdf
   fields:
-    - trial_court: ${ trial_court }
+    - trial_court: ${ the_court.number }
     - trial_court_county: ${ county_choice }
     - docket_numbers: ${ docket_number }
-    - trial_court_address_on_one_line: ${ trial_court.address.on_one_line() }
-    - trial_court_phone_number: ${ trial_court.phone_number }
+    - trial_court_address_on_one_line: ${ the_court.address.on_one_line() }
+    - trial_court_phone_number: ${ the_court.phone }
     - plaintiffs_address_block: |
         % if user_ask_role == "plaintiff":
         ${ users[0].address_block() }
