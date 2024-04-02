@@ -757,7 +757,7 @@ objects:
   - al_user_bundle: ALDocumentBundle.using(elements=[mrcd_main, mrcd_addendum, orcd_foc_29, orpt_foc_67], filename="Motion Regarding Change of Domicile (All Forms).pdf", title="All forms to download for your records", enabled=True)
 ---
 attachments:
-  name: Motion Regarding Change of Domicile
+  name: foc_115_motion_re_change_of_domicile
   filename: foc_115_motion_re_change_of_domicile
   variable name: mrcd_main[i]
   skip undefined: True
@@ -765,7 +765,7 @@ attachments:
   pdf template file: foc_115_motion_re_change_of_domicile.pdf
   fields:
     - trial_court: ${ the_court.number }
-    - trial_court_county: ${ county_choice }
+    - trial_court_county: ${ county_choice.upper() }
     - docket_numbers: ${ docket_number }
     - trial_court_address_on_one_line: ${ the_court.address.on_one_line() }
     - trial_court_phone_number: ${ the_court.phone }
@@ -832,8 +832,9 @@ attachments:
   pdf template file: foc_67_order_re_parenting_time.pdf
   fields:
     - trial_court: ${ the_court.number }
-    - trial_court_county: ${ county_choice }
-    - docket_numbers: ${ docket_number }
+    - trial_court_county: ${ county_choice.upper() }
+    - docket_numbers__1: ${ docket_number }
+    - docket_numbers__2: ${ docket_number }
     - trial_court_address_on_one_line: ${ the_court.address.on_one_line() }
     - trial_court_phone_number: ${ the_court.phone }
     - plaintiffs_address_block: |
@@ -858,7 +859,7 @@ attachments:
   pdf template file: foc_29_order_re_change_of_domicile.pdf
   fields:
     - trial_court: ${ the_court.number }
-    - trial_court_county: ${ county_choice }
+    - trial_court_county: ${ county_choice.upper() }
     - docket_numbers: ${ docket_number }
     - trial_court_address_on_one_line: ${ the_court.address.on_one_line() }
     - trial_court_phone_number: ${ the_court.phone }
