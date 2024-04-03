@@ -70,6 +70,7 @@ code: |
   county_choice
   court_index
   the_court
+  set_number
 
   user_started_case
   if not prior_order_yesno:
@@ -139,6 +140,11 @@ code: |
 code: |
   court_index = next(court_list.filter_courts_by_2([county_choice], ['circuit'], column_1='address_county', column_2='type'))[0]
 ---
+#setting for docx file use
+code: |
+  the_court_number = the_court.number
+  set_number = True
+---
 #NOTE: for user's new address
 code: |
   new_address[i].city
@@ -168,6 +174,7 @@ code: |
 code: |
   new_address.there_are_any = True
 ---
+# NOTE: ensures there is only 1 new address 
 code: |
   new_address.there_is_another = False
 ---
