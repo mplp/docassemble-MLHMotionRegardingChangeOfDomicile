@@ -743,7 +743,7 @@ subquestion: |
   ${ action_button_html(url_action('review_form'), label='Edit answers', color='info') }
 
   ${ al_user_bundle.download_list_html() }
-
+  
   ${ al_user_bundle.send_button_html(show_editable_checkbox=False) }
 ---
 #################### Documents Start #####################
@@ -786,14 +786,18 @@ attachments:
     - plaintiffs_address_block: |
           % if user_ask_role == "plaintiff":
           ${ users[0].address_block() }
+          ${ users[0].phone_number }
           % elif user_ask_role == "defendant":
           ${ other_parties[0].address_block() }
+          ${ other_parties[0].phone_number }
           % endif
     - defendants_address_block: |
           % if user_ask_role == "defendant":
           ${ users[0].address_block() }
+          ${ users[0].phone_number }
           % elif user_ask_role == "plaintiff":
           ${ other_parties[0].address_block() }
+          ${ other_parties[0].phone_number }
           % endif
     - children1: ${ children[0] }
     - children2: ${ children[1] if len(children) > 1 else "" }
@@ -847,14 +851,18 @@ attachments:
     - plaintiffs_address_block: |
         % if user_ask_role == "plaintiff":
         ${ users[0].address_block() }
+        ${ users[0].phone_number }
         % elif user_ask_role == "defendant":
         ${ other_parties[0].address_block() }
+        ${ other_parties[0].phone_number }
         % endif
     - defendants_address_block: |
         % if user_ask_role == "defendant":
         ${ users[0].address_block() }
+        ${ users[0].phone_number }
         % elif user_ask_role == "plaintiff":
         ${ other_parties[0].address_block() }
+        ${ other_parties[0].phone_number }
         % endif
 ---
 attachments:
@@ -873,14 +881,18 @@ attachments:
     - plaintiffs_address_block: |
         % if user_ask_role == "plaintiff":
         ${ users[0].address_block() }
+        ${ users[0].phone_number }
         % elif user_ask_role == "defendant":
         ${ other_parties[0].address_block() }
+        ${ other_parties[0].phone_number }
         % endif
     - defendants_address_block: |
         % if user_ask_role == "defendant":
         ${ users[0].address_block() }
+        ${ users[0].phone_number }
         % elif user_ask_role == "plaintiff":
         ${ other_parties[0].address_block() }
+        ${ other_parties[0].phone_number }
         % endif
 ---
 #################### Documents End #####################
