@@ -317,7 +317,7 @@ id: FirstScreen
 question: |
   Welcome to the Do-It-Yourself Motion Regarding Change of Domicile tool
 subquestion: |
-  This tool will help you prepare the forms to file a **Motion Regarding Change of Domicile** in Michigan.
+  This tool will help you prepare the forms to file a *Motion Regarding Change of Domicile* in Michigan.
 
   If there is a custody or parenting-time order for your child, you must get the court's approval before moving their domicile from Michigan.
 continue button field: intro_screen
@@ -386,7 +386,7 @@ event: third_party_kickout
 question: |
   We’re sorry, but you cannot use this tool.
 subquestion: |
-  This tool may only be used to file a **Motion Regarding Change of Domicile**  in a Michigan family law case between two parents, with no third party involvement.
+  This tool may only be used to file a *Motion Regarding Change of Domicile*  in a Michigan family law case between two parents, with no third party involvement.
 
   We cannot help you, but your local legal aid program or other lawyer may be able to.  You can use the ${ MLH_GUIDE_FULL } to find a lawyer or a legal services office near you.
 
@@ -424,7 +424,7 @@ question: |
 subquestion: |
   It should take you between ${ MLH_time_min } and ${ MLH_time_max } minutes to finish answering questions.
 
-  After that, your personalized forms to file a **Motion Regarding Change of Domicile** will be ready to print.
+  After that, your personalized forms to file a *Motion Regarding Change of Domicile* will be ready to print.
 
   You will also get a set of instructions on what you need to do next.
 
@@ -445,7 +445,7 @@ id: what is the user's role?
 question: |
   What party are you in your existing case?
 subquestion: |
-  You are called the “moving party” because you are the party filing the **Motion Regarding Change of Domicile**.  
+  You are called the “moving party” because you are the party filing the *Motion Regarding Change of Domicile*.  
 
   In your court case, you are either the Plaintiff or the Defendant.
 
