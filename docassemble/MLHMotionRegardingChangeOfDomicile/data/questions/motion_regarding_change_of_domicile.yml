@@ -313,7 +313,7 @@ fields:
 ---
 #################### Overridden AL Questions End #####################
 ---
-id: intro_screen
+id: FirstScreen
 question: |
   Welcome to the Do-It-Yourself Motion Regarding Change of Domicile tool
 subquestion: |
@@ -763,7 +763,7 @@ fields:
   - Would you like to add your electronic signature to your form?: esign
     datatype: yesnoradio
 ---
-id: download screen
+id: DownloadScreen
 event: motion_re_change_of_domicile_download
 question: |
   All done!
