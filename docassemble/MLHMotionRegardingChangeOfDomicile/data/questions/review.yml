@@ -1,46 +1,23 @@
 ---
+id: motion regarding change in domicile review screen
 event: review_form
-id: review screen
 question: |
   Review your answers
-
 review:
+  - note: |
+      <hr>
+      ### Information for Parents and Children
   - Edit: users.revisit
     button: |-
-      **You**
+      **Your Information**
 
       % for item in users:
-      - ${ item }
+        ${ item }
+      
+        ${ item.address.block() }
+        
+        ${ word("") if item.no_phone_number else item.phone_numbers() }
       % endfor
-  - Edit: other_parties.revisit
-    button: |-
-      **The Other side of your case**
-
-      % for item in other_parties:
-      - ${ item }
-      % endfor
-  - Edit: children.revisit
-    button: |-
-      **Children**
-
-      % for item in children:
-      - ${ item }
-      % endfor
-  - Edit: docket_number
-    button: |
-      **What is your case number?**
-
-      ${ showifdef('docket_number') }
-  # county_choice edit not displaying 
-  - Edit:
-      - county_choice
-      - recompute:
-        - court_index
-        - the_court
-    button: |
-      **What court is your case in?**
-
-      ${ the_court } - ${ county_choice } County
   - Edit:
       - user_ask_role
       - recompute:
@@ -50,43 +27,108 @@ review:
       **What party are you in your existing case?**
 
       ${ showifdef('user_ask_role').capitalize() }
+  - Edit: other_parties.revisit
+    button: |-
+      **The Other side of your case**
+
+      % for item in other_parties:
+        ${ item }
+      
+        ${ item.address.block() }
+        
+        ${ word("") if item.no_phone_number else item.phone_numbers() }
+      % endfor
+  - Edit: children.revisit
+    button: |-
+      **Children**
+
+      % for item in children:
+        ${ item }
+        
+        ${ item.birthdate }
+      % endfor
+  - note: |
+      <hr>
+      
+      ### Case and Court Information
+  - Edit: 
+    - county_choice
+    #- court_index
+    #- court_index_for_specific_court_type
+    # TODO - get these changes to work... 
+    - recompute:
+      - the_court
+      - recompute_court
+      - court_index
+      - court_count
+    button: |
+      **Court Information**
+      
+      ${ the_court.number } ${ the_court.type.capitalize() } Court
+
+      ${ county_choice } County
+
+      ${ the_court.address.on_one_line() }
+  - Edit: docket_number
+    button: |
+      **What is your case number?**
+
+      ${ docket_number }
   - Edit: 
       - recent_order
     button: |
-      **What date was the most recent judgment entered?**: ${ recent_order }
+      **What date was the most recent judgment entered?**:
+      ${ recent_order }
   - Edit:
       - moving_reason
     button: |
-      **Why do you want to move?**: ${ showifdef('moving_reason') }
+      **Why do you want to move?**:
+      ${ moving_reason }
   - Edit:
       - moving_benefits
     button: |
-      **What are the benefits to the children from this move?**: ${ showifdef(moving_benefits) }
+      **What are the benefits to the children from this move?**:
+      ${ moving_benefits }
   - Edit:
       - maintains_other_parent_relationship
     button: |
-      **Will the children maintain a similar relationship with their other parent?**: ${ showifdef(maintains_other_parent_relationship) }
+      **Will the children maintain a similar relationship with their other parent?**:
+      ${ maintains_other_parent_relationship }
   - Edit: 
       - other_parent_opposition
     button: |
-     **Does the other parent oppose the move?**: ${ showifdef(other_parent_opposition) }
+     **Does the other parent oppose the move?**:
+     ${ other_parent_opposition }
   - Edit:
       - other_parent_opposition_cs
     button: |
-      **Do you think they oppose the move because of its impacts child support payments?**: ${ showifdef(other_parent_opposition_cs) }
+      **Do you think they oppose the move because of its impacts child support payments?**:
+      ${ other_parent_opposition_cs }
   - Edit: 
       - domestic_violence
       - domestic_violence_exp
     button: |
-      **Are you moving to escape domestic violence?**: ${ showifdef(domestic_violence) }
+      **Are you moving to escape domestic violence?**:
+      ${ domestic_violence }
   - Edit:
       - moving_date
     button: |
-      **What date do you want to move?": ${ showifdef(moving_date) }
+      **What is the date you want to move?**:
+      ${ moving_date }
   - Edit:
     - wants_parenting_time_change
     - requested_order
     - parenting_time_change_agreement
     button: |
-      **Are you asking to court to change the parenting time?**: ${ showifdef(wants_parenting_time_change) }
+      **Are you asking to court to change the parenting time?**:
+      ${ wants_parenting_time_change }
 ---      
+reconsider: True
+code: |
+  if court_count > 1:
+    court_index = court_index_for_specific_court_type
+  else:
+    # This means there is only one court of this type for this county.
+    court_index = list(court_list.filter_courts_by_2([county_choice], [court_type], column_1='address_county', column_2='type'))[0][0]
+  recompute_court = True
+---
