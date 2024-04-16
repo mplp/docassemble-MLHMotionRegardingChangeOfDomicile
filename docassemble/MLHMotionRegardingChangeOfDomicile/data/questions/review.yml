@@ -1,6 +1,6 @@
 ---
 id: motion regarding change in domicile review screen
-event: review_form
+event: review_full
 question: |
   Review your answers
 review:
