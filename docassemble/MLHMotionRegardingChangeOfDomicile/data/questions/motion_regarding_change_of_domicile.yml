@@ -783,9 +783,10 @@ subquestion: |
 
   ${ action_button_html(url_action('review_full'), label='Edit answers', color='info') }
 
-  ${ al_user_bundle.download_list_html() }
+  ### Do not file cover page or instructions
+  ${ al_user_bundle.as_pdf() }
   
-  ${ action_button_html(al_user_bundle.as_pdf().url_for(), label="Download all your forms as a single PDF", icon='download') }
+  ${ action_button_html(al_user_bundle.as_pdf().url_for(), label="Download only the forms that you need file as a single PDF", icon='download') }
   
   ${ al_user_bundle.send_button_html(show_editable_checkbox=False) }
 ---
@@ -801,6 +802,9 @@ objects:
   - mrcd_addendum: ALDocument.using(title="Addendum for Motion Regarding Change of Domicile", filename="motion_re_cod_attachment.docx", enabled=True, has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
 ---
 objects:
+  - mrcd_instructions: ALDocument.using(title="Instructions for Motion Regarding Change of Domicile", filename="mrcd_instructions.docx", enabled=True, has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+---
+objects:
   - orcd_foc_29: ALDocument.using(title="Order Regarding Change of Domicile", filename="foc_29_order_re_change_of_domicile.pdf", enabled=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
 ---
 objects:
@@ -810,10 +814,10 @@ objects:
   - al_user_bundle: ALDocumentBundle.using(elements=[al_cover_bundle, mrcd_main, mrcd_addendum, orcd_foc_29, orpt_foc_67], filename="Motion Regarding Change of Domicile (All Forms).pdf", title="All forms to download for your records", enabled=True)
 ---
 objects:
-  - al_cover_bundle: >-
-      ALDocumentBundle.using(elements=[cover_sheet_template],
-      filename="Instructions - Do not file this", title="Instructions (Don't file this)", 
-      enabled=True)
+  - al_cover_bundle: ALDocumentBundle.using(elements=[cover_sheet_template, mrcd_instructions], filename="Instructions - Do not file this", title="Instructions (Don't file this)", enabled=True)
+---
+objects:
+  - al_court_bundle: ALDocumentBundle.using(elements=[mrcd_main, mrcd_addendum, orcd_foc_29, orpt_foc_67], filename="Motion Regarding Change of Domicile (All Forms).pdf", title="All forms to download for your records", enabled=True)
 ---
 attachments:
   name: foc_115_motion_re_change_of_domicile
@@ -883,8 +887,7 @@ attachments:
   docx template file: motion_re_cod_attachment.docx
   variable name: mrcd_addendum[i]
   skip undefined: True
-  valid formats: 
-    - pdf
+  tagged pdf: True
 ---
 attachments:
   name: foc_67_order_re_parenting_time
@@ -946,6 +949,14 @@ attachments:
         ${ other_parties[0].address_block() }
         ${ other_parties[0].phone_number }
         % endif
+---
+attachments:
+   name: mrcd_instructions
+   filename: mrcd_instructions.docx     
+   variable name: mrcd_instructions[i]       
+   skip undefined: True
+   docx template file: mrcd_instructions.docx
+   tagged pdf: True
 ---
 #################### Documents End #####################
 ---
