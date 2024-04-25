@@ -17,17 +17,19 @@ metadata:
     - Hayden McGuire
 ---
 sections:
-  - review_intro: "Introduction"
-  - qualifying_questions: "Do you qualify?"
-  - review_prior_case: "Prior Case Information"
-  - review_your_info: "Your Information"
-  - review_other_info: "Other Parent's Information"
-  - review_children_info: "Children's Information"
-  - review_moving_reason_info: "Why You Want to Move"
-  - review_domestic_violence_info: "Domestic Violence"
-  - review_new_address_info: "Your New Address"
-  - review_parenting_time_info: "Parenting Time"
-  - review_conclusion: "Conclusion"
+  - signpost_intro: "Introduction"
+  - signpost_qualifying_questions: "Do you qualify?"
+  - signpost_prior_case: "Prior Case Information"
+  - signpost_your_info: "Your Information"
+  - signpost_other_info: "Other Parent's Information"
+  - signpost_children_info: "Children's Information"
+  - signpost_moving_reason_info: "Why You Want to Move"
+  - signpost_domestic_violence_info: "Domestic Violence"
+  - signpost_new_address_info: "Your New Address"
+  - signpost_parenting_time_info: "Parenting Time"
+  - signpost_esign: "Electronic Singnature"
+  - signpost_download: "Download Your Forms"
+  - review_full: "✎ <u>Review / Edit</u>"
 ---
 code: |
   al_form_type = "existing_case"
@@ -52,24 +54,25 @@ objects:
 id: interview_order_motion_regarding_change_of_domicile
 mandatory: True
 code: |
-  nav.set_section("review_intro")
+  nav.set_section("signpost_intro")
   intro_screen
   MLH_standard_intro_pages
   court_permission_required
 
-  nav.set_section("qualifying_questions")
+  nav.set_section("signpost_qualifying_questions")
   if not has_existing_case:
     existing_case_kickout
   if third_party_check:
     third_party_kickout
   what_you_will_need
 
-  nav.set_section("review_prior_case")
+  nav.set_section("signpost_prior_case")
   docket_number
 
   county_choice
   court_index
   the_court
+  set_number
 
   user_started_case
   if not prior_order_yesno:
@@ -77,15 +80,15 @@ code: |
   
   set_custody
   
-  nav.set_section("review_your_info")
+  nav.set_section("signpost_your_info")
   users.gather()
 
-  nav.set_section("review_other_info")
+  nav.set_section("signpost_other_info")
   other_parties.gather()
-  nav.set_section("review_children_info")
+  nav.set_section("signpost_children_info")
   children.gather()
 
-  nav.set_section("review_moving_reason_info")
+  nav.set_section("signpost_moving_reason_info")
   moving_reason_intro_screen
   moving_reason
   moving_benefits
@@ -93,22 +96,24 @@ code: |
   if other_parent_opposition == "Yes":
     other_parent_opposition_cs
 
-  nav.set_section("review_domestic_violence_info")
+  nav.set_section("signpost_domestic_violence_info")
   if domestic_violence:
     domestic_violence_exp
+    x.has_exhibits
 
-  nav.set_section("review_new_address_info")
+  nav.set_section("signpost_new_address_info")
   new_address_in_us
   moving_date
 
-  nav.set_section("review_parenting_time_info")
+  nav.set_section("signpost_parenting_time_info")
   wants_parenting_time_change
 
-  nav.set_section("review_conclusion")
+  nav.set_section("signpost_esign")
   efile_notice
   if esign:
     signature_date
 
+  nav.set_section("signpost_download")
   motion_re_change_of_domicile_download
   #interview_motion_re_change_of_domicile = True
 ---
@@ -127,6 +132,12 @@ code: |
 #  )
 #  motion_re_change_of_domicile_download
 ---
+code: |
+  accessible_instructions_link = "[https://michiganlegalhelp.org/resources/family/filing-move-your-children](https://michiganlegalhelp.org/resources/family/filing-move-your-children)"
+---
+code: |
+  resource_page_link = "[https://michiganlegalhelp.org/explore-legal-resources](https://michiganlegalhelp.org/explore-legal-resources)"
+---
 # NOTE: for users and other_parties
 generic object: ALIndividual
 code: |
@@ -138,6 +149,11 @@ code: |
 # Tells court_index which court to choose
 code: |
   court_index = next(court_list.filter_courts_by_2([county_choice], ['circuit'], column_1='address_county', column_2='type'))[0]
+---
+#setting for docx file use
+code: |
+  the_court_number = the_court.number
+  set_number = True
 ---
 #NOTE: for user's new address
 code: |
@@ -168,6 +184,7 @@ code: |
 code: |
   new_address.there_are_any = True
 ---
+# NOTE: ensures there is only 1 new address 
 code: |
   new_address.there_is_another = False
 ---
@@ -305,11 +322,11 @@ fields:
 ---
 #################### Overridden AL Questions End #####################
 ---
-id: intro_screen
+id: FirstScreen
 question: |
   Welcome to the Do-It-Yourself Motion Regarding Change of Domicile tool
 subquestion: |
-  This tool will help you prepare the forms to file a **Motion Regarding Change of Domicile** in Michigan.
+  This tool will help you prepare the forms to file a *Motion Regarding Change of Domicile* in Michigan.
 
   If there is a custody or parenting-time order for your child, you must get the court's approval before moving their domicile from Michigan.
 continue button field: intro_screen
@@ -378,7 +395,7 @@ event: third_party_kickout
 question: |
   We’re sorry, but you cannot use this tool.
 subquestion: |
-  This tool may only be used to file a **Motion Regarding Change of Domicile**  in a Michigan family law case between two parents, with no third party involvement.
+  This tool may only be used to file a *Motion Regarding Change of Domicile*  in a Michigan family law case between two parents, with no third party involvement.
 
   We cannot help you, but your local legal aid program or other lawyer may be able to.  You can use the ${ MLH_GUIDE_FULL } to find a lawyer or a legal services office near you.
 
@@ -416,7 +433,7 @@ question: |
 subquestion: |
   It should take you between ${ MLH_time_min } and ${ MLH_time_max } minutes to finish answering questions.
 
-  After that, your personalized forms to file a **Motion Regarding Change of Domicile** will be ready to print.
+  After that, your personalized forms to file a *Motion Regarding Change of Domicile* will be ready to print.
 
   You will also get a set of instructions on what you need to do next.
 
@@ -437,7 +454,7 @@ id: what is the user's role?
 question: |
   What party are you in your existing case?
 subquestion: |
-  You are called the “moving party” because you are the party filing the **Motion Regarding Change of Domicile**.  
+  You are called the “moving party” because you are the party filing the *Motion Regarding Change of Domicile*.  
 
   In your court case, you are either the Plaintiff or the Defendant.
 
@@ -631,6 +648,37 @@ fields:
   no label: domestic_violence_exp
   input type: area
 ---
+#generic object: ALExhibitList
+#id: any exhibits
+#question: |
+#  Please attach any documents that you want the judge to see about your dangerous living situation. 
+#fields:
+#  - Do you have any documents you want to upload?: x.has_exhibits
+#    datatype: yesnoradio
+#  - note: |
+#      **Okay**. You will have a chance to upload multiple documents. 
+#      You can also add additional pages to this document.
+#    show if: x.has_exhibits
+#  - First document title: x[0].title
+#    maxlength: 60 # longer might break TOC
+#    show if: x.has_exhibits    
+#  - Upload the first document: x[0].pages
+#    show if: x.has_exhibits    
+#    datatype: files
+#    maximum image size: 1024
+#    image upload type: jpeg        
+#    accept: |
+#      "image/png, image/jpeg, .doc,.docx,application/msword,application/vnd.openxmlformats-#officedocument.wordprocessingml.document,application/pdf,.pdf"   
+#validation code: |
+#  if x.has_exhibits:
+#    if sum(exhibit.size_in_bytes() for exhibit in x[0].pages) > (15 * 1024 * 1024):
+#      validation_error("Upload a file smaller than 15 MB.")
+#    try:
+#      pdf_concatenate(x[0].pages)
+#    except:
+#      validation_error("Unable to convert this file. Please upload a new one.", field="x[0].pages")
+#    x[0].pages.reset_gathered()  # docassemble sets this attribute but we want to force gathering #additional pages
+---
 id: moving date
 question: |
   When do you want to move?
@@ -724,7 +772,7 @@ fields:
   - Would you like to add your electronic signature to your form?: esign
     datatype: yesnoradio
 ---
-id: download screen
+id: DownloadScreen
 event: motion_re_change_of_domicile_download
 question: |
   All done!
@@ -733,13 +781,19 @@ subquestion: |
 
   View, download and send your form below. Click the "Edit answers" button to fix any mistakes.
 
-  ${ action_button_html(url_action('review_form'), label='Edit answers', color='info') }
+  ${ action_button_html(url_action('review_full'), label='Edit answers', color='info') }
 
-  ${ al_user_bundle.download_list_html() }
-
+  ### Do not file cover page or instructions
+  ${ al_user_bundle.as_pdf() }
+  
+  ${ action_button_html(al_user_bundle.as_pdf().url_for(), label="Download only the forms that you need file as a single PDF", icon='download') }
+  
   ${ al_user_bundle.send_button_html(show_editable_checkbox=False) }
 ---
 #################### Documents Start #####################
+---
+objects:
+  - al_cover: ALDocumentBundle.using(elements=[cover_sheet_template], filename="Cover Sheet -Do not file this", title="Cover Sheet (Don't file this)", enabled=True)
 ---
 objects:
   - mrcd_main: ALDocument.using(title="Motion Regarding Change of Domicile", filename="foc_115_motion_re_change_of_domicile.pdf", enabled=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
@@ -748,13 +802,22 @@ objects:
   - mrcd_addendum: ALDocument.using(title="Addendum for Motion Regarding Change of Domicile", filename="motion_re_cod_attachment.docx", enabled=True, has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
 ---
 objects:
+  - mrcd_instructions: ALDocument.using(title="Instructions for Motion Regarding Change of Domicile", filename="mrcd_instructions.docx", enabled=True, has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+---
+objects:
   - orcd_foc_29: ALDocument.using(title="Order Regarding Change of Domicile", filename="foc_29_order_re_change_of_domicile.pdf", enabled=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
 ---
 objects:
   - orpt_foc_67: ALDocument.using(title="Order Regarding Parenting Time", filename="foc_67_order_re_parenting_time.pdf", enabled=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
 ---
 objects:
-  - al_user_bundle: ALDocumentBundle.using(elements=[mrcd_main, mrcd_addendum, orcd_foc_29, orpt_foc_67], filename="Motion Regarding Change of Domicile (All Forms).pdf", title="All forms to download for your records", enabled=True)
+  - al_user_bundle: ALDocumentBundle.using(elements=[al_cover_bundle, mrcd_main, mrcd_addendum, orcd_foc_29, orpt_foc_67], filename="Motion Regarding Change of Domicile (All Forms).pdf", title="All forms to download for your records", enabled=True)
+---
+objects:
+  - al_cover_bundle: ALDocumentBundle.using(elements=[cover_sheet_template, mrcd_instructions], filename="Instructions - Do not file this", title="Instructions (Don't file this)", enabled=True)
+---
+objects:
+  - al_court_bundle: ALDocumentBundle.using(elements=[mrcd_main, mrcd_addendum, orcd_foc_29, orpt_foc_67], filename="Motion Regarding Change of Domicile (All Forms).pdf", title="All forms to download for your records", enabled=True)
 ---
 attachments:
   name: foc_115_motion_re_change_of_domicile
@@ -779,14 +842,18 @@ attachments:
     - plaintiffs_address_block: |
           % if user_ask_role == "plaintiff":
           ${ users[0].address_block() }
+          ${ users[0].phone_number }
           % elif user_ask_role == "defendant":
           ${ other_parties[0].address_block() }
+          ${ other_parties[0].phone_number }
           % endif
     - defendants_address_block: |
           % if user_ask_role == "defendant":
           ${ users[0].address_block() }
+          ${ users[0].phone_number }
           % elif user_ask_role == "plaintiff":
           ${ other_parties[0].address_block() }
+          ${ other_parties[0].phone_number }
           % endif
     - children1: ${ children[0] }
     - children2: ${ children[1] if len(children) > 1 else "" }
@@ -795,13 +862,13 @@ attachments:
     - children5: ${ children[4] if len(children) > 4 else "" }
     - children6: ${ children[5] if len(children) > 5 else "" }
     - children7: ${ children[6] if len(children) > 6 else "" }
-    - children_see_attached: "See attached."
-    - requested_order_see_attached: "See attached." 
+    - children_see_attached: "Please see attached."
+    - requested_order_see_attached: "Please see attached." 
     - continue_current_order_yes: ${ continue_current_order_yes }
     - modify_current_order_yes: ${ modify_current_order_yes }
     - changes_to_order_see_attached: |
         % if wants_parenting_time_change == True:
-        See attached.
+        Please see attached.
         % else:
         N/A
         % endif
@@ -820,8 +887,7 @@ attachments:
   docx template file: motion_re_cod_attachment.docx
   variable name: mrcd_addendum[i]
   skip undefined: True
-  valid formats: 
-    - pdf
+  tagged pdf: True
 ---
 attachments:
   name: foc_67_order_re_parenting_time
@@ -840,14 +906,18 @@ attachments:
     - plaintiffs_address_block: |
         % if user_ask_role == "plaintiff":
         ${ users[0].address_block() }
+        ${ users[0].phone_number }
         % elif user_ask_role == "defendant":
         ${ other_parties[0].address_block() }
+        ${ other_parties[0].phone_number }
         % endif
     - defendants_address_block: |
         % if user_ask_role == "defendant":
         ${ users[0].address_block() }
+        ${ users[0].phone_number }
         % elif user_ask_role == "plaintiff":
         ${ other_parties[0].address_block() }
+        ${ other_parties[0].phone_number }
         % endif
 ---
 attachments:
@@ -866,15 +936,27 @@ attachments:
     - plaintiffs_address_block: |
         % if user_ask_role == "plaintiff":
         ${ users[0].address_block() }
+        ${ users[0].phone_number }
         % elif user_ask_role == "defendant":
         ${ other_parties[0].address_block() }
+        ${ other_parties[0].phone_number }
         % endif
     - defendants_address_block: |
         % if user_ask_role == "defendant":
         ${ users[0].address_block() }
+        ${ users[0].phone_number }
         % elif user_ask_role == "plaintiff":
         ${ other_parties[0].address_block() }
+        ${ other_parties[0].phone_number }
         % endif
+---
+attachments:
+   name: mrcd_instructions
+   filename: mrcd_instructions.docx     
+   variable name: mrcd_instructions[i]       
+   skip undefined: True
+   docx template file: mrcd_instructions.docx
+   tagged pdf: True
 ---
 #################### Documents End #####################
 ---
