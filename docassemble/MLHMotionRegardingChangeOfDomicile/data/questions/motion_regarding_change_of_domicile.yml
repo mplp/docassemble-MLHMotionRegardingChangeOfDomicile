@@ -55,6 +55,7 @@ objects:
 id: interview_order_motion_regarding_change_of_domicile
 mandatory: True
 code: |
+  nav.set_section('review_full')
   nav.set_section("signpost_intro")
   intro_screen
   MLH_standard_intro_pages
@@ -100,7 +101,7 @@ code: |
   nav.set_section("signpost_domestic_violence_info")
   if domestic_violence:
     domestic_violence_exp
-    exhibit_attachment.has_exhibits
+    #exhibit_attachment.has_exhibits
 
   nav.set_section("signpost_new_address_info")
   new_address_in_us
@@ -649,43 +650,43 @@ fields:
   no label: domestic_violence_exp
   input type: area
 ---
-generic object: ALExhibitList
-id: any exhibits
-question: |
-  Do you have documents you want the judge to see?
-subquestion: |
-  If you have any documents, like a police report or medical record, you want the judge to see attach them to your motion. They are not required, but will help the judge understand your situation and why you want to move.
-fields:
-  - Do you have any documents you want to upload?: x.has_exhibits
-    datatype: yesnoradio
-  - note: |
-      **Okay**. You will have a chance to upload multiple documents. 
-      You can also add additional pages to this document.
-    show if: x.has_exhibits
-  - First document title: x[0].title
-    maxlength: 60 # longer might break TOC
-    show if: x.has_exhibits
-  - Upload the first document: x[0].pages
-    show if: x.has_exhibits
-    datatype: files
-    maximum image size: 1024
-    image upload type: jpeg
-    accept: |
-      "image/png, image/jpeg, .doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf,.pdf"   
-validation code: |
-  if x.has_exhibits:
-    full_size = sum(a_page.size_in_bytes() for a_page in x[0].pages)
-    if full_size > (15 * 1024 * 1024):
-      validation_error("Upload a file smaller than 15 MB.")
-    if hasattr(x, 'maximum_size'):
-      if full_size > x.maximum_size:
-        validation_error(f"Upload a file smaller than {humanize.naturalsize(x.maximum_size)}")
-    try:
-      pdf_concatenate(x[0].pages)
-    except:
-      validation_error("Unable to convert this file. Please upload a new one.")
-    x[0].pages.complete_attribute = 'ok'
-    x[0].pages.reset_gathered()  # docassemble sets this attribute but we want to force gathering additional pages
+#generic object: ALExhibitList
+#id: any exhibits
+#question: |
+#  Do you have documents you want the judge to see?
+#subquestion: |
+#  If you have any documents, like a police report or medical record, you want the judge to see attach them to your motion. They are not required, but will help the judge understand your situation and why you want to move.
+#fields:
+#  - Do you have any documents you want to upload?: x.has_exhibits
+#    datatype: yesnoradio
+#  - note: |
+#      **Okay**. You will have a chance to upload multiple documents. 
+#      You can also add additional pages to this document.
+#    show if: x.has_exhibits
+#  - First document title: x[0].title
+#    maxlength: 60 # longer might break TOC
+#    show if: x.has_exhibits
+#  - Upload the first document: x[0].pages
+#    show if: x.has_exhibits
+#    datatype: files
+#    maximum image size: 1024
+#    image upload type: jpeg
+#    accept: |
+#      "image/png, image/jpeg, .doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf,.pdf"   
+#validation code: |
+#  if x.has_exhibits:
+#    full_size = sum(a_page.size_in_bytes() for a_page in x[0].pages)
+#    if full_size > (15 * 1024 * 1024):
+#      validation_error("Upload a file smaller than 15 MB.")
+#    if hasattr(x, 'maximum_size'):
+#      if full_size > x.maximum_size:
+#        validation_error(f"Upload a file smaller than {humanize.naturalsize(x.maximum_size)}")
+#    try:
+#      pdf_concatenate(x[0].pages)
+#    except:
+#      validation_error("Unable to convert this file. Please upload a new one.")
+#    x[0].pages.complete_attribute = 'ok'
+#    x[0].pages.reset_gathered()  # docassemble sets this attribute but we want to force gathering additional pages
 ---
 id: moving date
 question: |
@@ -810,7 +811,7 @@ objects:
   - mrcd_addendum: ALDocument.using(title="Addendum for Motion Regarding Change of Domicile", filename="motion_re_cod_attachment.docx", enabled=True, has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
 ---
 objects:
-  - exhibit_attachment: ALExhibitList.using(title="Exhibits", filename="exhibits", add_page_numbers=True, include_table_of_contents=False, include_exhibit_cover_pages=True)
+  - exhibit_attachment: ALExhibitList.using(title="Exhibits", filename="exhibits", add_page_numbers=True, include_table_of_contents=False, include_exhibit_cover_pages=True, enabled=True, has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
 ---
 objects:
   - mrcd_instructions: ALDocument.using(title="Instructions for Motion Regarding Change of Domicile", filename="mrcd_instructions.docx", enabled=True, has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
@@ -822,13 +823,13 @@ objects:
   - orpt_foc_67: ALDocument.using(title="Order Regarding Parenting Time", filename="foc_67_order_re_parenting_time.pdf", enabled=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
 ---
 objects:
-  - al_user_bundle: ALDocumentBundle.using(elements=[al_cover_bundle, mrcd_main, mrcd_addendum, exhibit_attachment, orcd_foc_29, orpt_foc_67], filename="Motion Regarding Change of Domicile (All Forms).pdf", title="All forms to download for your records", enabled=True)
+  - al_user_bundle: ALDocumentBundle.using(elements=[al_cover_bundle, mrcd_main, mrcd_addendum, orcd_foc_29, orpt_foc_67], filename="Motion Regarding Change of Domicile (All Forms).pdf", title="All forms to download for your records", enabled=True)
 ---
 objects:
   - al_cover_bundle: ALDocumentBundle.using(elements=[cover_sheet_template, mrcd_instructions], filename="Instructions - Do not file this", title="Instructions (Don't file this)", enabled=True)
 ---
 objects:
-  - al_court_bundle: ALDocumentBundle.using(elements=[mrcd_main, mrcd_addendum, exhibit_attachment, orcd_foc_29, orpt_foc_67], filename="Motion Regarding Change of Domicile (All Forms).pdf", title="All forms to download for your records", enabled=True)
+  - al_court_bundle: ALDocumentBundle.using(elements=[mrcd_main, mrcd_addendum, orcd_foc_29, orpt_foc_67], filename="Motion Regarding Change of Domicile (All Forms).pdf", title="All forms to download for your records", enabled=True)
 ---
 attachments:
   name: foc_115_motion_re_change_of_domicile
