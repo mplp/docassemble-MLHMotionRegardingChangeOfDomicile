@@ -589,9 +589,9 @@ subquestion: |
   * Will bring you closer to extended family; and
   * Other factors unique to you.
 
-  Please complete the following: The move will improve the quality of life for my child and me because...
+  Please complete the following: 
 fields:
-  - no label: moving_benefits
+  - The move will improve the quality of life for my child and me because...: moving_benefits
     input type: area
 ---
 id: move maintains other parent relationship
