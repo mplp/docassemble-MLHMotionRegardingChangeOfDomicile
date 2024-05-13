@@ -571,10 +571,9 @@ question: |
   Why do you want to move?
 subquestion: |
   The court will want to know if you have a legitimate reason or reasons for moving. This is to make sure you aren’t moving just to limit the other parent’s ability to spend time with your child.
-
-  Please use complete sentences to explain why you want to move.
 fields:
   - Please use complete sentences to explain why you want to move.: moving_reason
+    label above field: True
     input type: area
 ---
 id: moving benefits explanation
@@ -589,9 +588,10 @@ subquestion: |
   * Will bring you closer to extended family; and
   * Other factors unique to you.
 
-  Please complete the following: 
+  **Please complete the following:** 
 fields:
   - The move will improve the quality of life for my child and me because...: moving_benefits
+    label above field: True
     input type: area
 ---
 id: move maintains other parent relationship
@@ -639,11 +639,10 @@ fields:
 ---
 id: domestic violence explanation
 question: |
-  Briefly explain how ${ other_parties[0].name } has been violent towards you.
-subquestion: |
-  Describe the violent conditions you have been expeirenceing. Tell the court if you have a personal protection order or a no contact order.
+  Explanation of domestic violence.
 fields:
-  no label: domestic_violence_exp
+  Briefly explain how ${ other_parties[0].name } has been violent towards you. Tell the court if you have a personal protection order or a no contact order.: domestic_violence_exp
+  label above field: True
   input type: area
 ---
 #generic object: ALExhibitList
