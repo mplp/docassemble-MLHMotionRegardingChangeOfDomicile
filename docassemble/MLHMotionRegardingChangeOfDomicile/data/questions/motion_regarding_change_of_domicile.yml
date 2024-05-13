@@ -19,16 +19,13 @@ metadata:
 ---
 sections:
   - signpost_intro: "Introduction"
-  - signpost_qualifying_questions: "Do you qualify?"
   - signpost_prior_case: "Prior Case Information"
   - signpost_your_info: "Your Information"
   - signpost_other_info: "Other Parent's Information"
   - signpost_children_info: "Children's Information"
   - signpost_moving_reason_info: "Why You Want to Move"
-  - signpost_domestic_violence_info: "Domestic Violence"
   - signpost_new_address_info: "Your New Address"
   - signpost_parenting_time_info: "Parenting Time"
-  - signpost_esign: "Electronic Singnature"
   - signpost_download: "Download Your Forms"
   - review_full: "✎ <u>Review / Edit</u>"
 ---
@@ -60,14 +57,13 @@ code: |
   intro_screen
   MLH_standard_intro_pages
 
-  nav.set_section("signpost_qualifying_questions")
+  nav.set_section("signpost_prior_case")
   if not has_existing_case:
     existing_case_kickout
   if third_party_check:
     third_party_kickout
   what_you_will_need
 
-  nav.set_section("signpost_prior_case")
   docket_number
 
   county_choice
@@ -86,6 +82,7 @@ code: |
 
   nav.set_section("signpost_other_info")
   other_parties.gather()
+  
   nav.set_section("signpost_children_info")
   children.gather()
 
@@ -97,7 +94,6 @@ code: |
   if other_parent_opposition == "Yes":
     other_parent_opposition_cs
 
-  nav.set_section("signpost_domestic_violence_info")
   if domestic_violence:
     domestic_violence_exp
     #exhibit_attachment.has_exhibits
@@ -109,12 +105,11 @@ code: |
   nav.set_section("signpost_parenting_time_info")
   wants_parenting_time_change
 
-  nav.set_section("signpost_esign")
+  nav.set_section("signpost_download")
   efile_notice
   if esign:
     signature_date
 
-  nav.set_section("signpost_download")
   motion_re_change_of_domicile_download
   #interview_motion_re_change_of_domicile = True
 ---
