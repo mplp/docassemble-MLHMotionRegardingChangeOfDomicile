@@ -389,7 +389,7 @@ question: |
 subquestion: |
   A third party could be grandparents, stepparents, or a non-parent.
 fields:
-  - no label: third_party_check
+  - Is there a third party in your case?: third_party_check
     datatype: yesnoradio
 ---
 id: third_party_kickout
