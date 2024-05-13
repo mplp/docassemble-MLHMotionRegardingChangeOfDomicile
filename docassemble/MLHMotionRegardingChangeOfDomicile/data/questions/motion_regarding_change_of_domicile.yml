@@ -129,10 +129,10 @@ code: |
 #  motion_re_change_of_domicile_download
 ---
 code: |
-  accessible_instructions_link = "[https://michiganlegalhelp.org/resources/family/filing-move-your-children](https://michiganlegalhelp.org/resources/family/filing-move-your-children)"
+  accessible_instructions_link = "[https://michiganlegalhelp.org/step/3950](https://michiganlegalhelp.org/step/3950)"
 ---
 code: |
-  resource_page_link = "[https://michiganlegalhelp.org/explore-legal-resources](https://michiganlegalhelp.org/explore-legal-resources)"
+  resource_page_link = "[https://michiganlegalhelp.org/node/3949](https://michiganlegalhelp.org/node/3949)"
 ---
 # NOTE: for users and other_parties
 generic object: ALIndividual
