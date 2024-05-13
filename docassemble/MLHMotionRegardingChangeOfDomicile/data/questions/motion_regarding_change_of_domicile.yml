@@ -574,7 +574,7 @@ subquestion: |
 
   Please use complete sentences to explain why you want to move.
 fields:
-  - no label: moving_reason
+  - Please use complete sentences to explain why you want to move.: moving_reason
     input type: area
 ---
 id: moving benefits explanation
