@@ -59,7 +59,6 @@ code: |
   nav.set_section("signpost_intro")
   intro_screen
   MLH_standard_intro_pages
-  court_permission_required
 
   nav.set_section("signpost_qualifying_questions")
   if not has_existing_case:
@@ -341,12 +340,9 @@ subquestion: |
   This tool will help you prepare forms for your legal issue without a lawyer.
    
   ${ MLH_GUIDE_FULL }
----
-id: court_permission_required
-continue button field: court_permission_required
-question: |
-  When do you need court permission?
-subquestion: |
+
+  ## **When do you need court permission?**
+
   If there is a custody or parenting-time order for your child, you will **always** need permission from the court to move them **outside of Michigan.**
 
   You **may** need permission from the court to move **within Michigan.** This depends on things like:
