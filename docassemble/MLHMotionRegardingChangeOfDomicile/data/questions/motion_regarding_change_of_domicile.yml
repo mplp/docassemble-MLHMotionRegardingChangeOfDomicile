@@ -26,7 +26,7 @@ sections:
   - signpost_moving_reason_info: "Why You Want to Move"
   - signpost_new_address_info: "Your New Address"
   - signpost_parenting_time_info: "Parenting Time"
-  - signpost_download: "Download Your Forms"
+  - signpost_download: "Get Your Forms"
   - review_full: "✎ <u>Review / Edit</u>"
 ---
 code: |
