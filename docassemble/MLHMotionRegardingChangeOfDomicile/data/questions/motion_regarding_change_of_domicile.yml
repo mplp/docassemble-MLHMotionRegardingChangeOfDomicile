@@ -280,7 +280,7 @@ id: how many children
 question: |
   How many children do you want this change in domicile or residence for?
 fields:
-  - no label: children.target_number
+  - Number of children: children.target_number
     datatype: integer
     min: 1
     validation messages:
@@ -362,7 +362,7 @@ subquestion: |
     * Family support
 
 fields:
-  - no label: has_existing_case
+  - Do you have an existing family law case?: has_existing_case
     datatype: yesnoradio
 ---
 id: existing_case_kickout
@@ -489,7 +489,7 @@ id: judgment or custody order
 question: |
   Is there a custody order or judgment in your family law case?
 fields:
-  - no label: prior_order_yesno
+  - Is there a custody order or judgment in your family law case?: prior_order_yesno
     datatype: yesnoradio
   - What is the date of the most recent order?: recent_order
     datatype: date
@@ -593,14 +593,14 @@ id: move maintains other parent relationship
 question: |
   Will the move allow the child to maintain a similar relationship with ${ other_parties[0].name }?
 fields:
-  - no label: maintains_other_parent_relationship
+  - Will the child  maintain a similar relationship with ${ other_parties[0].name } after the move?: maintains_other_parent_relationship
     datatype: yesnoradio
 ---
 id: other parent opposition
 question: |
   To the best of your knowledge, does ${ other_parties[0].name } oppose the move?
 fields:
-  - no label: other_parent_opposition
+  - Does ${ other_parties[0].name } oppose the move?: other_parent_opposition
     datatype: radio
     choices:
       - Yes
@@ -613,7 +613,7 @@ question: |
 subquestion: |
   The amount of child support is based on several factors, including the number of overnights your child spends with each parent. If ${ other_parties[0].name } opposes the move, the court will want to know whether ${ other_parties[0].pronoun_subjective() } is only worried that having less overnights with your child will increase ${ other_parties[0].pronoun_possessive('child support payments') }.
 fields:
-  - no label: other_parent_opposition_cs
+  - Do you believe ${ other_parties[0].name } opposes the move to avoid paying more child support?: other_parent_opposition_cs
     datatype: radio
     choices:
       - Yes
@@ -629,7 +629,7 @@ id: domestic violence
 question: |
   Are you moving to escape domestic violence by ${ other_parties[0].name }?
 fields:
-  - no label: domestic_violence
+  - Are you moving to escape domestic violence?: domestic_violence
     datatype: yesnoradio
 ---
 id: domestic violence explanation
@@ -682,7 +682,7 @@ id: moving date
 question: |
   When do you want to move?
 fields:
-  - no label: moving_date
+  - When do you want to move?: moving_date
     datatype: date
 ---
 id: wants parenting time change
