@@ -812,9 +812,6 @@ objects:
   - mrcd_addendum: ALDocument.using(title="Addendum for Motion Regarding Change of Domicile", filename="motion_re_cod_attachment.docx", enabled=True, has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
 ---
 objects:
-  - exhibit_attachment: ALExhibitDocument.using(title="Exhibits", filename="exhibits")
----
-objects:
   - mrcd_instructions: ALDocument.using(title="Instructions for Motion Regarding Change of Domicile", filename="mrcd_instructions.docx", enabled=True, has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
 ---
 objects:
@@ -824,7 +821,7 @@ objects:
   - orpt_foc_67: ALDocument.using(title="Order Regarding Parenting Time", filename="foc_67_order_re_parenting_time.pdf", enabled=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
 ---
 objects:
-  - al_user_bundle: ALDocumentBundle.using(elements=[al_cover_bundle, mrcd_main, mrcd_addendum, exhibit_attachment, orcd_foc_29, orpt_foc_67, exhibit_attachment], filename="Motion Regarding Change of Domicile (All Forms).pdf", title="All forms to download for your records", enabled=True)
+  - al_user_bundle: ALDocumentBundle.using(elements=[al_cover_bundle, mrcd_main, mrcd_addendum, orcd_foc_29, orpt_foc_67, exhibit_attachment], filename="Motion Regarding Change of Domicile (All Forms).pdf", title="All forms to download for your records", enabled=True)
 ---
 objects:
   - al_cover_bundle: ALDocumentBundle.using(elements=[cover_sheet_template, mrcd_instructions], filename="Instructions - Do not file this", title="Instructions (Don't file this)", enabled=True)
