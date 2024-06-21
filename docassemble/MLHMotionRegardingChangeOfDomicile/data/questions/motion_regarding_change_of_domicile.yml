@@ -28,7 +28,7 @@ sections:
   - signpost_domestic_violence_info: "Domestic Violence"
   - signpost_new_address_info: "Your New Address"
   - signpost_parenting_time_info: "Parenting Time"
-  - signpost_esign: "Electronic Singnature"
+  - signpost_signature: "Electronic Signature"
   - signpost_download: "Download Your Forms"
   - review_full: "✎ <u>Review / Edit</u>"
 ---
@@ -38,6 +38,7 @@ code: |
 id: interview config code block
 code: |
   github_repo_name = "docassemble-MLHMotionRegardingChangeOfDomicile"
+  MLH_esign_supported = True
   MLH_court_forms = True
   MLH_time_min = 40
   MLH_time_max = 60
@@ -110,9 +111,9 @@ code: |
   nav.set_section("signpost_parenting_time_info")
   wants_parenting_time_change
 
-  nav.set_section("signpost_esign")
+  nav.set_section("signpost_signature")
   efile_notice
-  if esign:
+  if MLH_esign:
     signature_date
 
   nav.set_section("signpost_download")
@@ -768,19 +769,6 @@ content: |
   Look for the two-letter case type code at the end of your case number.
   (This could be DM, DC, DS, DP, or a different code.)
 ---
-id: Electronic signature question
-question: |
-  Electronic Signature
-subquestion: |
-  This tool can put "*/s/ ${ users[0] }*" where you would sign your name so you do not have to sign the form by hand. The court will accept this as your signature.
-
-  If you plan to e-file, you may want to add your electronic signature, otherwise you will need to print your forms, sign them by hand, and then scan them.
-
-  ${ collapse_template(efiling_info_template) }
-fields:
-  - Would you like to add your electronic signature to your form?: esign
-    datatype: yesnoradio
----
 id: DownloadScreen
 event: motion_re_change_of_domicile_download
 question: |
@@ -884,14 +872,15 @@ attachments:
         % else:
         N/A
         % endif
-    - signature_date: ${ signature_date if esign else "" }
-    - users1_signature: ${ f"/s/ {users[0]}" if esign else "" }
+    - signature_date: ${ signature_date if MLH_esign else "" }
+    - users1_signature: ${ f"/s/ {users[0]}" if MLH_esign else "" }
     - presiding_judge: ${ presiding_judge.name }
-    # - bar_number: ${ judge_bar_number }
-    # - hearing_date: ${ format_date(hearing_date) if has_hearing_info else "" }
-    # - hearing_time: ${ hearing_time if has_hearing_info else "" }
-    # - hearing_location: ${ hearing_address_on_one_line if has_hearing_info else "" }
-    # - service_date: ${ format_date(service_date) }
+    - pursuant_to: |
+        % if MLH_esign:
+        ${ MLH_esign_tag }
+        % else:
+        ${ '' }
+        % endif
 ---
 attachments:
   name: motion_re_cod_attachment
