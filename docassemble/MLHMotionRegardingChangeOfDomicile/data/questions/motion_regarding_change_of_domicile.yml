@@ -19,16 +19,13 @@ metadata:
 ---
 sections:
   - signpost_intro: "Introduction"
-  - signpost_qualifying_questions: "Do you qualify?"
   - signpost_prior_case: "Prior Case Information"
   - signpost_your_info: "Your Information"
   - signpost_other_info: "Other Parent's Information"
   - signpost_children_info: "Children's Information"
   - signpost_moving_reason_info: "Why You Want to Move"
-  - signpost_domestic_violence_info: "Domestic Violence"
   - signpost_new_address_info: "Your New Address"
   - signpost_parenting_time_info: "Parenting Time"
-  - signpost_signature: "Electronic Signature"
   - signpost_download: "Download Your Forms"
   - review_full: "✎ <u>Review / Edit</u>"
 ---
@@ -60,16 +57,14 @@ code: |
   nav.set_section("signpost_intro")
   intro_screen
   MLH_standard_intro_pages
-  court_permission_required
 
-  nav.set_section("signpost_qualifying_questions")
+  nav.set_section("signpost_prior_case")
   if not has_existing_case:
     existing_case_kickout
   if third_party_check:
     third_party_kickout
   what_you_will_need
 
-  nav.set_section("signpost_prior_case")
   docket_number
 
   county_choice
@@ -88,6 +83,7 @@ code: |
 
   nav.set_section("signpost_other_info")
   other_parties.gather()
+  
   nav.set_section("signpost_children_info")
   children.gather()
 
@@ -99,10 +95,9 @@ code: |
   if other_parent_opposition == "Yes":
     other_parent_opposition_cs
 
-  nav.set_section("signpost_domestic_violence_info")
   if domestic_violence:
     domestic_violence_exp
-    #exhibit_attachment.has_exhibits
+    gather_exhibit
 
   nav.set_section("signpost_new_address_info")
   new_address_in_us
@@ -111,12 +106,11 @@ code: |
   nav.set_section("signpost_parenting_time_info")
   wants_parenting_time_change
 
-  nav.set_section("signpost_signature")
+  nav.set_section("signpost_download")
   efile_notice
   if MLH_esign:
     signature_date
 
-  nav.set_section("signpost_download")
   motion_re_change_of_domicile_download
   #interview_motion_re_change_of_domicile = True
 ---
@@ -136,10 +130,10 @@ code: |
 #  motion_re_change_of_domicile_download
 ---
 code: |
-  accessible_instructions_link = "[https://michiganlegalhelp.org/resources/family/filing-move-your-children](https://michiganlegalhelp.org/resources/family/filing-move-your-children)"
+  accessible_instructions_link = "[https://michiganlegalhelp.org/step/3950](https://michiganlegalhelp.org/step/3950)"
 ---
 code: |
-  resource_page_link = "[https://michiganlegalhelp.org/explore-legal-resources](https://michiganlegalhelp.org/explore-legal-resources)"
+  resource_page_link = "[https://michiganlegalhelp.org/node/3949](https://michiganlegalhelp.org/node/3949)"
 ---
 # NOTE: for users and other_parties
 generic object: ALIndividual
@@ -287,7 +281,7 @@ id: how many children
 question: |
   How many children do you want this change in domicile or residence for?
 fields:
-  - no label: children.target_number
+  - Number of children: children.target_number
     datatype: integer
     min: 1
     validation messages:
@@ -342,12 +336,9 @@ subquestion: |
   This tool will help you prepare forms for your legal issue without a lawyer.
    
   ${ MLH_GUIDE_FULL }
----
-id: court_permission_required
-continue button field: court_permission_required
-question: |
-  When do you need court permission?
-subquestion: |
+
+  ## **When do you need court permission?**
+
   If there is a custody or parenting-time order for your child, you will **always** need permission from the court to move them **outside of Michigan.**
 
   You **may** need permission from the court to move **within Michigan.** This depends on things like:
@@ -372,7 +363,8 @@ subquestion: |
     * Family support
 
 fields:
-  - no label: has_existing_case
+  - Do you have an existing family law case?: has_existing_case
+    label above field: True
     datatype: yesnoradio
 ---
 id: existing_case_kickout
@@ -390,7 +382,7 @@ question: |
 subquestion: |
   A third party could be grandparents, stepparents, or a non-parent.
 fields:
-  - no label: third_party_check
+  - Is there a third party in your case?: third_party_check
     datatype: yesnoradio
 ---
 id: third_party_kickout
@@ -499,7 +491,7 @@ id: judgment or custody order
 question: |
   Is there a custody order or judgment in your family law case?
 fields:
-  - no label: prior_order_yesno
+  - Is there a custody order or judgment in your family law case?: prior_order_yesno
     datatype: yesnoradio
   - What is the date of the most recent order?: recent_order
     datatype: date
@@ -576,10 +568,9 @@ question: |
   Why do you want to move?
 subquestion: |
   The court will want to know if you have a legitimate reason or reasons for moving. This is to make sure you aren’t moving just to limit the other parent’s ability to spend time with your child.
-
-  Please use complete sentences to explain why you want to move.
 fields:
-  - no label: moving_reason
+  - Please use complete sentences to explain why you want to move.: moving_reason
+    label above field: True
     input type: area
 ---
 id: moving benefits explanation
@@ -594,23 +585,25 @@ subquestion: |
   * Will bring you closer to extended family; and
   * Other factors unique to you.
 
-  Please complete the following: The move will improve the quality of life for my child and me because...
+  **Please complete the following:** 
 fields:
-  - no label: moving_benefits
+  - The move will improve the quality of life for my child and me because...: moving_benefits
+    label above field: True
     input type: area
 ---
 id: move maintains other parent relationship
 question: |
   Will the move allow the child to maintain a similar relationship with ${ other_parties[0].name }?
 fields:
-  - no label: maintains_other_parent_relationship
+  - Will the child  maintain a similar relationship with ${ other_parties[0].name } after the move?: maintains_other_parent_relationship
+    label above field: True
     datatype: yesnoradio
 ---
 id: other parent opposition
 question: |
   To the best of your knowledge, does ${ other_parties[0].name } oppose the move?
 fields:
-  - no label: other_parent_opposition
+  - Does ${ other_parties[0].name } oppose the move?: other_parent_opposition
     datatype: radio
     choices:
       - Yes
@@ -623,7 +616,7 @@ question: |
 subquestion: |
   The amount of child support is based on several factors, including the number of overnights your child spends with each parent. If ${ other_parties[0].name } opposes the move, the court will want to know whether ${ other_parties[0].pronoun_subjective() } is only worried that having less overnights with your child will increase ${ other_parties[0].pronoun_possessive('child support payments') }.
 fields:
-  - no label: other_parent_opposition_cs
+  - Do you believe ${ other_parties[0].name } opposes the move to avoid paying more child support?: other_parent_opposition_cs
     datatype: radio
     choices:
       - Yes
@@ -639,61 +632,68 @@ id: domestic violence
 question: |
   Are you moving to escape domestic violence by ${ other_parties[0].name }?
 fields:
-  - no label: domestic_violence
+  - Are you moving to escape domestic violence?: domestic_violence
     datatype: yesnoradio
 ---
 id: domestic violence explanation
 question: |
-  Briefly explain how ${ other_parties[0].name } has been violent towards you.
-subquestion: |
-  Describe the violent conditions you have been expeirenceing. Tell the court if you have a personal protection order or a no contact order.
+  Explanation of domestic violence.
 fields:
-  no label: domestic_violence_exp
+  Briefly explain how ${ other_parties[0].name } has been violent towards you. Tell the court if you have a personal protection order or a no contact order.: domestic_violence_exp
+  label above field: True
   input type: area
 ---
-#generic object: ALExhibitList
-#id: any exhibits
-#question: |
-#  Do you have documents you want the judge to see?
-#subquestion: |
-#  If you have any documents, like a police report or medical record, you want the judge to see attach them to your motion. They are not required, but will help the judge understand your situation and why you want to move.
-#fields:
-#  - Do you have any documents you want to upload?: x.has_exhibits
-#    datatype: yesnoradio
-#  - note: |
-#      **Okay**. You will have a chance to upload multiple documents. 
-#      You can also add additional pages to this document.
-#    show if: x.has_exhibits
-#  - First document title: x[0].title
-#    maxlength: 60 # longer might break TOC
-#    show if: x.has_exhibits
-#  - Upload the first document: x[0].pages
-#    show if: x.has_exhibits
-#    datatype: files
-#    maximum image size: 1024
-#    image upload type: jpeg
-#    accept: |
-#      "image/png, image/jpeg, .doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf,.pdf"   
-#validation code: |
-#  if x.has_exhibits:
-#    full_size = sum(a_page.size_in_bytes() for a_page in x[0].pages)
-#    if full_size > (15 * 1024 * 1024):
-#      validation_error("Upload a file smaller than 15 MB.")
-#    if hasattr(x, 'maximum_size'):
-#      if full_size > x.maximum_size:
-#        validation_error(f"Upload a file smaller than {humanize.naturalsize(x.maximum_size)}")
-#    try:
-#      pdf_concatenate(x[0].pages)
-#    except:
-#      validation_error("Unable to convert this file. Please upload a new one.")
-#    x[0].pages.complete_attribute = 'ok'
-#    x[0].pages.reset_gathered()  # docassemble sets this attribute but we want to force gathering additional pages
+generic object: ALExhibitList
+id: any exhibits
+question: |
+  Do you have documents you want the judge to see?
+subquestion: |
+  If you have any documents that provide information about the domestic violence upload them now. 
+  
+  Examples of useful documents are police reports or medical records. These are not required, but can help the judge understand your situation and why you need to move.
+fields:
+  - Do you have any documents you want to upload?: x.has_exhibits
+    datatype: yesnoradio
+  - note: |
+      **Okay**. You will have a chance to upload multiple documents. 
+      You can also add additional pages to this document.
+    show if: x.has_exhibits
+  - First document title: x[0].title
+    maxlength: 60 # longer might break TOC
+    show if: x.has_exhibits
+  - Upload the first document: x[0].pages
+    show if: x.has_exhibits
+    datatype: files
+    maximum image size: 1024
+    image upload type: jpeg
+    accept: |
+      "image/png, image/jpeg, .doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf,.pdf"   
+validation code: |
+  if x.has_exhibits:
+    full_size = sum(a_page.size_in_bytes() for a_page in x[0].pages)
+    if full_size > (15 * 1024 * 1024):
+      validation_error("Upload a file smaller than 15 MB.")
+    if hasattr(x, 'maximum_size'):
+      if full_size > x.maximum_size:
+        validation_error(f"Upload a file smaller than {humanize.naturalsize(x.maximum_size)}")
+    try:
+      pdf_concatenate(x[0].pages)
+    except:
+      validation_error("Unable to convert this file. Please upload a new one.")
+    x[0].pages.complete_attribute = 'ok'
+    x[0].pages.reset_gathered()  # docassemble sets this attribute but we want to force gathering additional pages
+---
+code: |
+  # This block is not needed, but you can provide and customize for your needs.
+  # This mirrors the fallback block in ql_baseline.yml
+  exhibit_attachment.enabled = exhibit_attachment.exhibits.has_exhibits
+  gather_exhibit = True
 ---
 id: moving date
 question: |
   When do you want to move?
 fields:
-  - no label: moving_date
+  - When do you want to move?: moving_date
     datatype: date
 ---
 id: wants parenting time change
@@ -711,6 +711,7 @@ fields:
       - Change the current parenting-time order: True
   - Explain what you propose the new parenting-time arrangements to be. Use complete sentences.: requested_order
     input type: area
+    label above field: True
     show if:
       variable: wants_parenting_time_change
       is: True 
@@ -779,15 +780,15 @@ subquestion: |
   View, download and send your form below. Click the "Edit answers" button to fix any mistakes.
 
   ${ action_button_html(url_action('review_full'), label='Edit answers', color='info') }
-
-  ### Do not file cover page or instructions
-  ${ al_user_bundle.as_pdf() }
   
-  ${ action_button_html(al_user_bundle.as_pdf().url_for(), label="Download only the forms that you need file as a single PDF", icon='download') }
+  ${ al_user_bundle.download_list_html() }
   
   ${ al_user_bundle.send_button_html(show_editable_checkbox=False) }
 ---
 #################### Documents Start #####################
+---
+objects:
+  - exhibit_attachment: ALExhibitDocument.using(title="Exhibits", filename="exhibits" )
 ---
 objects:
   - al_cover: ALDocumentBundle.using(elements=[cover_sheet_template], filename="Cover Sheet -Do not file this", title="Cover Sheet (Don't file this)", enabled=True)
@@ -799,9 +800,6 @@ objects:
   - mrcd_addendum: ALDocument.using(title="Addendum for Motion Regarding Change of Domicile", filename="motion_re_cod_attachment.docx", enabled=True, has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
 ---
 objects:
-  - exhibit_attachment: ALExhibitList.using(title="Exhibits", filename="exhibits", add_page_numbers=True, include_table_of_contents=False, include_exhibit_cover_pages=True, enabled=True, has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
----
-objects:
   - mrcd_instructions: ALDocument.using(title="Instructions for Motion Regarding Change of Domicile", filename="mrcd_instructions.docx", enabled=True, has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
 ---
 objects:
@@ -811,13 +809,13 @@ objects:
   - orpt_foc_67: ALDocument.using(title="Order Regarding Parenting Time", filename="foc_67_order_re_parenting_time.pdf", enabled=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
 ---
 objects:
-  - al_user_bundle: ALDocumentBundle.using(elements=[al_cover_bundle, mrcd_main, mrcd_addendum, orcd_foc_29, orpt_foc_67], filename="Motion Regarding Change of Domicile (All Forms).pdf", title="All forms to download for your records", enabled=True)
+  - al_user_bundle: ALDocumentBundle.using(elements=[al_cover_bundle, mrcd_main, mrcd_addendum, orcd_foc_29, orpt_foc_67, exhibit_attachment], filename="Motion Regarding Change of Domicile (All Forms).pdf", title="All forms to download for your records", enabled=True)
 ---
 objects:
   - al_cover_bundle: ALDocumentBundle.using(elements=[cover_sheet_template, mrcd_instructions], filename="Instructions - Do not file this", title="Instructions (Don't file this)", enabled=True)
 ---
 objects:
-  - al_court_bundle: ALDocumentBundle.using(elements=[mrcd_main, mrcd_addendum, orcd_foc_29, orpt_foc_67], filename="Motion Regarding Change of Domicile (All Forms).pdf", title="All forms to download for your records", enabled=True)
+  - al_court_bundle: ALDocumentBundle.using(elements=[mrcd_main, mrcd_addendum, exhibit_attachment, orcd_foc_29, orpt_foc_67], filename="Motion Regarding Change of Domicile (All Forms).pdf", title="All forms to download for your records", enabled=True)
 ---
 attachments:
   name: foc_115_motion_re_change_of_domicile
@@ -957,7 +955,6 @@ attachments:
    variable name: mrcd_instructions[i]       
    skip undefined: True
    docx template file: mrcd_instructions.docx
-   tagged pdf: True
 ---
 #################### Documents End #####################
 ---
