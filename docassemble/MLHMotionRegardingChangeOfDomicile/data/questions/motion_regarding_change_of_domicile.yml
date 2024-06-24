@@ -453,6 +453,7 @@ subquestion: |
 
   In your court case, you are either the Plaintiff or the Defendant.
 
+  ${ collapse_template(help_user_ask_role_template) }
 fields:
   - What party are you in your case?: user_ask_role
     datatype: radio
