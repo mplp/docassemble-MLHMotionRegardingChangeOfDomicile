@@ -111,9 +111,10 @@ code: |
   wants_parenting_time_change
 
   nav.set_section("signpost_download")
-  efile_notice
+  MLH_outro_filing_information
   if MLH_esign:
     signature_date
+  MLH_outro_saving_answers
 
   motion_re_change_of_domicile_download
   #interview_motion_re_change_of_domicile = True
@@ -214,8 +215,18 @@ sets:
 question: |
   Your contact information
 subquestion: |
+  ${ collapse_template(safe_contact_info) }
+fields:
+  - Phone number: users[0].phone_number
+  - code: |
+      users[0].address_fields(country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=True)
+---
+template: safe_contact_info
+subject: |
+  What if it's not safe to share my contact information with the other parent?
+content: |
   % if user_started_case:
-  For the following, please enter a **SAFE** address and telephone number where the court can contact you. **DO NOT** enter an address or phone number that you want to keep confidential from the Defendant. The address and telephone number you enter will be part of the court file and will be on the forms that will be given to the Defendant.
+  Please enter a **SAFE** address and telephone number where the court can contact you. **DO NOT** enter an address or phone number that you want to keep confidential from the Defendant. The address and telephone number you enter will be part of the court file and will be on the forms that will be given to the Defendant.
   
   If you don't want the Defendant to know your current address and phone number, you can use a post office box or the address and telephone number of a relative or friend who has agreed to let you do this.
   % else:
@@ -223,10 +234,6 @@ subquestion: |
   
   If you don't want the Plaintiff to know your current address and phone number, you can use a post office box or the address and telephone number of a relative or friend who has agreed to let you do this.
   % endif
-fields:
-  - Phone number: users[0].phone_number
-  - code: |
-      users[0].address_fields(country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=True)
 ---
 id: name of opposing parties
 sets:
@@ -313,9 +320,12 @@ question: |
 fields:
   - Is your new address in the United States?: new_address_in_us
     datatype: yesnoradio
+    label above field: True
     required: True
   - City: new_address[0].city
+    label above field: True
   - State: new_address[0].state
+    label above field: True
     show if:
       variable: new_address_in_us
       is: True
@@ -327,9 +337,11 @@ fields:
       is: False
   - How far is it from ${ other_parties[0].name.first }'s current residence, in miles?: distance_from_other_parent
     datatype: integer
+    label above field: True
     required: True
   - How far is it from your current residence, in miles?: distance_from_current_residence
     datatype: integer
+    label above field: True
     required: True
 ---
 #################### Overridden AL Questions End #####################
@@ -529,10 +541,10 @@ question: |
 subquestion: |
   The judge will consider whether:
 
-    1. The move would improve your and your child’s quality of life;
+    1. The move would improve your and your ${ "children" if len(children) > 1 else "child" }’s quality of life;
     2. Each parent has followed the parenting-time provisions of your court order;
-    3. You are using the move to limit the other parent’s time with your child;
-    4. New parenting-time arrangements will allow your child to keep a similar relationship with the other parent;
+    3. You are using the move to limit the other parent’s time with your ${ "children" if len(children) > 1 else "child" };
+    4. New parenting-time arrangements will allow your ${ "children" if len(children) > 1 else "child" } to keep a similar relationship with the other parent;
     5. The other parent is fighting against the move just to pay less child support;
     6. You are moving to escape domestic violence by the other parent.
 
@@ -542,7 +554,7 @@ id: moving reason explanation
 question: |
   Why do you want to move?
 subquestion: |
-  The court will want to know if you have a legitimate reason or reasons for moving. This is to make sure you aren’t moving just to limit the other parent’s ability to spend time with your child.
+  The court will want to know if you have a legitimate reason or reasons for moving. This is to make sure you aren’t moving just to limit the other parent’s ability to spend time with your ${ "children" if len(children) > 1 else "child" }.
 fields:
   - Please use complete sentences to explain why you want to move.: moving_reason
     label above field: True
@@ -550,7 +562,7 @@ fields:
 ---
 id: moving benefits explanation
 question: |
-  Explain how the move will improve your and your child’s lives
+  Explain how the move will improve your and your ${ "children" if len(children) > 1 else "child" }’s lives
 subquestion: |
   The court may consider things like whether the move:
 
@@ -562,15 +574,15 @@ subquestion: |
 
   **Please complete the following:** 
 fields:
-  - The move will improve the quality of life for my child and me because...: moving_benefits
+  - The move will improve the quality of life for my ${ "children" if len(children) > 1 else "child" } and me because...: moving_benefits
     label above field: True
     input type: area
 ---
 id: move maintains other parent relationship
 question: |
-  Will the move allow the child to maintain a similar relationship with ${ other_parties[0].name }?
+  The ${ "children" if len(children) > 1 else "child" }'s relationship with ${ other_parties[0].name }
 fields:
-  - Will the child  maintain a similar relationship with ${ other_parties[0].name } after the move?: maintains_other_parent_relationship
+  - Will the move allow the ${ "children" if len(children) > 1 else "child" } to maintain a similar relationship with ${ other_parties[0].name }?: maintains_other_parent_relationship
     label above field: True
     datatype: yesnoradio
 ---
@@ -589,9 +601,10 @@ id: other parent opposition child support
 question: |
   Do you believe ${ other_parties[0].name } opposes the move to avoid paying more child support?
 subquestion: |
-  The amount of child support is based on several factors, including the number of overnights your child spends with each parent. If ${ other_parties[0].name } opposes the move, the court will want to know whether ${ other_parties[0].pronoun_subjective() } is only worried that having less overnights with your child will increase ${ other_parties[0].pronoun_possessive('child support payments') }.
+  The amount of child support is based on several factors, including the number of overnights your ${ "children spend" if len(children) > 1 else "child spends" } with each parent. If ${ other_parties[0].name } opposes the move, the court will want to know whether ${ other_parties[0].pronoun_subjective() } is only worried that having less overnights with your ${ "children" if len(children) > 1 else "child" } will increase ${ other_parties[0].pronoun_possessive('child support payments') }.
 fields:
   - Do you believe ${ other_parties[0].name } opposes the move to avoid paying more child support?: other_parent_opposition_cs
+    label above field: True
     datatype: radio
     choices:
       - Yes
@@ -605,9 +618,10 @@ fields:
 ---
 id: domestic violence
 question: |
-  Are you moving to escape domestic violence by ${ other_parties[0].name }?
+  Domestic Violence
 fields:
-  - Are you moving to escape domestic violence?: domestic_violence
+  - Are you moving to escape domestic violence by ${ other_parties[0].name }?: domestic_violence
+    label above field: True
     datatype: yesnoradio
 ---
 id: domestic violence explanation
@@ -681,6 +695,7 @@ subquestion: |
 fields:
   - I want to ask the court to...: wants_parenting_time_change
     datatype: radio
+    label above field: True
     choices:
       - Continue the current parenting-time order: False
       - Change the current parenting-time order: True
@@ -692,6 +707,7 @@ fields:
       is: True 
   - Does ${ other_parties[0].name } agree with this new parenting-time schedule?: parenting_time_change_agreement
     datatype: radio
+    label above field: True
     choices:
       - Yes
       - No
@@ -715,35 +731,6 @@ subject: |
   More information about parenting-time schedules.
 content: |
   Some friend of the court offices have standards parenting-time schedules you can use.  There are also sample parenting-time schedules on the Michigan Legal Help website,    including a sample long distance parenting-time schedule. 
----
-id: efile note question
-question: |
-  Completing this process does not file your forms with the court
-subquestion: |
-  You need to file them at court in person, by mail, e-mail, or by e-filing.
-  If you are e-filing, you must use [MiFILE](https://mifile.courts.michigan.gov/).
-  Read the instructions that you will get with your forms for more information.
-
-  ${ collapse_template(am_i_going_to_efile) }
-
-  This tool will create separate forms so you can more easily e-file using MiFILE, if you plan to e-file.
-  
-  This means that **you may need to download multiple files to get all of the forms you will need**. At the end of this interview you will see a list of documents to download. Make sure you download each of them. 
-
-  You will also be able to get all forms you need by clicking the **Download Your Form(s)** button on the page at the end of this tool.
-
-continue button field: efile_notice
----
-template: am_i_going_to_efile
-subject: |
-  How do I know if I am going to e-file?
-content: |
-  Not all courts offer e-filing at this time. To find out if your court has e-filing, read the
-  [What is E-Filing?](https://michiganlegalhelp.org/resources/mifile/what-e-filing) article.
-  The article tells you how to find out which courts have e-filing and what kinds of cases those courts are accepting by e-filing.
-
-  Look for the two-letter case type code at the end of your case number.
-  (This could be DM, DC, DS, DP, or a different code.)
 ---
 id: DownloadScreen
 event: motion_re_change_of_domicile_download
