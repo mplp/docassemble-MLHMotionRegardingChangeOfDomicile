@@ -39,6 +39,7 @@ code: |
   MLH_court_forms = True
   MLH_time_min = 40
   MLH_time_max = 60
+  MLH_form_type = "forms"
 ---
 objects:
   - users: ALPeopleList.using(auto_gather=True, complete_attribute="complete", target_number=1)
@@ -55,15 +56,18 @@ mandatory: True
 code: |
   nav.set_section('review_full')
   nav.set_section("signpost_intro")
-  intro_screen
-  MLH_standard_intro_pages
+  MLH_intro_landing
+  domicile_change_info
+  MLH_agree_terms
+  MLH_intro_navigate_save
+  if MLH_intro_agree_no_pii == False:
+    MLH_intro_agree_no_pii_exit
 
   nav.set_section("signpost_prior_case")
   if not has_existing_case:
     existing_case_kickout
   if third_party_check:
     third_party_kickout
-  what_you_will_need
 
   docket_number
 
@@ -134,6 +138,17 @@ code: |
 ---
 code: |
   resource_page_link = "[https://michiganlegalhelp.org/node/3949](https://michiganlegalhelp.org/node/3949)"
+---
+code: |
+  MLH_materials_included = True
+---
+template: MLH_materials              
+content: |
+  * A copy of the most recent custody order
+---
+template: MLH_welcome_message     
+content: |
+  This tool will help you prepare the forms to file a *Motion Regarding Change of Domicile* in Michigan.
 ---
 # NOTE: for users and other_parties
 generic object: ALIndividual
@@ -318,30 +333,13 @@ fields:
     required: True
 ---
 #################### Overridden AL Questions End #####################
----
-id: FirstScreen
+id: 
 question: |
-  Welcome to the Do-It-Yourself Motion Regarding Change of Domicile tool
-subquestion: |
-  This tool will help you prepare the forms to file a *Motion Regarding Change of Domicile* in Michigan.
-
-  If there is a custody or parenting-time order for your child, you must get the court's approval before moving their domicile from Michigan.
-continue button field: intro_screen
----
-id: MLH_intro_landing
-continue button field: MLH_intro_landing
-question: |
-  Need more help?
-subquestion: |
-  This tool will help you prepare forms for your legal issue without a lawyer.
-   
-  ${ MLH_GUIDE_FULL }
-
-  ## **When do you need court permission?**
-
-  If there is a custody or parenting-time order for your child, you will **always** need permission from the court to move them **outside of Michigan.**
-
-  You **may** need permission from the court to move **within Michigan.** This depends on things like:
+  When do you need court permission to move?
+subquestion: |  
+  If there is a custody or parenting-time order for your child, you **must** get the court’s approval before moving their domicile **outside Michigan**.
+  
+  You **may** need permission from the court to move **within Michigan**. This depends on things like:
 
     * The custody and parenting-time arrangements
     * How far your proposed move is
@@ -349,6 +347,7 @@ subquestion: |
     * Whether the other parent agrees to the move
 
   To learn more about when you need the court's permission to move, read [Moving with Children after Separation or Divorce](https://michiganlegalhelp.org/resources/family/moving-children-after-separation-or-divorce).
+continue button field: domicile_change_info
 ---
 id: has_existing_case
 question: |
@@ -383,6 +382,7 @@ subquestion: |
   A third party could be grandparents, stepparents, or a non-parent.
 fields:
   - Is there a third party in your case?: third_party_check
+    label above field: True
     datatype: yesnoradio
 ---
 id: third_party_kickout
@@ -396,20 +396,6 @@ subquestion: |
 
   If the only parties involved are the parents click the **${ MLH_back_button_label }** button to change your answer.
 ---
-# ToDo: need to fix template. I think error is with image_court_papers
-id: what_you_will_need
-question: |
-  What you will need to complete this form
-subquestion: |
-  To complete this form, you will need:
-
-  * the case number,
-  * court information, and
-  * information about the parties from your existing case
-
-#  ${ collapse_template(where_info_on_papers_template) }
-continue button field: what_you_will_need
----
 #template: where_info_on_papers_template
 #subject: |
 #  Where can I find this information?
@@ -421,18 +407,6 @@ continue button field: what_you_will_need
 #  * The information about the parties is circled in red
 #
 #  ${ image_court_papers.show(width="100%") }
----
-id: MLH intro time
-question: |
-  Using this tool
-subquestion: |
-  It should take you between ${ MLH_time_min } and ${ MLH_time_max } minutes to finish answering questions.
-
-  After that, your personalized forms to file a *Motion Regarding Change of Domicile* will be ready to print.
-
-  You will also get a set of instructions on what you need to do next.
-
-continue button field: MLH_intro_time
 ---
 id: docket number
 question: |
