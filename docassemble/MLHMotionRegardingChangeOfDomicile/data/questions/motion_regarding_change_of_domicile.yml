@@ -26,7 +26,7 @@ sections:
   - signpost_moving_reason_info: "Why You Want to Move"
   - signpost_new_address_info: "Your New Address"
   - signpost_parenting_time_info: "Parenting Time"
-  - signpost_download: "Get Your Forms"
+  - signpost_download: "Download Your Forms"
   - review_full: "✎ <u>Review / Edit</u>"
 ---
 code: |
@@ -35,6 +35,7 @@ code: |
 id: interview config code block
 code: |
   github_repo_name = "docassemble-MLHMotionRegardingChangeOfDomicile"
+  MLH_esign_supported = True
   MLH_court_forms = True
   MLH_time_min = 40
   MLH_time_max = 60
@@ -107,7 +108,7 @@ code: |
 
   nav.set_section("signpost_download")
   efile_notice
-  if esign:
+  if MLH_esign:
     signature_date
 
   motion_re_change_of_domicile_download
@@ -452,6 +453,7 @@ subquestion: |
 
   In your court case, you are either the Plaintiff or the Defendant.
 
+  ${ collapse_template(help_user_ask_role_template) }
 fields:
   - What party are you in your case?: user_ask_role
     datatype: radio
@@ -769,19 +771,6 @@ content: |
   Look for the two-letter case type code at the end of your case number.
   (This could be DM, DC, DS, DP, or a different code.)
 ---
-id: Electronic signature question
-question: |
-  Electronic Signature
-subquestion: |
-  This tool can put "*/s/ ${ users[0] }*" where you would sign your name so you do not have to sign the form by hand. The court will accept this as your signature.
-
-  If you plan to e-file, you may want to add your electronic signature, otherwise you will need to print your forms, sign them by hand, and then scan them.
-
-  ${ collapse_template(efiling_info_template) }
-fields:
-  - Would you like to add your electronic signature to your form?: esign
-    datatype: yesnoradio
----
 id: DownloadScreen
 event: motion_re_change_of_domicile_download
 question: |
@@ -799,11 +788,15 @@ subquestion: |
 ---
 #################### Documents Start #####################
 ---
+attachment: 
+  variable name: mrcd_main.addendum
+  docx template file: motion_re_cod_attachment.docx
+---
 code: |
-  mrcd_main.overflow_fields['moving_reason'].overflow_trigger = 640
-  mrcd_main.overflow_fields['moving_benefits'].overflow_trigger = 640
-  mrcd_main.overflow_fields['other_parent_opposition_cs'].overflow_trigger = 640
-  mrcd_main.overflow_fields['domestic_violence '].overflow_trigger = 640
+  mrcd_main.overflow_fields['moving_reason'].overflow_trigger = 0
+  mrcd_main.overflow_fields['moving_benefits'].overflow_trigger = 0
+  mrcd_main.overflow_fields['other_parent_opposition_cs'].overflow_trigger = 0
+  mrcd_main.overflow_fields['domestic_violence '].overflow_trigger = 0
   mrcd_main.overflow_fields.gathered = True
 ---
 objects:
@@ -815,9 +808,6 @@ objects:
 objects:
   - mrcd_main: ALDocument.using(title="Motion Regarding Change of Domicile", filename="foc_115_motion_re_change_of_domicile.pdf", enabled=True, has_addendum=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
 ---
-#objects:
- # - mrcd_addendum: ALDocument.using(title="Addendum for Motion Regarding Change of Domicile", filename="motion_re_cod_attachment.docx", enabled=True, has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
-#---
 objects:
   - mrcd_instructions: ALDocument.using(title="Instructions for Motion Regarding Change of Domicile", filename="mrcd_instructions.docx", enabled=True, has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
 ---
@@ -835,10 +825,6 @@ objects:
 ---
 objects:
   - al_court_bundle: ALDocumentBundle.using(elements=[mrcd_main, exhibit_attachment, orcd_foc_29, orpt_foc_67], filename="Motion Regarding Change of Domicile (All Forms).pdf", title="All forms to download for your records", enabled=True)
----
-attachment:
-  variable name: mrcd_main.addendum
-  docx template file: motion_re_cod_attachment.docx
 ---
 attachments:
   name: foc_115_motion_re_change_of_domicile
@@ -893,22 +879,15 @@ attachments:
         % else:
         N/A
         % endif
-    - signature_date: ${ signature_date if esign else "" }
-    - users1_signature: ${ f"/s/ {users[0]}" if esign else "" }
+    - signature_date: ${ signature_date if MLH_esign else "" }
+    - users1_signature: ${ f"/s/ {users[0]}" if MLH_esign else "" }
     - presiding_judge: ${ presiding_judge.name }
-    # - bar_number: ${ judge_bar_number }
-    # - hearing_date: ${ format_date(hearing_date) if has_hearing_info else "" }
-    # - hearing_time: ${ hearing_time if has_hearing_info else "" }
-    # - hearing_location: ${ hearing_address_on_one_line if has_hearing_info else "" }
-    # - service_date: ${ format_date(service_date) }
-#---
-#attachments:
-#  name: motion_re_cod_attachment
-#  filename: motion_re_cod_attachment
-#  docx template file: motion_re_cod_attachment.docx
-#  variable name: mrcd_addendum[i]
-#  skip undefined: True
-#  tagged pdf: True
+    - pursuant_to: |
+        % if MLH_esign:
+        ${ MLH_esign_tag }
+        % else:
+        ${ '' }
+        % endif
 ---
 attachments:
   name: foc_67_order_re_parenting_time
