@@ -39,6 +39,7 @@ code: |
   MLH_court_forms = True
   MLH_time_min = 40
   MLH_time_max = 60
+  MLH_form_type = "forms"
 ---
 objects:
   - users: ALPeopleList.using(auto_gather=True, complete_attribute="complete", target_number=1)
@@ -55,15 +56,18 @@ mandatory: True
 code: |
   nav.set_section('review_full')
   nav.set_section("signpost_intro")
-  intro_screen
-  MLH_standard_intro_pages
+  MLH_intro_landing
+  domicile_change_info
+  MLH_agree_terms
+  MLH_intro_navigate_save
+  if MLH_intro_agree_no_pii == False:
+    MLH_intro_agree_no_pii_exit
 
   nav.set_section("signpost_prior_case")
   if not has_existing_case:
     existing_case_kickout
   if third_party_check:
     third_party_kickout
-  what_you_will_need
 
   docket_number
 
@@ -107,9 +111,10 @@ code: |
   wants_parenting_time_change
 
   nav.set_section("signpost_download")
-  efile_notice
+  MLH_outro_filing_information
   if MLH_esign:
     signature_date
+  MLH_outro_saving_answers
 
   motion_re_change_of_domicile_download
   #interview_motion_re_change_of_domicile = True
@@ -134,6 +139,17 @@ code: |
 ---
 code: |
   resource_page_link = "[https://michiganlegalhelp.org/node/3949](https://michiganlegalhelp.org/node/3949)"
+---
+code: |
+  MLH_materials_included = True
+---
+template: MLH_materials              
+content: |
+  * A copy of the most recent custody order
+---
+template: MLH_welcome_message     
+content: |
+  This tool will help you prepare the forms to file a *Motion Regarding Change of Domicile* in Michigan.
 ---
 # NOTE: for users and other_parties
 generic object: ALIndividual
@@ -199,8 +215,18 @@ sets:
 question: |
   Your contact information
 subquestion: |
+  ${ collapse_template(safe_contact_info) }
+fields:
+  - Phone number: users[0].phone_number
+  - code: |
+      users[0].address_fields(country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=True)
+---
+template: safe_contact_info
+subject: |
+  What if it's not safe to share my contact information with the other parent?
+content: |
   % if user_started_case:
-  For the following, please enter a **SAFE** address and telephone number where the court can contact you. **DO NOT** enter an address or phone number that you want to keep confidential from the Defendant. The address and telephone number you enter will be part of the court file and will be on the forms that will be given to the Defendant.
+  Please enter a **SAFE** address and telephone number where the court can contact you. **DO NOT** enter an address or phone number that you want to keep confidential from the Defendant. The address and telephone number you enter will be part of the court file and will be on the forms that will be given to the Defendant.
   
   If you don't want the Defendant to know your current address and phone number, you can use a post office box or the address and telephone number of a relative or friend who has agreed to let you do this.
   % else:
@@ -208,10 +234,6 @@ subquestion: |
   
   If you don't want the Plaintiff to know your current address and phone number, you can use a post office box or the address and telephone number of a relative or friend who has agreed to let you do this.
   % endif
-fields:
-  - Phone number: users[0].phone_number
-  - code: |
-      users[0].address_fields(country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=True)
 ---
 id: name of opposing parties
 sets:
@@ -298,9 +320,12 @@ question: |
 fields:
   - Is your new address in the United States?: new_address_in_us
     datatype: yesnoradio
+    label above field: True
     required: True
   - City: new_address[0].city
+    label above field: True
   - State: new_address[0].state
+    label above field: True
     show if:
       variable: new_address_in_us
       is: True
@@ -312,36 +337,21 @@ fields:
       is: False
   - How far is it from ${ other_parties[0].name.first }'s current residence, in miles?: distance_from_other_parent
     datatype: integer
+    label above field: True
     required: True
   - How far is it from your current residence, in miles?: distance_from_current_residence
     datatype: integer
+    label above field: True
     required: True
 ---
 #################### Overridden AL Questions End #####################
----
-id: FirstScreen
+id: 
 question: |
-  Welcome to the Do-It-Yourself Motion Regarding Change of Domicile tool
-subquestion: |
-  This tool will help you prepare the forms to file a *Motion Regarding Change of Domicile* in Michigan.
-
-  If there is a custody or parenting-time order for your child, you must get the court's approval before moving their domicile from Michigan.
-continue button field: intro_screen
----
-id: MLH_intro_landing
-continue button field: MLH_intro_landing
-question: |
-  Need more help?
-subquestion: |
-  This tool will help you prepare forms for your legal issue without a lawyer.
-   
-  ${ MLH_GUIDE_FULL }
-
-  ## **When do you need court permission?**
-
-  If there is a custody or parenting-time order for your child, you will **always** need permission from the court to move them **outside of Michigan.**
-
-  You **may** need permission from the court to move **within Michigan.** This depends on things like:
+  When do you need court permission to move?
+subquestion: |  
+  If there is a custody or parenting-time order for your child, you **must** get the court’s approval before moving their domicile **outside Michigan**.
+  
+  You **may** need permission from the court to move **within Michigan**. This depends on things like:
 
     * The custody and parenting-time arrangements
     * How far your proposed move is
@@ -349,6 +359,7 @@ subquestion: |
     * Whether the other parent agrees to the move
 
   To learn more about when you need the court's permission to move, read [Moving with Children after Separation or Divorce](https://michiganlegalhelp.org/resources/family/moving-children-after-separation-or-divorce).
+continue button field: domicile_change_info
 ---
 id: has_existing_case
 question: |
@@ -383,6 +394,7 @@ subquestion: |
   A third party could be grandparents, stepparents, or a non-parent.
 fields:
   - Is there a third party in your case?: third_party_check
+    label above field: True
     datatype: yesnoradio
 ---
 id: third_party_kickout
@@ -396,20 +408,6 @@ subquestion: |
 
   If the only parties involved are the parents click the **${ MLH_back_button_label }** button to change your answer.
 ---
-# ToDo: need to fix template. I think error is with image_court_papers
-id: what_you_will_need
-question: |
-  What you will need to complete this form
-subquestion: |
-  To complete this form, you will need:
-
-  * the case number,
-  * court information, and
-  * information about the parties from your existing case
-
-#  ${ collapse_template(where_info_on_papers_template) }
-continue button field: what_you_will_need
----
 #template: where_info_on_papers_template
 #subject: |
 #  Where can I find this information?
@@ -421,18 +419,6 @@ continue button field: what_you_will_need
 #  * The information about the parties is circled in red
 #
 #  ${ image_court_papers.show(width="100%") }
----
-id: MLH intro time
-question: |
-  Using this tool
-subquestion: |
-  It should take you between ${ MLH_time_min } and ${ MLH_time_max } minutes to finish answering questions.
-
-  After that, your personalized forms to file a *Motion Regarding Change of Domicile* will be ready to print.
-
-  You will also get a set of instructions on what you need to do next.
-
-continue button field: MLH_intro_time
 ---
 id: docket number
 question: |
@@ -555,10 +541,10 @@ question: |
 subquestion: |
   The judge will consider whether:
 
-    1. The move would improve your and your child’s quality of life;
+    1. The move would improve your and your ${ "children" if len(children) > 1 else "child" }’s quality of life;
     2. Each parent has followed the parenting-time provisions of your court order;
-    3. You are using the move to limit the other parent’s time with your child;
-    4. New parenting-time arrangements will allow your child to keep a similar relationship with the other parent;
+    3. You are using the move to limit the other parent’s time with your ${ "children" if len(children) > 1 else "child" };
+    4. New parenting-time arrangements will allow your ${ "children" if len(children) > 1 else "child" } to keep a similar relationship with the other parent;
     5. The other parent is fighting against the move just to pay less child support;
     6. You are moving to escape domestic violence by the other parent.
 
@@ -568,7 +554,7 @@ id: moving reason explanation
 question: |
   Why do you want to move?
 subquestion: |
-  The court will want to know if you have a legitimate reason or reasons for moving. This is to make sure you aren’t moving just to limit the other parent’s ability to spend time with your child.
+  The court will want to know if you have a legitimate reason or reasons for moving. This is to make sure you aren’t moving just to limit the other parent’s ability to spend time with your ${ "children" if len(children) > 1 else "child" }.
 fields:
   - Please use complete sentences to explain why you want to move.: moving_reason
     label above field: True
@@ -576,7 +562,7 @@ fields:
 ---
 id: moving benefits explanation
 question: |
-  Explain how the move will improve your and your child’s lives
+  Explain how the move will improve your and your ${ "children" if len(children) > 1 else "child" }’s lives
 subquestion: |
   The court may consider things like whether the move:
 
@@ -588,15 +574,15 @@ subquestion: |
 
   **Please complete the following:** 
 fields:
-  - The move will improve the quality of life for my child and me because...: moving_benefits
+  - The move will improve the quality of life for my ${ "children" if len(children) > 1 else "child" } and me because...: moving_benefits
     label above field: True
     input type: area
 ---
 id: move maintains other parent relationship
 question: |
-  Will the move allow the child to maintain a similar relationship with ${ other_parties[0].name }?
+  The ${ "children" if len(children) > 1 else "child" }'s relationship with ${ other_parties[0].name }
 fields:
-  - Will the child  maintain a similar relationship with ${ other_parties[0].name } after the move?: maintains_other_parent_relationship
+  - Will the move allow the ${ "children" if len(children) > 1 else "child" } to maintain a similar relationship with ${ other_parties[0].name }?: maintains_other_parent_relationship
     label above field: True
     datatype: yesnoradio
 ---
@@ -615,9 +601,10 @@ id: other parent opposition child support
 question: |
   Do you believe ${ other_parties[0].name } opposes the move to avoid paying more child support?
 subquestion: |
-  The amount of child support is based on several factors, including the number of overnights your child spends with each parent. If ${ other_parties[0].name } opposes the move, the court will want to know whether ${ other_parties[0].pronoun_subjective() } is only worried that having less overnights with your child will increase ${ other_parties[0].pronoun_possessive('child support payments') }.
+  The amount of child support is based on several factors, including the number of overnights your ${ "children spend" if len(children) > 1 else "child spends" } with each parent. If ${ other_parties[0].name } opposes the move, the court will want to know whether ${ other_parties[0].pronoun_subjective() } is only worried that having less overnights with your ${ "children" if len(children) > 1 else "child" } will increase ${ other_parties[0].pronoun_possessive('child support payments') }.
 fields:
   - Do you believe ${ other_parties[0].name } opposes the move to avoid paying more child support?: other_parent_opposition_cs
+    label above field: True
     datatype: radio
     choices:
       - Yes
@@ -631,9 +618,10 @@ fields:
 ---
 id: domestic violence
 question: |
-  Are you moving to escape domestic violence by ${ other_parties[0].name }?
+  Domestic Violence
 fields:
-  - Are you moving to escape domestic violence?: domestic_violence
+  - Are you moving to escape domestic violence by ${ other_parties[0].name }?: domestic_violence
+    label above field: True
     datatype: yesnoradio
 ---
 id: domestic violence explanation
@@ -707,6 +695,7 @@ subquestion: |
 fields:
   - I want to ask the court to...: wants_parenting_time_change
     datatype: radio
+    label above field: True
     choices:
       - Continue the current parenting-time order: False
       - Change the current parenting-time order: True
@@ -718,6 +707,7 @@ fields:
       is: True 
   - Does ${ other_parties[0].name } agree with this new parenting-time schedule?: parenting_time_change_agreement
     datatype: radio
+    label above field: True
     choices:
       - Yes
       - No
@@ -741,35 +731,6 @@ subject: |
   More information about parenting-time schedules.
 content: |
   Some friend of the court offices have standards parenting-time schedules you can use.  There are also sample parenting-time schedules on the Michigan Legal Help website,    including a sample long distance parenting-time schedule. 
----
-id: efile note question
-question: |
-  Completing this process does not file your forms with the court
-subquestion: |
-  You need to file them at court in person, by mail, e-mail, or by e-filing.
-  If you are e-filing, you must use [MiFILE](https://mifile.courts.michigan.gov/).
-  Read the instructions that you will get with your forms for more information.
-
-  ${ collapse_template(am_i_going_to_efile) }
-
-  This tool will create separate forms so you can more easily e-file using MiFILE, if you plan to e-file.
-  
-  This means that **you may need to download multiple files to get all of the forms you will need**. At the end of this interview you will see a list of documents to download. Make sure you download each of them. 
-
-  You will also be able to get all forms you need by clicking the **Download Your Form(s)** button on the page at the end of this tool.
-
-continue button field: efile_notice
----
-template: am_i_going_to_efile
-subject: |
-  How do I know if I am going to e-file?
-content: |
-  Not all courts offer e-filing at this time. To find out if your court has e-filing, read the
-  [What is E-Filing?](https://michiganlegalhelp.org/resources/mifile/what-e-filing) article.
-  The article tells you how to find out which courts have e-filing and what kinds of cases those courts are accepting by e-filing.
-
-  Look for the two-letter case type code at the end of your case number.
-  (This could be DM, DC, DS, DP, or a different code.)
 ---
 id: DownloadScreen
 event: motion_re_change_of_domicile_download
