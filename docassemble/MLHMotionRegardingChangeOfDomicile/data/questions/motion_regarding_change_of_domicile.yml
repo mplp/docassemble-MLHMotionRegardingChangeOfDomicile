@@ -806,16 +806,16 @@ objects:
   - al_cover: ALDocumentBundle.using(elements=[cover_sheet_template], filename="Cover Sheet -Do not file this", title="Cover Sheet (Don't file this)", enabled=True)
 ---
 objects:
-  - mrcd_main: ALDocument.using(title="Motion Regarding Change of Domicile", filename="foc_115_motion_re_change_of_domicile.pdf", enabled=True, has_addendum=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+  - mrcd_main: ALDocument.using(title="Motion Regarding Change of Domicile", filename="motion_re_change_of_domicile_foc_115.pdf", enabled=True, has_addendum=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
 ---
 objects:
   - mrcd_instructions: ALDocument.using(title="Instructions for Motion Regarding Change of Domicile", filename="mrcd_instructions.docx", enabled=True, has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
 ---
 objects:
-  - orcd_foc_29: ALDocument.using(title="Order Regarding Change of Domicile", filename="foc_29_order_re_change_of_domicile.pdf", enabled=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+  - orcd_foc_29: ALDocument.using(title="Order Regarding Change of Domicile", filename="order_re_change_of_domicile_foc_29.pdf", enabled=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
 ---
 objects:
-  - orpt_foc_67: ALDocument.using(title="Order Regarding Parenting Time", filename="foc_67_order_re_parenting_time.pdf", enabled=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+  - orpt_foc_67: ALDocument.using(title="Order Regarding Parenting Time", filename="order_re_parenting_time_foc_67.pdf", enabled=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
 ---
 objects:
   - al_user_bundle: ALDocumentBundle.using(elements=[al_cover_bundle, mrcd_main, orcd_foc_29, orpt_foc_67, exhibit_attachment], filename="Motion Regarding Change of Domicile (All Forms).pdf", title="All forms to download for your records", enabled=True)
@@ -827,12 +827,12 @@ objects:
   - al_court_bundle: ALDocumentBundle.using(elements=[mrcd_main, exhibit_attachment, orcd_foc_29, orpt_foc_67], filename="Motion Regarding Change of Domicile (All Forms).pdf", title="All forms to download for your records", enabled=True)
 ---
 attachments:
-  name: foc_115_motion_re_change_of_domicile
-  filename: foc_115_motion_re_change_of_domicile
+  name: foc_115
+  filename: foc_115
   variable name: mrcd_main[i]
   skip undefined: True
   editable: False
-  pdf template file: foc_115_motion_re_change_of_domicile.pdf
+  pdf template file: motion_re_change_of_domicile_foc_115.pdf
   fields:
     - trial_court: ${ the_court.number }
     - trial_court_county: ${ county_choice.upper() }
@@ -890,12 +890,12 @@ attachments:
         % endif
 ---
 attachments:
-  name: foc_67_order_re_parenting_time
-  filename: foc_67_order_re_parenting_time
+  name: foc_67
+  filename: foc_67
   variable name: orpt_foc_67[i]
   skip undefined: True
   editable: False
-  pdf template file: foc_67_order_re_parenting_time.pdf
+  pdf template file: order_re_parenting_time_foc_67.pdf
   fields:
     - trial_court: ${ the_court.number }
     - trial_court_county: ${ county_choice.upper() }
@@ -921,12 +921,12 @@ attachments:
         % endif
 ---
 attachments:
-  name: foc_29_order_re_change_of_domicile
-  filename: foc_29_order_re_change_of_domicile
+  name: foc_29
+  filename: foc_29
   variable name: orcd_foc_29[i]
   skip undefined: True
   editable: False
-  pdf template file: foc_29_order_re_change_of_domicile.pdf
+  pdf template file: order_re_change_of_domicile_foc_29.pdf
   fields:
     - trial_court: ${ the_court.number }
     - trial_court_county: ${ county_choice.upper() }
