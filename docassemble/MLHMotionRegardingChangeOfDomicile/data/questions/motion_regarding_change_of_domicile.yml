@@ -1,4 +1,5 @@
- include:
+---
+include:
   - docassemble.AssemblyLine:assembly_line.yml
   - docassemble.mlhframework:mlh_interview_framework.yml
   - review.yml
@@ -788,17 +789,6 @@ subquestion: |
 ---
 #################### Documents Start #####################
 ---
-attachment: 
-  variable name: mrcd_main.addendum
-  docx template file: motion_re_cod_attachment.docx
----
-code: |
-  mrcd_main.overflow_fields['moving_reason'].overflow_trigger = 0
-  mrcd_main.overflow_fields['moving_benefits'].overflow_trigger = 0
-  mrcd_main.overflow_fields['other_parent_opposition_cs'].overflow_trigger = 0
-  mrcd_main.overflow_fields['domestic_violence '].overflow_trigger = 0
-  mrcd_main.overflow_fields.gathered = True
----
 objects:
   - exhibit_attachment: ALExhibitDocument.using(title="Exhibits", filename="exhibits" )
 ---
@@ -806,7 +796,13 @@ objects:
   - al_cover: ALDocumentBundle.using(elements=[cover_sheet_template], filename="Cover Sheet -Do not file this", title="Cover Sheet (Don't file this)", enabled=True)
 ---
 objects:
-  - mrcd_main: ALDocument.using(title="Motion Regarding Change of Domicile", filename="motion_re_change_of_domicile_foc_115.pdf", enabled=True, has_addendum=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+  - mrcd_main: ALDocument.using(title="Motion Regarding Change of Domicile", filename="motion_re_change_of_domicile_foc_115.pdf", enabled=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+---
+objects:
+  - mrcd_main_attachment: ALDocumentBundle.using(elements=[mrcd_main, mrcd_addendum], filename="motion_re_change_of_domicile_foc_115.pdf", title="Motion Regarding Change of Domicile", enabled=True)
+---
+objects:
+  - mrcd_addendum: ALDocument.using(title="Addendum for Motion Regarding Change of Domicile", filename="motion_re_cod_attachment.docx", enabled=True, has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
 ---
 objects:
   - mrcd_instructions: ALDocument.using(title="Instructions for Motion Regarding Change of Domicile", filename="mrcd_instructions.docx", enabled=True, has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
@@ -818,13 +814,13 @@ objects:
   - orpt_foc_67: ALDocument.using(title="Order Regarding Parenting Time", filename="order_re_parenting_time_foc_67.pdf", enabled=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
 ---
 objects:
-  - al_user_bundle: ALDocumentBundle.using(elements=[al_cover_bundle, mrcd_main, orcd_foc_29, orpt_foc_67, exhibit_attachment], filename="Motion Regarding Change of Domicile (All Forms).pdf", title="All forms to download for your records", enabled=True)
+  - al_user_bundle: ALDocumentBundle.using(elements=[al_cover_bundle, mrcd_main_attachment, orcd_foc_29, orpt_foc_67, exhibit_attachment], filename="Motion Regarding Change of Domicile (All Forms).pdf", title="All forms to download for your records", enabled=True)
 ---
 objects:
   - al_cover_bundle: ALDocumentBundle.using(elements=[cover_sheet_template, mrcd_instructions], filename="Instructions - Do not file this", title="Instructions (Don't file this)", enabled=True)
 ---
 objects:
-  - al_court_bundle: ALDocumentBundle.using(elements=[mrcd_main, exhibit_attachment, orcd_foc_29, orpt_foc_67], filename="Motion Regarding Change of Domicile (All Forms).pdf", title="All forms to download for your records", enabled=True)
+  - al_court_bundle: ALDocumentBundle.using(elements=[mrcd_main_attachment, exhibit_attachment, orcd_foc_29, orpt_foc_67], filename="Motion Regarding Change of Domicile (All Forms).pdf", title="All forms to download for your records", enabled=True)
 ---
 attachments:
   name: foc_115
@@ -890,8 +886,16 @@ attachments:
         % endif
 ---
 attachments:
-  name: foc_67
-  filename: foc_67
+  name: motion_re_cod_attachment
+  filename: motion_re_cod_attachment
+  docx template file: motion_re_cod_attachment.docx
+  variable name: mrcd_addendum[i]
+  skip undefined: True
+  tagged pdf: True
+---
+attachments:
+  name: order_re_parenting_time_foc_67
+  filename: order_re_parenting_time_foc_67
   variable name: orpt_foc_67[i]
   skip undefined: True
   editable: False
@@ -921,8 +925,8 @@ attachments:
         % endif
 ---
 attachments:
-  name: foc_29
-  filename: foc_29
+  name: order_re_change_of_domicile_foc_29
+  filename: order_re_change_of_domicile_foc_29
   variable name: orcd_foc_29[i]
   skip undefined: True
   editable: False
