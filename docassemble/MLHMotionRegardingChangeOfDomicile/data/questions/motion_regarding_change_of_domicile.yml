@@ -103,6 +103,8 @@ code: |
   if domestic_violence:
     domestic_violence_exp
     gather_exhibit
+    if exhibit_attachment.exhibits.has_exhibits:
+      exhibit_attachment.exhibits.gather()
 
   nav.set_section("signpost_new_address_info")
   new_address_in_us
@@ -751,7 +753,7 @@ subquestion: |
 #################### Documents Start #####################
 ---
 objects:
-  - exhibit_attachment: ALExhibitDocument.using(title="Exhibits", filename="exhibits" )
+  - exhibit_attachment: ALExhibitDocument.using(title="Exhibits", filename="exhibits")
 ---
 objects:
   - al_cover: ALDocumentBundle.using(elements=[cover_sheet_template], filename="Cover Sheet -Do not file this", title="Cover Sheet (Don't file this)", enabled=True)
