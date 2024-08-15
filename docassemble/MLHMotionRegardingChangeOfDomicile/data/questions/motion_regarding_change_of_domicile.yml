@@ -694,7 +694,7 @@ question: |
 subquestion: |
   Sometimes a move will require a change in a parenting-time schedule. You must ask the court to change the current parenting-time order if you won’t be able to continue it after you move.
   
-   ${ collapse_template(friend_of_the_court) } 
+   ${ collapse_template(parenting_time_explained) } 
 fields:
   - I want to ask the court to...: wants_parenting_time_change
     datatype: radio
@@ -729,11 +729,11 @@ validation code: |
     continue_current_order_yes = False
     modify_current_order_yes = False 
 ---
-template: friend_of_the_court
+template: parenting_time_explained
 subject: |
   More information about parenting-time schedules.
 content: |
-  Some friend of the court offices have standards parenting-time schedules you can use.  There are also sample parenting-time schedules on the Michigan Legal Help website,    including a sample long distance parenting-time schedule. 
+  If you need to ask for a new parenting time schedule, review the [Michigan Parenting Time Guideline](https://www.courts.michigan.gov/49422a/siteassets/court-administration/standardsguidelines/foc/pt_gdlns.pdf). It has information about creating a parenting time schedule, and sample schedules you can use as a starting place. 
 ---
 id: DownloadScreen
 event: motion_re_change_of_domicile_download
