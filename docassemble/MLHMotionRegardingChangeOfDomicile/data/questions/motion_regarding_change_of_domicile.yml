@@ -102,9 +102,9 @@ code: |
 
   if domestic_violence:
     domestic_violence_exp
-    gather_exhibit
     if exhibit_attachment.exhibits.has_exhibits:
       exhibit_attachment.exhibits.gather()
+  set_gather_exhibits
 
   nav.set_section("signpost_new_address_info")
   new_address_in_us
@@ -668,8 +668,19 @@ validation code: |
 code: |
   # This block is not needed, but you can provide and customize for your needs.
   # This mirrors the fallback block in ql_baseline.yml
-  exhibit_attachment.enabled = exhibit_attachment.exhibits.has_exhibits
-  gather_exhibit = True
+  # exhibit_attachment.enabled = exhibit_attachment.exhibits.has_exhibits
+  # gather_exhibit = True
+---
+code: |
+  if domestic_violence:
+    if exhibit_attachment.exhibits.has_exhibits:
+      exhibit_attachment.enabled = True
+    else:
+      exhibit_attachment.enabled = False
+  else:
+    exhibit_attachment.enabled = False
+
+  set_gather_exhibits = True
 ---
 id: moving date
 question: |
