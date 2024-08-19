@@ -9,7 +9,7 @@ metadata:
   short title: Change of Domicile Motion
   subtitle: Helps you write a motion asking the court to allow a change in where your child lives.
   description: |
-    If there is a custody or parenting-time order for your child, you must get the court’s approval before moving his or her domicile from Michigan. 
+    If there is a custody or parenting time order for your child, you must get the court’s approval before moving their residence outside Michigan. 
   tags:
     - "Family"
     - "Domicile"
@@ -179,7 +179,6 @@ code: |
 code: |
   other_parties[i].name.first
   other_parties[i].address.address
-  other_parties[i].pronouns
   other_parties[i].complete = True
 ---
 code: |
@@ -270,15 +269,6 @@ fields:
   - code: |
       other_parties[0].address_fields(country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=True)         
 ---
-id: other parties pronouns
-sets:
-  - other_parties[0].pronouns
-question: |
-  What are ${ other_parties[0] }'s pronouns?
-fields:
-  - code: |
-      other_parties[0].pronoun_fields()
----
 id: children names without birthdate
 sets:
   - children[i].name.first
@@ -352,11 +342,11 @@ id:
 question: |
   When do you need court permission to move?
 subquestion: |  
-  If there is a custody or parenting-time order for your child, you **must** get the court’s approval before moving their domicile **outside Michigan**.
+  If there is a custody or parenting time order for your child, you **must** get the court’s approval before moving their residence outside Michigan.
   
   You **may** need permission from the court to move **within Michigan**. This depends on things like:
 
-    * The custody and parenting-time arrangements
+    * The custody and parenting time arrangements
     * How far your proposed move is
     * How far you lived from the other parent when your case started
     * Whether the other parent agrees to the move
@@ -366,9 +356,9 @@ continue button field: domicile_change_info
 ---
 id: has_existing_case
 question: |
-  Do you have an existing Michigan family law case?
+  Existing family law cases
 subquestion: |
-  This includes:
+  This inclues cases dealing with:
 
     * Divorce
     * Separate maintenance
@@ -377,7 +367,7 @@ subquestion: |
     * Family support
 
 fields:
-  - Do you have an existing family law case?: has_existing_case
+  - Do you have an existing family law case in a Michigan court?: has_existing_case
     label above field: True
     datatype: yesnoradio
 ---
@@ -407,7 +397,7 @@ question: |
 subquestion: |
   This tool may only be used to file a *Motion Regarding Change of Domicile*  in a Michigan family law case between two parents, with no third party involvement.
 
-  We cannot help you, but your local legal aid program or other lawyer may be able to.  You can use the ${ MLH_GUIDE_FULL } to find a lawyer or a legal services office near you.
+  We cannot help you, but your local legal aid program or other lawyer may be able to.  You can use the ${ MLH_GUIDE_FULL } to search for a lawyer or legal services in your area.
 
   If the only parties involved are the parents click the **${ MLH_back_button_label }** button to change your answer.
 ---
@@ -427,7 +417,7 @@ id: docket number
 question: |
   What is your case number?
 subquestion: |
-  Enter the case number from your divorce case, custody case, or other family support case.
+  Enter the case number from your divorce case, custody case, or other family law case.
 
   ${ collapse_template(where_case_number) }
 fields:
@@ -483,13 +473,13 @@ question: |
 fields:
   - Is there a custody order or judgment in your family law case?: prior_order_yesno
     datatype: yesnoradio
-  - What is the date of the most recent order?: recent_order
+  - What is the date of the most recent order or judgment?: recent_order
     datatype: date
     show if:
       variable: prior_order_yesno
       is: True
 
-  - In the most recent order of judgment, is legal custody sole or joint?: current_custody
+  - In the most recent order or judgment, is legal custody sole or joint?: current_custody
     datatype: radio
     choices:
       - Sole
@@ -532,7 +522,7 @@ event: prior_order_kickout
 question: |
   This tool requires a prior order.
 subquestion: |
-  We’re sorry, but you cannot use this tool because custody or parenting-time of your children is not currently governed by a custody order or judgment.
+  We’re sorry, but you cannot use this tool because custody or parenting time of your children is not currently governed by a custody order or judgment.
 
   We cannot help you, but your local legal aid program or other lawyer may be able to. You can use the ${ MLH_GUIDE_FULL } to find a lawyer or a legal services office near you.
 
@@ -545,9 +535,9 @@ subquestion: |
   The judge will consider whether:
 
     1. The move would improve your and your ${ "children" if len(children) > 1 else "child" }’s quality of life;
-    2. Each parent has followed the parenting-time provisions of your court order;
+    2. Each parent has followed the parenting time provisions of your court order;
     3. You are using the move to limit the other parent’s time with your ${ "children" if len(children) > 1 else "child" };
-    4. New parenting-time arrangements will allow your ${ "children" if len(children) > 1 else "child" } to keep a similar relationship with the other parent;
+    4. New parenting time arrangements will allow your ${ "children" if len(children) > 1 else "child" } to keep a similar relationship with the other parent;
     5. The other parent is fighting against the move just to pay less child support;
     6. You are moving to escape domestic violence by the other parent.
 
@@ -604,7 +594,7 @@ id: other parent opposition child support
 question: |
   Do you believe ${ other_parties[0].name } opposes the move to avoid paying more child support?
 subquestion: |
-  The amount of child support is based on several factors, including the number of overnights your ${ "children spend" if len(children) > 1 else "child spends" } with each parent. If ${ other_parties[0].name } opposes the move, the court will want to know whether ${ other_parties[0].pronoun_subjective() } is only worried that having less overnights with your ${ "children" if len(children) > 1 else "child" } will increase ${ other_parties[0].pronoun_possessive('child support payments') }.
+  The amount of child support is based on several factors, including the number of overnights your ${ "children spend" if len(children) > 1 else "child spends" } with each parent. If ${ other_parties[0].name } opposes the move, the court will want to know whether ${ other_parties[0].name } is only worried that having less overnights with your ${ "children" if len(children) > 1 else "child" } will increase child support payments.
 fields:
   - Do you believe ${ other_parties[0].name } opposes the move to avoid paying more child support?: other_parent_opposition_cs
     label above field: True
@@ -640,7 +630,7 @@ id: any exhibits
 question: |
   Do you have documents you want the judge to see?
 subquestion: |
-  If you have any documents that provide information about the domestic violence upload them now. 
+  If you have any documents that provide information about the domestic violence, upload them now. 
   
   Examples of useful documents are police reports or medical records. These are not required, but can help the judge understand your situation and why you need to move.
 fields:
@@ -690,9 +680,9 @@ fields:
 ---
 id: wants parenting time change
 question: |
-  Do you want a change in parenting-time?
+  Do you want a change in parenting time?
 subquestion: |
-  Sometimes a move will require a change in a parenting-time schedule. You must ask the court to change the current parenting-time order if you won’t be able to continue it after you move.
+  Sometimes a move will require a change in a parenting time schedule. You must ask the court to change the current parenting time order if you won’t be able to continue it after you move.
   
    ${ collapse_template(parenting_time_explained) } 
 fields:
@@ -700,15 +690,15 @@ fields:
     datatype: radio
     label above field: True
     choices:
-      - Continue the current parenting-time order: False
-      - Change the current parenting-time order: True
-  - Explain what you propose the new parenting-time arrangements to be. Use complete sentences.: requested_order
+      - Continue the current parenting time order: False
+      - Change the current parenting time order: True
+  - Explain what you propose the new parenting time arrangements to be. Use complete sentences.: requested_order
     input type: area
     label above field: True
     show if:
       variable: wants_parenting_time_change
       is: True 
-  - Does ${ other_parties[0].name } agree with this new parenting-time schedule?: parenting_time_change_agreement
+  - Does ${ other_parties[0].name } agree with this new parenting time schedule?: parenting_time_change_agreement
     datatype: radio
     label above field: True
     choices:
@@ -731,7 +721,7 @@ validation code: |
 ---
 template: parenting_time_explained
 subject: |
-  More information about parenting-time schedules.
+  More information about parenting time schedules.
 content: |
   If you need to ask for a new parenting time schedule, review the [Michigan Parenting Time Guideline](https://www.courts.michigan.gov/49422a/siteassets/court-administration/standardsguidelines/foc/pt_gdlns.pdf). It has information about creating a parenting time schedule, and sample schedules you can use as a starting place. 
 ---
