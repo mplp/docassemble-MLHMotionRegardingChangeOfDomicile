@@ -102,7 +102,7 @@ review:
   - Edit:
       - other_parent_opposition_cs
     button: |
-      **Do you think they oppose the move because of its impacts child support payments?**:
+      **Do you think they oppose the move because of its impact on child support payments?**:
       ${ other_parent_opposition_cs }
   - Edit: 
       - domestic_violence
