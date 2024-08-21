@@ -53,22 +53,15 @@ review:
       ### Case and Court Information
   - Edit: 
     - county_choice
-    #- court_index
-    #- court_index_for_specific_court_type
-    # TODO - get these changes to work... 
     - recompute:
-      - the_court
-      - recompute_court
       - court_index
-      - court_count
+      - the_court
     button: |
       **Court Information**
       
-      ${ the_court.number } ${ the_court.type.capitalize() } Court
+      ${ the_court }
 
       ${ county_choice } County
-
-      ${ the_court.address.on_one_line() }
   - Edit: docket_number
     button: |
       **What is your case number?**
@@ -153,13 +146,4 @@ subject: |
   View your uploaded documents
 content: |
   ${ exhibit_attachment.exhibits.rearrange_exhibits_table }
----      
-reconsider: True
-code: |
-  if court_count > 1:
-    court_index = court_index_for_specific_court_type
-  else:
-    # This means there is only one court of this type for this county.
-    court_index = list(court_list.filter_courts_by_2([county_choice], [court_type], column_1='address_county', column_2='type'))[0][0]
-  recompute_court = True
 ---
