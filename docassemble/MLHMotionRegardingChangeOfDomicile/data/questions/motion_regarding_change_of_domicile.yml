@@ -754,7 +754,7 @@ subquestion: |
 #################### Documents Start #####################
 ---
 objects:
-  - exhibit_attachment: ALExhibitDocument.using(title="Exhibits", filename="exhibits")
+  - exhibit_attachment: ALExhibitDocument.using(title="Exhibits", filename="exhibits", include_exhibit_cover_pages="True")
 ---
 objects:
   - al_cover: ALDocumentBundle.using(elements=[cover_sheet_template], filename="Cover Sheet -Do not file this", title="Cover Sheet (Don't file this)", enabled=True)
@@ -924,6 +924,13 @@ attachments:
    variable name: mrcd_instructions[i]       
    skip undefined: True
    docx template file: mrcd_instructions.docx
+---
+attachments:
+  variable name: exhibit_attachment.table_of_contents
+  docx template file: exhibit_attachment_table_of_contents.docx
+  field code:
+    exhibits: raw(exhibit_attachment.exhibits)
+    include_exhibit_cover_pages: raw(exhibit_attachment.include_exhibit_cover_pages)
 ---
 #################### Documents End #####################
 ---
