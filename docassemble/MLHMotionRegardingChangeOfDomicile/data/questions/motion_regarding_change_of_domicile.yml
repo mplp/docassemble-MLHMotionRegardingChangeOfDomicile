@@ -119,6 +119,8 @@ code: |
     signature_date
   MLH_outro_saving_answers
 
+  set_exhibit_doc_final
+
   motion_re_change_of_domicile_download
   #interview_motion_re_change_of_domicile = True
 ---
@@ -202,6 +204,12 @@ code: |
 # NOTE: ensures there is only 1 new address 
 code: |
   new_address.there_is_another = False
+---
+code: |
+  if len(exhibit_attachment.exhibits) < 1:
+    exhibit_attachment.enabled = False
+
+  set_exhibit_doc_final = True
 ---
 #################### Overridden AL Questions Start #####################
 ---
@@ -400,18 +408,6 @@ subquestion: |
   We cannot help you, but your local legal aid program or other lawyer may be able to.  You can use the ${ MLH_GUIDE_FULL } to search for a lawyer or legal services in your area.
 
   If the only parties involved are the parents click the **${ MLH_back_button_label }** button to change your answer.
----
-#template: where_info_on_papers_template
-#subject: |
-#  Where can I find this information?
-#content: |
-#  Here is an example of where you can find this information on your court papers.
-#
-#  * The court information is circled in blue, on the top left.
-#  * The case number is circled in yellow, on the top right.
-#  * The information about the parties is circled in red
-#
-#  ${ image_court_papers.show(width="100%") }
 ---
 id: docket number
 question: |
@@ -754,7 +750,7 @@ subquestion: |
 #################### Documents Start #####################
 ---
 objects:
-  - exhibit_attachment: ALExhibitDocument.using(title="Exhibits", filename="exhibits", include_exhibit_cover_pages="True")
+  - exhibit_attachment: ALExhibitDocument.using(title="Exhibits", filename="exhibits", include_exhibit_cover_pages=True, add_page_numbers=True)
 ---
 objects:
   - al_cover: ALDocumentBundle.using(elements=[cover_sheet_template], filename="Cover Sheet -Do not file this", title="Cover Sheet (Don't file this)", enabled=True)

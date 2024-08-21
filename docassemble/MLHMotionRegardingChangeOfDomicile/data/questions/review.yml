@@ -125,6 +125,8 @@ review:
   - note: |
       **Uploaded Documents**
 
+      ${ exhibit_attachment.exhibits.add_action() }
+
       ${ collapse_template(exhibit_attachment.exhibits.in_progress_exhibits) }
 
     css class: bg-secondary-subtle
@@ -145,32 +147,12 @@ columns:
 edit:
   - rearrange_pages
 ---
-# generic object: ALExhibitList
-# table: exhibit_attachment.exhibits.table
-# rows: exhibit_attachment.exhibits
-# columns:
-#   - ${ al_exhibit_title_label }: |
-#       row_item.title
-#   - ${ al_exhibit_preview_label }: |
-#       row_item.pages.show(width="50%")
-#   - ${ al_exhibit_total_pages_label }: |
-#       row_item.pages.num_pages()
-# edit:
-#   - exhibit_attachment.exhibits
----
 generic object: ALExhibitList
 template: exhibit_attachment.exhibits.in_progress_exhibits
 subject: |
   View your uploaded documents
 content: |
   ${ exhibit_attachment.exhibits.rearrange_exhibits_table }
----
-# generic object: ALExhibitList
-# template: in_progress_exhibits
-# subject: |
-#   View your uploaded documents
-# content: |
-#   ${ exhibit_attachment.exhibits.table }
 ---      
 reconsider: True
 code: |
@@ -180,9 +162,4 @@ code: |
     # This means there is only one court of this type for this county.
     court_index = list(court_list.filter_courts_by_2([county_choice], [court_type], column_1='address_county', column_2='type'))[0][0]
   recompute_court = True
----
-reconsider: True
-code: |
-  if len(exhibit_attachment.exhibits) < 1:
-    exhibit_attachment.enabled = False
 ---
