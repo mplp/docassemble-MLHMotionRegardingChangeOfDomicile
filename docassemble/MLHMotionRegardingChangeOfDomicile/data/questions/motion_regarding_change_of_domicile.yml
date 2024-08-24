@@ -104,7 +104,7 @@ code: |
     domestic_violence_exp
     if exhibit_attachment.exhibits.has_exhibits:
       exhibit_attachment.exhibits.gather()
-  set_gather_exhibits
+  # set_gather_exhibits
 
   nav.set_section("signpost_new_address_info")
   new_address_in_us
@@ -119,7 +119,7 @@ code: |
     signature_date
   MLH_outro_saving_answers
 
-  set_exhibit_doc_final
+  # set_exhibit_doc_final
 
   motion_re_change_of_domicile_download
   #interview_motion_re_change_of_domicile = True
@@ -205,11 +205,11 @@ code: |
 code: |
   new_address.there_is_another = False
 ---
-code: |
-  if len(exhibit_attachment.exhibits) < 1:
-    exhibit_attachment.enabled = False
+# code: |
+#   if len(exhibit_attachment.exhibits) < 1:
+#     exhibit_attachment.enabled = False
 
-  set_exhibit_doc_final = True
+#   set_exhibit_doc_final = True
 ---
 #################### Overridden AL Questions Start #####################
 ---
@@ -615,9 +615,9 @@ fields:
 ---
 id: domestic violence explanation
 question: |
-  Explanation of domestic violence.
+  Description
 fields:
-  Briefly explain how ${ other_parties[0].name } has been violent towards you. Tell the court if you have a personal protection order or a no contact order.: domestic_violence_exp
+  Please describe how ${ other_parties[0].name } has harmed you. Tell the court if you have a personal protection order or a no contact order.: domestic_violence_exp
   label above field: True
   input type: area
 ---
@@ -669,7 +669,7 @@ code: |
 ---
 code: |
   if domestic_violence:
-    if exhibit_attachment.exhibits.has_exhibits:
+    if exhibit_attachment.exhibits.has_exhibits and exhibit_attachment.exhibits.number_gathered():
       exhibit_attachment.enabled = True
     else:
       exhibit_attachment.enabled = False
