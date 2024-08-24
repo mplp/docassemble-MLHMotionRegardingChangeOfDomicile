@@ -71,42 +71,68 @@ review:
       - recent_order
     button: |
       **What date was the most recent judgment entered?**:
+
       ${ recent_order }
   - Edit:
       - moving_reason
     button: |
       **Why do you want to move?**:
+
       ${ moving_reason }
   - Edit:
       - moving_benefits
     button: |
       **What are the benefits to the children from this move?**:
+
       ${ moving_benefits }
   - Edit:
       - maintains_other_parent_relationship
     button: |
       **Will the children maintain a similar relationship with their other parent?**:
-      ${ maintains_other_parent_relationship }
+
+      % if maintains_other_parent_relationship:
+      Yes
+      % elif not maintains_other_parent_relationship:
+      No
+      % endif
   - Edit: 
       - other_parent_opposition
     button: |
-     **Does the other parent oppose the move?**:
-     ${ other_parent_opposition }
+      **Does the other parent oppose the move?**:
+
+      ${ other_parent_opposition }
   - Edit:
       - other_parent_opposition_cs
     button: |
       **Do you think they oppose the move because of its impact on child support payments?**:
+      
       ${ other_parent_opposition_cs }
   - Edit: 
       - domestic_violence
-      - domestic_violence_exp
     button: |
       **Are you moving to escape domestic violence?**:
-      ${ domestic_violence }
+
+      % if domestic_violence:
+      Yes
+      % elif not domestic_violence:
+      No
+      % endif
+  - Edit: 
+      - domestic_violence_exp
+    button: |
+      **Describe how ${ other_parties[0].name } has harmed you**:
+
+      % if domestic_violence_exp:
+      ${ domestic_violence_exp }
+      % else:
+      You have not entered a description yet.
+      % endif
+    show if: domestic_violence
   - Edit:
       - moving_date
     button: |
       **What is the date you want to move?**:
+
       ${ moving_date }
   - Edit:
     - wants_parenting_time_change
@@ -114,16 +140,48 @@ review:
     - parenting_time_change_agreement
     button: |
       **Are you asking to court to change the parenting time?**:
-      ${ wants_parenting_time_change }
+
+      % if wants_parenting_time_change:
+      Yes
+      % elif not wants_parenting_time_change:
+      No
+      % endif
+  - Edit:
+    - exhibit_attachment.exhibits.has_exhibits
+    button: |
+      **Do you have documents you want the judge to see?**:
+
+      % if exhibit_attachment.exhibits.has_exhibits:
+      Yes
+      % elif not exhibit_attachment.exhibits.has_exhibits:
+      No
+      % endif
   - note: |
       **Uploaded Documents**
 
       ${ exhibit_attachment.exhibits.add_action() }
 
+      % if exhibit_attachment.exhibits.there_are_any:
       ${ collapse_template(exhibit_attachment.exhibits.in_progress_exhibits) }
+      % else:
+      You have not uploaded any documents yet.
+      % endif
 
     css class: bg-secondary-subtle
-    show if: exhibit_attachment.exhibits.there_are_any
+    show if: exhibit_attachment.exhibits.has_exhibits
+  # - note: |
+  #     **Uploaded Documents**
+
+  #     ${ exhibit_attachment.exhibits.add_action() }
+
+  #     % if exhibit_attachment.exhibits.there_are_any:
+  #     ${ collapse_template(exhibit_attachment.exhibits.in_progress_exhibits) }
+  #     % else:
+  #     You have not uploaded any documents yet.
+  #     % endif
+
+  #   css class: bg-secondary-subtle
+  #   show if: exhibit_attachment.exhibits.has_exhibits
 ---
 generic object: ALExhibitList
 table: exhibit_attachment.exhibits.rearrange_exhibits_table
