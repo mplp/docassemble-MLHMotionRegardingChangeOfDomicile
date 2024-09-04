@@ -161,7 +161,8 @@ generic object: ALIndividual
 code: |
   x.name.first
   x.address.address
-  x.phone_number
+  if x.no_phone_number:
+    x.phone_number = "Does not have phone"
   x.complete = True
 ---
 # Tells court_index which court to choose
@@ -228,6 +229,12 @@ subquestion: |
   ${ collapse_template(safe_contact_info) }
 fields:
   - Phone number: users[0].phone_number
+    show if:
+      variable: users[0].no_phone_number
+      is: False
+  - I do not have a phone number: users[0].no_phone_number
+    required: False
+    datatype: yesno
   - code: |
       users[0].address_fields(country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=True)
 ---
@@ -274,6 +281,12 @@ question: |
   What is ${ other_parties[0].possessive('address') }?
 fields:
   - Phone number: other_parties[0].phone_number
+    show if:
+      variable: other_parties[0].no_phone_number
+      is: False
+  - I do not know of any phone number for ${ other_parties[0] }: other_parties[0].no_phone_number
+    required: False
+    datatype: yesno
   - code: |
       other_parties[0].address_fields(country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=True)         
 ---
@@ -807,18 +820,18 @@ attachments:
     - plaintiffs_address_block: |
           % if user_ask_role == "plaintiff":
           ${ users[0].address_block() }
-          ${ users[0].phone_number }
+          ${ word("") if users[0].no_phone_number else users[0].phone_numbers() }
           % elif user_ask_role == "defendant":
           ${ other_parties[0].address_block() }
-          ${ other_parties[0].phone_number }
+          ${ word("") if other_parties[0].no_phone_number else other_parties[0].phone_numbers() }
           % endif
     - defendants_address_block: |
           % if user_ask_role == "defendant":
           ${ users[0].address_block() }
-          ${ users[0].phone_number }
+          ${ word("") if users[0].no_phone_number else users[0].phone_numbers() }
           % elif user_ask_role == "plaintiff":
           ${ other_parties[0].address_block() }
-          ${ other_parties[0].phone_number }
+          ${ word("") if other_parties[0].no_phone_number else other_parties[0].phone_numbers() }
           % endif
     - children1: ${ children[0] }
     - children2: ${ children[1] if len(children) > 1 else "" }
@@ -872,18 +885,18 @@ attachments:
     - plaintiffs_address_block: |
         % if user_ask_role == "plaintiff":
         ${ users[0].address_block() }
-        ${ users[0].phone_number }
+        ${ word("") if users[0].no_phone_number else users[0].phone_numbers() }
         % elif user_ask_role == "defendant":
         ${ other_parties[0].address_block() }
-        ${ other_parties[0].phone_number }
+        ${ word("") if other_parties[0].no_phone_number else other_parties[0].phone_numbers() }
         % endif
     - defendants_address_block: |
         % if user_ask_role == "defendant":
         ${ users[0].address_block() }
-        ${ users[0].phone_number }
+        ${ word("") if users[0].no_phone_number else users[0].phone_numbers() }
         % elif user_ask_role == "plaintiff":
         ${ other_parties[0].address_block() }
-        ${ other_parties[0].phone_number }
+        ${ word("") if other_parties[0].no_phone_number else other_parties[0].phone_numbers() }
         % endif
 ---
 attachments:
@@ -902,18 +915,18 @@ attachments:
     - plaintiffs_address_block: |
         % if user_ask_role == "plaintiff":
         ${ users[0].address_block() }
-        ${ users[0].phone_number }
+        ${ word("") if users[0].no_phone_number else users[0].phone_numbers() }
         % elif user_ask_role == "defendant":
         ${ other_parties[0].address_block() }
-        ${ other_parties[0].phone_number }
+        ${ word("") if other_parties[0].no_phone_number else other_parties[0].phone_numbers() }
         % endif
     - defendants_address_block: |
         % if user_ask_role == "defendant":
         ${ users[0].address_block() }
-        ${ users[0].phone_number }
+        ${ word("") if users[0].no_phone_number else users[0].phone_numbers() }
         % elif user_ask_role == "plaintiff":
         ${ other_parties[0].address_block() }
-        ${ other_parties[0].phone_number }
+        ${ word("") if other_parties[0].no_phone_number else other_parties[0].phone_numbers() }
         % endif
 ---
 attachments:

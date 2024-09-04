@@ -15,7 +15,7 @@ review:
         ${ item }
       
         ${ item.address.block() }
-        
+
         ${ word("") if item.no_phone_number else item.phone_numbers() }
       % endfor
   - Edit:
