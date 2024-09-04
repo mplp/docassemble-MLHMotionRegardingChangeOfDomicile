@@ -9,7 +9,7 @@ metadata:
   short title: Change of Domicile Motion
   subtitle: Helps you write a motion asking the court to allow a change in where your child lives.
   description: |
-    If there is a custody or parenting time order for your child, you must get the court’s approval before moving their residence outside Michigan. 
+    If there is a custody or parenting time order for your child, you must get the court’s approval before moving their residence outside Michigan.
   tags:
     - "Family"
     - "Domicile"
@@ -87,15 +87,15 @@ code: |
   user_started_case
   if not prior_order_yesno:
     prior_order_kickout
-  
+
   set_custody
-  
+
   nav.set_section("signpost_your_info")
   users.gather()
 
   nav.set_section("signpost_other_info")
   other_parties.gather()
-  
+
   nav.set_section("signpost_children_info")
   children.gather()
 
@@ -146,11 +146,11 @@ Code: |
 code: |
   MLH_materials_included = True
 ---
-template: MLH_materials              
+template: MLH_materials
 content: |
   * A copy of the most recent custody order
 ---
-template: MLH_welcome_message     
+template: MLH_welcome_message
 content: |
   This tool will help you prepare the forms to file a *Motion Regarding Change of Domicile* in Michigan.
 ---
@@ -200,7 +200,7 @@ code: |
 code: |
   new_address.there_are_any = True
 ---
-# NOTE: ensures there is only 1 new address 
+# NOTE: ensures there is only 1 new address
 code: |
   new_address.there_is_another = False
 ---
@@ -242,11 +242,11 @@ subject: |
 content: |
   % if user_started_case:
   Please enter a **SAFE** address and telephone number where the court can contact you. **DO NOT** enter an address or phone number that you want to keep confidential from the Defendant. The address and telephone number you enter will be part of the court file and will be on the forms that will be given to the Defendant.
-  
+
   If you don't want the Defendant to know your current address and phone number, you can use a post office box or the address and telephone number of a relative or friend who has agreed to let you do this.
   % else:
   For the following, please enter a **SAFE** address and telephone number where the court can contact you. **DO NOT** enter an address or phone number that you want to keep confidential from the Plaintiff. The address and telephone number you enter will be part of the court file and will be on the forms that will be given to the Plaintiff.
-  
+
   If you don't want the Plaintiff to know your current address and phone number, you can use a post office box or the address and telephone number of a relative or friend who has agreed to let you do this.
   % endif
 ---
@@ -266,7 +266,7 @@ fields:
   - code: |
       other_parties[i].name_fields(person_or_business='person')
 ---
-id: other partys contact information 
+id: other partys contact information
 sets:
   - other_parties[0].address.address
   - other_parties[0].address.city
@@ -286,7 +286,7 @@ fields:
     required: False
     datatype: yesno
   - code: |
-      other_parties[0].address_fields(country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=True)         
+      other_parties[0].address_fields(country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=True)
 ---
 id: children names without birthdate
 sets:
@@ -357,12 +357,12 @@ fields:
     required: True
 ---
 #################### Overridden AL Questions End #####################
-id: 
+id:
 question: |
   When do you need court permission to move?
-subquestion: |  
+subquestion: |
   If there is a custody or parenting time order for your child, you **must** get the court’s approval before moving their residence outside Michigan.
-  
+
   You **may** need permission from the court to move **within Michigan**. This depends on things like:
 
     * The custody and parenting time arrangements
@@ -497,7 +497,7 @@ fields:
 
   - Who has legal custody?: child_custodian
     datatype: radio
-    choices: 
+    choices:
       - I do: user
       - The ${ capitalize(other_party_role) } does: other_party
     show if:
@@ -507,11 +507,11 @@ fields:
 code: |
   if current_custody == "Sole":
     sole_custody_yes = True
-  
+
   if current_custody == "Joint":
     joint_custody_yes = True
     child_custodian = None
-  
+
   if child_custodian == "user":
     plaintiff_custody_yes = True
     defendant_custody_yes = False
@@ -521,7 +521,7 @@ code: |
   else:
     plaintiff_custody_yes = False
     defendant_custody_yes = False
-  
+
   set_custody = True
 ---
 id: prior_order_kickout
@@ -572,7 +572,7 @@ subquestion: |
   * Will bring you closer to extended family; and
   * Other factors unique to you.
 
-  **Please complete the following:** 
+  **Please complete the following:**
 fields:
   - The move will improve the quality of life for my ${ "children" if len(children) > 1 else "child" } and me because...: moving_benefits
     label above field: True
@@ -638,7 +638,7 @@ question: |
   Supporting documents
 subquestion: |
   If you have any documents that provide information about the domestic violence, you can add them to your motion.   
-  
+
   Examples of useful documents are police reports or medical records. These are not required, but can help the judge understand your situation and why you need to move.
 fields:
   - Do you have any documents you want to upload?: x.has_exhibits
@@ -659,7 +659,7 @@ fields:
     maximum image size: 1024
     image upload type: jpeg
     accept: |
-      "image/png, image/jpeg, .doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf,.pdf"   
+      "image/png, image/jpeg, .doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf,.pdf"
 validation code: |
   full_size = sum(a_page.size_in_bytes() for a_page in x[0].pages)
   if full_size > (15 * 1024 * 1024):
@@ -703,8 +703,8 @@ question: |
   Do you want a change in parenting time?
 subquestion: |
   Sometimes a move will require a change in a parenting time schedule. You must ask the court to change the current parenting time order if you won’t be able to continue it after you move.
-  
-   ${ collapse_template(parenting_time_explained) } 
+
+   ${ collapse_template(parenting_time_explained) }
 fields:
   - I want to ask the court to...: wants_parenting_time_change
     datatype: radio
@@ -717,14 +717,14 @@ fields:
     label above field: True
     show if:
       variable: wants_parenting_time_change
-      is: True 
+      is: True
   - Does ${ other_parties[0].name } agree with this new parenting time schedule?: parenting_time_change_agreement
     datatype: radio
     label above field: True
     choices:
       - Yes
       - No
-      - I don't know  
+      - I don't know
     show if:
       variable: wants_parenting_time_change
       is: True
@@ -737,13 +737,13 @@ validation code: |
     modify_current_order_yes = False
   else:
     continue_current_order_yes = False
-    modify_current_order_yes = False 
+    modify_current_order_yes = False
 ---
 template: parenting_time_explained
 subject: |
   More information about parenting time schedules.
 content: |
-  If you need to ask for a new parenting time schedule, review the [Michigan Parenting Time Guideline](https://www.courts.michigan.gov/49422a/siteassets/court-administration/standardsguidelines/foc/pt_gdlns.pdf). It has information about creating a parenting time schedule, and sample schedules you can use as a starting place. 
+  If you need to ask for a new parenting time schedule, review the [Michigan Parenting Time Guideline](https://www.courts.michigan.gov/49422a/siteassets/court-administration/standardsguidelines/foc/pt_gdlns.pdf). It has information about creating a parenting time schedule, and sample schedules you can use as a starting place.
 ---
 id: DownloadScreen
 event: motion_re_change_of_domicile_download
@@ -755,9 +755,9 @@ subquestion: |
   View, download and send your form below. Click the "Edit answers" button to fix any mistakes.
 
   ${ action_button_html(url_action('review_full'), label='Edit answers', color='info') }
-  
+
   ${ al_user_bundle.download_list_html() }
-  
+
   ${ al_user_bundle.send_button_html(show_editable_checkbox=False) }
 ---
 #################### Documents Start #####################
@@ -766,10 +766,10 @@ objects:
   - exhibit_attachment: ALExhibitDocument.using(title="Exhibits", filename="exhibits", include_exhibit_cover_pages=True, add_page_numbers=True)
 ---
 objects:
-  - mrcd_main: ALDocument.using(title="Motion Regarding Change of Domicile", filename="motion_re_change_of_domicile_foc_115.pdf", enabled=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+  - mrcd_main: ALDocument.using(title="Motion Regarding Change of Domicile", filename="foc_115_motion_re_change_of_domicile.pdf", enabled=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
 ---
 objects:
-  - mrcd_main_attachment: ALDocumentBundle.using(elements=[mrcd_main, mrcd_addendum], filename="motion_re_change_of_domicile_foc_115.pdf", title="Motion Regarding Change of Domicile", enabled=True)
+  - mrcd_main_attachment: ALDocumentBundle.using(elements=[mrcd_main, mrcd_addendum], filename="foc_115_motion_re_change_of_domicile.pdf", title="Motion Regarding Change of Domicile", enabled=True)
 ---
 objects:
   - mrcd_addendum: ALDocument.using(title="Addendum for Motion Regarding Change of Domicile", filename="motion_re_cod_attachment.docx", enabled=True, has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
@@ -795,7 +795,7 @@ attachments:
   variable name: mrcd_main[i]
   skip undefined: True
   editable: False
-  pdf template file: motion_re_change_of_domicile_foc_115.pdf
+  pdf template file: foc_115_motion_re_change_of_domicile.pdf
   fields:
     - trial_court: ${ the_court.number }
     - trial_court_county: ${ county_choice.upper() }
@@ -810,21 +810,21 @@ attachments:
     - plaintiff_custody_yes: ${ plaintiff_custody_yes }
     - defendant_custody_yes: ${ defendant_custody_yes }
     - plaintiffs_address_block: |
-          % if user_ask_role == "plaintiff":
-          ${ users[0].address_block() }
-          ${ word("") if users[0].no_phone_number else users[0].phone_numbers() }
-          % elif user_ask_role == "defendant":
-          ${ other_parties[0].address_block() }
-          ${ word("") if other_parties[0].no_phone_number else other_parties[0].phone_numbers() }
-          % endif
+        % if user_ask_role == "plaintiff":
+        ${ users[0].address_block() }
+        ${ word("") if users[0].no_phone_number else users[0].phone_numbers() }
+        % elif user_ask_role == "defendant":
+        ${ other_parties[0].address_block() }
+        ${ word("") if other_parties[0].no_phone_number else other_parties[0].phone_numbers() }
+        % endif
     - defendants_address_block: |
-          % if user_ask_role == "defendant":
-          ${ users[0].address_block() }
-          ${ word("") if users[0].no_phone_number else users[0].phone_numbers() }
-          % elif user_ask_role == "plaintiff":
-          ${ other_parties[0].address_block() }
-          ${ word("") if other_parties[0].no_phone_number else other_parties[0].phone_numbers() }
-          % endif
+        % if user_ask_role == "defendant":
+        ${ users[0].address_block() }
+        ${ word("") if users[0].no_phone_number else users[0].phone_numbers() }
+        % elif user_ask_role == "plaintiff":
+        ${ other_parties[0].address_block() }
+        ${ word("") if other_parties[0].no_phone_number else other_parties[0].phone_numbers() }
+        % endif
     - children1: ${ children[0] }
     - children2: ${ children[1] if len(children) > 1 else "" }
     - children3: ${ children[2] if len(children) > 2 else "" }
@@ -833,7 +833,7 @@ attachments:
     - children6: ${ children[5] if len(children) > 5 else "" }
     - children7: ${ children[6] if len(children) > 6 else "" }
     - children_see_attached: "Please see attached."
-    - requested_order_see_attached: "Please see attached." 
+    - requested_order_see_attached: "Please see attached."
     - continue_current_order_yes: ${ continue_current_order_yes }
     - modify_current_order_yes: ${ modify_current_order_yes }
     - changes_to_order_see_attached: |
@@ -922,10 +922,10 @@ attachments:
         % endif
 ---
 attachments:
-   name: mrcd_instructions    
-   variable name: mrcd_instructions[i]       
-   docx template file: mrcd_instructions.docx
-   tagged pdf: True
+  name: mrcd_instructions
+  variable name: mrcd_instructions[i]
+  docx template file: mrcd_instructions.docx
+  tagged pdf: True
 ---
 attachments:
   variable name: exhibit_attachment.table_of_contents
