@@ -513,11 +513,19 @@ code: |
     child_custodian = None
 
   if child_custodian == "user":
-    plaintiff_custody_yes = True
-    defendant_custody_yes = False
+    if user_ask_role == "plaintiff":
+      plaintiff_custody_yes = True
+      defendant_custody_yes = False
+    elif user_ask_role == "defendant":
+      plaintiff_custody_yes = False
+      defendant_custody_yes = True
   elif child_custodian == "other_party":
-    plaintiff_custody_yes = False
-    defendant_custody_yes = True
+    if user_ask_role == "plaintiff":
+      plaintiff_custody_yes = False
+      defendant_custody_yes = True
+    elif user_ask_role == "defendant":
+      plaintiff_custody_yes = True
+      defendant_custody_yes = False
   else:
     plaintiff_custody_yes = False
     defendant_custody_yes = False
