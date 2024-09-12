@@ -84,7 +84,8 @@ code: |
   the_court
   set_number
 
-  user_started_case
+  user_ask_role
+  set_party_roles
   if not prior_order_yesno:
     prior_order_kickout
 
@@ -458,7 +459,8 @@ fields:
     show if:
       variable: user_ask_role
       is: "defendant"
-validation code: |
+---
+code: |
   if user_ask_role == "plaintiff":
     moving_party_yes = True
     moving_party2_yes = False
@@ -473,6 +475,8 @@ validation code: |
     moving_party_yes = False
     moving_party2_yes = False
     other_party_role = ""
+
+  set_party_roles = True
 ---
 id: judgment or custody order
 question: |
@@ -507,10 +511,12 @@ fields:
 code: |
   if current_custody == "Sole":
     sole_custody_yes = True
+    joint_custody_yes = False
 
   if current_custody == "Joint":
     joint_custody_yes = True
     child_custodian = None
+    sole_custody_yes = False
 
   if child_custodian == "user":
     if user_ask_role == "plaintiff":

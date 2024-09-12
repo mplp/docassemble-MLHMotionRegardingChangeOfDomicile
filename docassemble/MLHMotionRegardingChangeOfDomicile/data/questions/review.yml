@@ -23,10 +23,11 @@ review:
       - recompute:
         - plaintiffs
         - defendants
+        - set_custody
     button: |
       **What party are you in your existing case?**
 
-      ${ showifdef('user_ask_role').capitalize() }
+      I am the ${ showifdef('user_ask_role').capitalize() }
   - Edit: other_parties.revisit
     button: |-
       **The Other side of your case**
@@ -47,6 +48,20 @@ review:
         
         ${ item.birthdate }
       % endfor
+  - Edit:
+      - current_custody
+      - recompute:
+        - set_custody
+    button: |
+      **Who has custody over the child(ren)?**
+      
+      % if current_custody == "Sole" and child_custodian == "user":
+      I have sole custody
+      % elif current_custody == "Sole" and child_custodian == "other_party":
+      The other party has sole custody
+      % elif current_custody == "Joint":
+      The other party and I have joint custody
+      % endif
   - note: |
       <hr>
       
