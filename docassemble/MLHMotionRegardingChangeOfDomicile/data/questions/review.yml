@@ -5,9 +5,7 @@ question: |
   Review your answers
 review:
   - note: |
-      % if defined('docket_number'):
-      ""
-      % else:
+      % if not defined('docket_number'):
       ${ review_empty_explainer }
       % endif
   - note: |
