@@ -783,10 +783,10 @@ objects:
   - orpt_foc_67: ALDocument.using(title="Order Regarding Parenting Time - FOC 67", filename="Order Regarding Parenting Time - FOC 67", enabled=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
 ---
 objects:
-  - al_user_bundle: ALDocumentBundle.using(elements=[mrcd_instructions, mrcd_main_attachment, exhibit_attachment, orcd_foc_29, orpt_foc_67], filename="Motion Regarding Change of Domicile (All Forms).pdf", title="All forms to download for your records", enabled=True)
+  - al_user_bundle: ALDocumentBundle.using(elements=[mrcd_instructions, mrcd_main_attachment, exhibit_attachment, orcd_foc_29, orpt_foc_67], filename="Motion Regarding Change of Domicile (All Forms).pdf", title="All forms and instructions", enabled=True)
 ---
 objects:
-  - al_court_bundle: ALDocumentBundle.using(elements=[mrcd_main_attachment, exhibit_attachment, orcd_foc_29, orpt_foc_67], filename="Motion Regarding Change of Domicile (All Forms).pdf", title="All forms to download for your records", enabled=True)
+  - al_court_bundle: ALDocumentBundle.using(elements=[mrcd_main_attachment, exhibit_attachment, orcd_foc_29, orpt_foc_67], filename="Motion Regarding Change of Domicile (All Forms).pdf", title="All forms and instructions", enabled=True)
 ---
 attachments:
   name: foc_115
