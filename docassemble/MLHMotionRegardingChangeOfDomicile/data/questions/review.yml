@@ -5,8 +5,15 @@ question: |
   Review your answers
 review:
   - note: |
+      % if defined('docket_number'):
+      ""
+      % else:
+      ${ review_empty_explainer }
+      % endif
+  - note: |
       <hr>
-      ### Information for Parents and Children
+      <h2 class='h5'>Parents and Children</h2>
+    show if: user_ask_role
   - Edit: users.revisit
     button: |-
       **Your Information**
@@ -65,7 +72,8 @@ review:
   - note: |
       <hr>
       
-      ### Case and Court Information
+      <h2 class='h5'>Case and Court Information</h2>
+    show if: docket_number
   - Edit: 
     - county_choice
     - recompute:
@@ -85,9 +93,14 @@ review:
   - Edit: 
       - recent_order
     button: |
-      **What date was the most recent judgment entered?**:
+      **What date was the most recent order or judgment entered?**:
 
       ${ recent_order }
+  - note: |
+      <hr>
+      
+      <h2 class='h5'>Your Request to Move</h2>
+    show if: moving_reason
   - Edit:
       - moving_reason
     button: |
