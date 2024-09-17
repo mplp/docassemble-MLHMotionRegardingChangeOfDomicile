@@ -20,14 +20,13 @@ metadata:
 ---
 sections:
   - signpost_intro: "Introduction"
-  - signpost_prior_case: "Prior Case Information"
-  - signpost_your_info: "Your Information"
-  - signpost_other_info: "Other Parent's Information"
-  - signpost_children_info: "Children's Information"
+  - signpost_case: "Case Information"
+  - signpost_your_info: "Parent Information"
+  - signpost_children_info: "Children Information"
   - signpost_moving_reason_info: "Why You Want to Move"
   - signpost_new_address_info: "Your New Address"
   - signpost_parenting_time_info: "Parenting Time"
-  - signpost_download: "Download Your Forms"
+  - signpost_download: "Get Your Forms"
   - review_full: "✎ <u>Review / Edit</u>"
 ---
 code: |
@@ -35,7 +34,7 @@ code: |
 ---
 id: interview config code block
 code: |
-  github_repo_name = "docassemble-MLHMotionRegardingChangeOfDomicile"
+  github_repo_name = "docassemble-MLHMotionRegardingChangeOfDomicile" if get_config('debug') else 'docassemble-UserFeedback'
   MLH_esign_supported = True
   MLH_court_forms = True
   MLH_time_min = 40
@@ -71,7 +70,7 @@ code: |
   if MLH_intro_agree_no_pii == False:
     MLH_intro_agree_no_pii_exit
 
-  nav.set_section("signpost_prior_case")
+  nav.set_section("signpost_case")
   if not has_existing_case:
     existing_case_kickout
   if third_party_check:
@@ -93,8 +92,6 @@ code: |
 
   nav.set_section("signpost_your_info")
   users.gather()
-
-  nav.set_section("signpost_other_info")
   other_parties.gather()
 
   nav.set_section("signpost_children_info")
@@ -129,7 +126,7 @@ code: |
 
   # set_exhibit_doc_final
   snapshot_download
-  motion_re_change_of_domicile_download
+  MLH_download
   #interview_motion_re_change_of_domicile = True
 ---
 #################### Interview Order End #####################
@@ -225,7 +222,7 @@ sets:
 question: |
   Your contact information
 subquestion: |
-  ${ collapse_template(safe_contact_info) }
+  ${ collapse_template(confidential_address_family) }
 fields:
   - Phone number: users[0].phone_number
     show if:
@@ -236,20 +233,6 @@ fields:
     datatype: yesno
   - code: |
       users[0].address_fields(country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=True)
----
-template: safe_contact_info
-subject: |
-  What if it's not safe to share my contact information with the other parent?
-content: |
-  % if user_started_case:
-  Please enter a **SAFE** address and telephone number where the court can contact you. **DO NOT** enter an address or phone number that you want to keep confidential from the Defendant. The address and telephone number you enter will be part of the court file and will be on the forms that will be given to the Defendant.
-
-  If you don't want the Defendant to know your current address and phone number, you can use a post office box or the address and telephone number of a relative or friend who has agreed to let you do this.
-  % else:
-  For the following, please enter a **SAFE** address and telephone number where the court can contact you. **DO NOT** enter an address or phone number that you want to keep confidential from the Plaintiff. The address and telephone number you enter will be part of the court file and will be on the forms that will be given to the Plaintiff.
-
-  If you don't want the Plaintiff to know your current address and phone number, you can use a post office box or the address and telephone number of a relative or friend who has agreed to let you do this.
-  % endif
 ---
 id: name of opposing parties
 sets:
@@ -759,31 +742,16 @@ subject: |
 content: |
   If you need to ask for a new parenting time schedule, review the [Michigan Parenting Time Guideline](https://www.courts.michigan.gov/49422a/siteassets/court-administration/standardsguidelines/foc/pt_gdlns.pdf). It has information about creating a parenting time schedule, and sample schedules you can use as a starting place.
 ---
-id: DownloadScreen
-event: motion_re_change_of_domicile_download
-question: |
-  All done!
-subquestion: |
-  Thank you ${users}. Your form is ready to download and deliver.
-
-  View, download and send your form below. Click the "Edit answers" button to fix any mistakes.
-
-  ${ action_button_html(url_action('review_full'), label='Edit answers', color='info') }
-
-  ${ al_user_bundle.download_list_html() }
-
-  ${ al_user_bundle.send_button_html(show_editable_checkbox=False) }
----
 #################### Documents Start #####################
 ---
 objects:
-  - exhibit_attachment: ALExhibitDocument.using(title="Exhibits", filename="exhibits", include_exhibit_cover_pages=True, add_page_numbers=True)
+  - exhibit_attachment: ALExhibitDocument.using(title="Exhibits to Motion Regarding Change of Domicile", filename="Exhibits to Motion Regarding Change of Domicile", include_exhibit_cover_pages=True, add_page_numbers=True)
 ---
 objects:
   - mrcd_main: ALDocument.using(title="Motion Regarding Change of Domicile", filename="foc_115_motion_re_change_of_domicile.pdf", enabled=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
 ---
 objects:
-  - mrcd_main_attachment: ALDocumentBundle.using(elements=[mrcd_main, mrcd_addendum], filename="foc_115_motion_re_change_of_domicile.pdf", title="Motion Regarding Change of Domicile", enabled=True)
+  - mrcd_main_attachment: ALDocumentBundle.using(elements=[mrcd_main, mrcd_addendum], filename="Motion Regarding Change of Domicile - FOC 115", title="Motion Regarding Change of Domicile - FOC 115", enabled=True)
 ---
 objects:
   - mrcd_addendum: ALDocument.using(title="Addendum for Motion Regarding Change of Domicile", filename="motion_re_cod_attachment.docx", enabled=True, has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
@@ -792,16 +760,16 @@ objects:
   - mrcd_instructions: ALDocument.using(title="Instructions", filename="Instructions - Do not file this", enabled=True, has_addendum=False)
 ---
 objects:
-  - orcd_foc_29: ALDocument.using(title="Order Regarding Change of Domicile", filename="order_re_change_of_domicile_foc_29.pdf", enabled=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+  - orcd_foc_29: ALDocument.using(title="Order Regarding Change of Domicile - FOC 29", filename="Order Regarding Change of Domicile - FOC 29", enabled=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
 ---
 objects:
-  - orpt_foc_67: ALDocument.using(title="Order Regarding Parenting Time", filename="order_re_parenting_time_foc_67.pdf", enabled=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+  - orpt_foc_67: ALDocument.using(title="Order Regarding Parenting Time - FOC 67", filename="Order Regarding Parenting Time - FOC 67", enabled=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
 ---
 objects:
-  - al_user_bundle: ALDocumentBundle.using(elements=[mrcd_instructions, mrcd_main_attachment, orcd_foc_29, orpt_foc_67, exhibit_attachment], filename="Motion Regarding Change of Domicile (All Forms).pdf", title="All forms to download for your records", enabled=True)
+  - al_user_bundle: ALDocumentBundle.using(elements=[mrcd_instructions, mrcd_main_attachment, exhibit_attachment, orcd_foc_29, orpt_foc_67], filename="Motion Regarding Change of Domicile (All Forms).pdf", title="All forms and instructions", enabled=True)
 ---
 objects:
-  - al_court_bundle: ALDocumentBundle.using(elements=[mrcd_main_attachment, exhibit_attachment, orcd_foc_29, orpt_foc_67], filename="Motion Regarding Change of Domicile (All Forms).pdf", title="All forms to download for your records", enabled=True)
+  - al_court_bundle: ALDocumentBundle.using(elements=[mrcd_main_attachment, exhibit_attachment, orcd_foc_29, orpt_foc_67], filename="Motion Regarding Change of Domicile (All Forms).pdf", title="All forms and instructions", enabled=True)
 ---
 attachments:
   name: foc_115
