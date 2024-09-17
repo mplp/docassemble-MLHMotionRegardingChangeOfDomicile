@@ -20,14 +20,13 @@ metadata:
 ---
 sections:
   - signpost_intro: "Introduction"
-  - signpost_prior_case: "Prior Case Information"
-  - signpost_your_info: "Your Information"
-  - signpost_other_info: "Other Parent's Information"
-  - signpost_children_info: "Children's Information"
+  - signpost_case: "Case Information"
+  - signpost_your_info: "Parent Information"
+  - signpost_children_info: "Children Information"
   - signpost_moving_reason_info: "Why You Want to Move"
   - signpost_new_address_info: "Your New Address"
   - signpost_parenting_time_info: "Parenting Time"
-  - signpost_download: "Download Your Forms"
+  - signpost_download: "Get Your Forms"
   - review_full: "✎ <u>Review / Edit</u>"
 ---
 code: |
@@ -71,7 +70,7 @@ code: |
   if MLH_intro_agree_no_pii == False:
     MLH_intro_agree_no_pii_exit
 
-  nav.set_section("signpost_prior_case")
+  nav.set_section("signpost_case")
   if not has_existing_case:
     existing_case_kickout
   if third_party_check:
@@ -93,8 +92,6 @@ code: |
 
   nav.set_section("signpost_your_info")
   users.gather()
-
-  nav.set_section("signpost_other_info")
   other_parties.gather()
 
   nav.set_section("signpost_children_info")
