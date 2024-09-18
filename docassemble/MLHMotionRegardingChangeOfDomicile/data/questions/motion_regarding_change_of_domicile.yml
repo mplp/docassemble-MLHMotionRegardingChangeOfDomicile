@@ -56,7 +56,6 @@ objects:
 ---
 #################### Interview Order Start #####################
 ---
-#TO DO: add appropriate sections for other parties
 id: interview_order_motion_regarding_change_of_domicile
 mandatory: True
 code: |
@@ -109,7 +108,6 @@ code: |
     domestic_violence_exp
     if exhibit_attachment.exhibits.has_exhibits:
       exhibit_attachment.exhibits.gather()
-  # set_gather_exhibits
 
   nav.set_section("signpost_new_address_info")
   new_address_in_us
@@ -124,18 +122,10 @@ code: |
     signature_date
   MLH_outro_saving_answers
 
-  # set_exhibit_doc_final
   snapshot_download
   MLH_download
-  #interview_motion_re_change_of_domicile = True
 ---
 #################### Interview Order End #####################
----
-# removed line gathering user zip
-#mandatory: True
-#code: |
-#  interview_motion_re_change_of_domicile
-#  motion_re_change_of_domicile_download
 ---
 Code: |
   resource_page_url_only = "https://michiganlegalhelp.org/node/3949"
@@ -161,16 +151,16 @@ code: |
     x.phone_number = "Does not have phone"
   x.complete = True
 ---
-# Tells court_index which court to choose
+# NOTE: Tells court_index which court to choose
 code: |
   court_index = next(court_list.filter_courts_by_2([county_choice], ['circuit'], column_1='address_county', column_2='type'))[0]
 ---
-#setting for docx file use
+# NOTE: setting for docx file use
 code: |
   the_court_number = the_court.number
   set_number = True
 ---
-#NOTE: for user's new address
+# NOTE: for user's new address
 code: |
   new_address[i].city
   new_address[i].complete = True
@@ -201,12 +191,6 @@ code: |
 # NOTE: ensures there is only 1 new address
 code: |
   new_address.there_is_another = False
----
-# code: |
-#   if len(exhibit_attachment.exhibits) < 1:
-#     exhibit_attachment.enabled = False
-
-#   set_exhibit_doc_final = True
 ---
 #################### Overridden AL Questions Start #####################
 ---

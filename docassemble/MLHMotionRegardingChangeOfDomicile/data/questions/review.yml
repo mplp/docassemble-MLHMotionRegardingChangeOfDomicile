@@ -49,9 +49,9 @@ review:
       **Children**
 
       % for item in children:
-        ${ item }
-        
-        ${ item.birthdate }
+
+        ${ item }, ${ item.birthdate }
+
       % endfor
   - Edit:
       - current_custody
@@ -155,6 +155,30 @@ review:
       % endif
     show if: domestic_violence
   - Edit:
+    - exhibit_attachment.exhibits.has_exhibits
+    button: |
+      **Do you have documents you want the judge to see?**:
+
+      % if exhibit_attachment.exhibits.has_exhibits:
+      Yes
+      % elif not exhibit_attachment.exhibits.has_exhibits:
+      No
+      % endif
+    show if: domestic_violence
+  - note: |
+      **Uploaded Documents**
+
+      ${ exhibit_attachment.exhibits.add_action() }
+
+      % if exhibit_attachment.exhibits.there_are_any:
+      ${ collapse_template(exhibit_attachment.exhibits.in_progress_exhibits) }
+      % else:
+      You have not uploaded any documents yet.
+      % endif
+
+    css class: bg-secondary-subtle
+    show if: domestic_violence and exhibit_attachment.exhibits.has_exhibits
+  - Edit:
       - moving_date
     button: |
       **What is the date you want to move?**:
@@ -172,42 +196,6 @@ review:
       % elif not wants_parenting_time_change:
       No
       % endif
-  - Edit:
-    - exhibit_attachment.exhibits.has_exhibits
-    button: |
-      **Do you have documents you want the judge to see?**:
-
-      % if exhibit_attachment.exhibits.has_exhibits:
-      Yes
-      % elif not exhibit_attachment.exhibits.has_exhibits:
-      No
-      % endif
-  - note: |
-      **Uploaded Documents**
-
-      ${ exhibit_attachment.exhibits.add_action() }
-
-      % if exhibit_attachment.exhibits.there_are_any:
-      ${ collapse_template(exhibit_attachment.exhibits.in_progress_exhibits) }
-      % else:
-      You have not uploaded any documents yet.
-      % endif
-
-    css class: bg-secondary-subtle
-    show if: exhibit_attachment.exhibits.has_exhibits
-  # - note: |
-  #     **Uploaded Documents**
-
-  #     ${ exhibit_attachment.exhibits.add_action() }
-
-  #     % if exhibit_attachment.exhibits.there_are_any:
-  #     ${ collapse_template(exhibit_attachment.exhibits.in_progress_exhibits) }
-  #     % else:
-  #     You have not uploaded any documents yet.
-  #     % endif
-
-  #   css class: bg-secondary-subtle
-  #   show if: exhibit_attachment.exhibits.has_exhibits
 ---
 generic object: ALExhibitList
 table: exhibit_attachment.exhibits.rearrange_exhibits_table
@@ -230,4 +218,16 @@ subject: |
   View your uploaded documents
 content: |
   ${ exhibit_attachment.exhibits.rearrange_exhibits_table }
+---
+table: children.table
+rows: children
+columns:
+  - Name: |
+      row_item.name_full()
+  - Birthdate: |
+      row_item.birthdate
+edit:
+  - name.first
+  - birthdate
+confirm: True
 ---
