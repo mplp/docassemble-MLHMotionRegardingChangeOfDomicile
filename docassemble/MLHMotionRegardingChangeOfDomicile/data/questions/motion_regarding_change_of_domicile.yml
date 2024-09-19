@@ -655,6 +655,36 @@ validation code: |
   x[0].pages.complete_attribute = 'ok'
   x[0].pages.reset_gathered()  # docassemble sets this attribute but we want to force gathering additional pages
 ---
+# generic object: ALExhibitList
+# id: upload exhibits
+# question: |
+#   Upload documents
+# subquestion: |
+#   **Okay**. You will have a chance to upload multiple documents. 
+#   You can also add additional pages to this document.
+# fields:
+#   - First document title: x[i].title
+#     maxlength: 60 # longer might break TOC
+#   - Upload the ${ ordinal(i) } document: x[i].pages
+#     datatype: files
+#     maximum image size: 1024
+#     image upload type: jpeg
+#     accept: |
+#       "image/png, image/jpeg, .doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf,.pdf"
+# validation code: |
+#   full_size = sum(a_page.size_in_bytes() for a_page in x[i].pages)
+#   if full_size > (15 * 1024 * 1024):
+#     validation_error("Upload a file smaller than 15 MB.")
+#   if hasattr(x, 'maximum_size'):
+#     if full_size > x.maximum_size:
+#       validation_error(f"Upload a file smaller than {humanize.naturalsize(x.maximum_size)}")
+#   try:
+#     pdf_concatenate(x[i].pages)
+#   except:
+#     validation_error("Unable to convert this file. Please upload a new one.")
+#   x[i].pages.complete_attribute = 'ok'
+#   x[i].pages.reset_gathered()  # docassemble sets this attribute but we want to force gathering additional pages
+---
 code: |
   # This block is not needed, but you can provide and customize for your needs.
   # This mirrors the fallback block in ql_baseline.yml

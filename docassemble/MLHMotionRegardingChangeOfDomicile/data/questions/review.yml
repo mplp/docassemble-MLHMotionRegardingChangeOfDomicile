@@ -186,15 +186,23 @@ review:
       ${ moving_date }
   - Edit:
     - wants_parenting_time_change
-    - requested_order
-    - parenting_time_change_agreement
     button: |
-      **Are you asking to court to change the parenting time?**:
+      **Changes to Parenting Time**:
 
       % if wants_parenting_time_change:
-      Yes
+      You are **asking to change** the parenting time order as follows:
+
+      ${ requested_order }
+
+      % if parenting_time_change_agreement == "Yes":
+      **${ other_parties[0] } agrees** with the new parenting time schedule.
+      % elif parenting_time_change_agreement == "No":
+      **${ other_parties[0] } doesn't agree** with the new parenting time schedule.
+      % elif parenting_time_change_agreement == "I don't know":
+      I **don't know if ${ other_parties[0] } agrees** with the new parenting time schedule.
+      % endif
       % elif not wants_parenting_time_change:
-      No
+      You are **not asking to change** the parenting time order.
       % endif
 ---
 generic object: ALExhibitList
