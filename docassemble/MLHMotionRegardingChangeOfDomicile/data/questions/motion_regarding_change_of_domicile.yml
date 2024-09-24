@@ -384,7 +384,7 @@ question: |
 subquestion: |
   This tool may only be used to file a *Motion Regarding Change of Domicile* in a Michigan family law case between two parents, with no third party involvement.
 
-  We cannot help you, but your local legal aid program or other lawyer may be able to. You can use the ${ MLH_GUIDE_FULL } to search for a lawyer or legal services in your area.
+  We cannot help you, but your local legal aid program or other lawyer may be able to. ${ MLH_GUIDE_FULL }
 
   If the only parties involved are the parents, click the **${ MLH_back_button_label }** button to change your answer.
 ---
@@ -512,7 +512,7 @@ question: |
 subquestion: |
   We’re sorry, but you cannot use this tool because custody or parenting time of your children is not currently governed by a custody order or judgment.
 
-  We cannot help you, but your local legal aid program or other lawyer may be able to. You can use the ${ MLH_GUIDE_FULL } to search for a lawyer or legal services in your area.
+  We cannot help you, but your local legal aid program or other lawyer may be able to. ${ MLH_GUIDE_FULL }
 
   If you think you made a mistake, you can click ${ MLH_back_button_label } and change the answer to the question.
 ---
