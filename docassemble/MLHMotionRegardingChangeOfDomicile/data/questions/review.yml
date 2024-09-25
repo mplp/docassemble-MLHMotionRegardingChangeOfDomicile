@@ -199,7 +199,7 @@ review:
       % elif parenting_time_change_agreement == "No":
       **${ other_parties[0] } doesn't agree** with the new parenting time schedule.
       % elif parenting_time_change_agreement == "I don't know":
-      I **don't know if ${ other_parties[0] } agrees** with the new parenting time schedule.
+      You **don't know if ${ other_parties[0] } agrees** with the new parenting time schedule.
       % endif
       % elif not wants_parenting_time_change:
       You are **not asking to change** the parenting time order.
