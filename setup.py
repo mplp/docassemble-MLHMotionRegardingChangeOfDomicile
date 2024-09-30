@@ -44,9 +44,9 @@ def find_package_data(where='.', package='', exclude=standard_exclude, exclude_d
     return out
 
 setup(name='docassemble.MLHMotionRegardingChangeOfDomicile',
-      version='1.0.0',
+      version='1.0.1',
       description=('A Motion Regarding Change of Domicile for use in Michigan Family Courts'),
-      long_description='# docassemble.MLHMotionRegardingChangeOfDomicile\r\n\r\nA motion regarding change of domicile in Michigan\r\n\r\n## Authors:\r\n* Rami Lorca\r\n* Hayden McGuire\r\n## Changelog:\r\n* 9/18/24   1.0.0 nearly ready to launch ',
+      long_description='# docassemble.MLHMotionRegardingChangeOfDomicile\r\n\r\nA motion regarding change of domicile in Michigan\r\n\r\n## Authors:\r\n* Rami Lorca\r\n* Hayden McGuire\r\n## Changelog:\r\n* 9/30/24   1.0.1 Update user survey\r\n* 9/18/24   1.0.0 nearly ready to launch ',
       long_description_content_type='text/markdown',
       author='Rami Lorca',
       author_email='hayden.mcguire113@gmail.com',
