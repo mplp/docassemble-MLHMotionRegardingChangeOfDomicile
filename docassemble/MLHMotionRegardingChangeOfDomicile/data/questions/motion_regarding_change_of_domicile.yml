@@ -164,6 +164,7 @@ code: |
 # for framework court loader logic
 code: |
   filing_court = "circuit_only"
+  ottawa_circuit_location = "West Olive"
 ---
 # NOTE: setting for docx file use
 code: |
