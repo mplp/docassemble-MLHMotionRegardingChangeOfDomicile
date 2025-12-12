@@ -1,0 +1,27 @@
+[build-system]
+requires = [
+    "setuptools==80.9.0",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "docassemble.MLHMotionRegardingChangeOfDomicile"
+version = "1.0.3"
+description = "A Motion Regarding Change of Domicile for use in Michigan Family Courts"
+readme = "README.md"
+authors = [
+    { name = "Rami Lorca", email = "hayden.mcguire113@gmail.com" },
+]
+dependencies = []
+license = "MIT"
+license-files = [
+    "LICENSE",
+]
+
+[project.urls]
+Homepage = "https://michiganlegalhelp.org/resources/family/do-it-yourself-motion-change-domicile"
+
+[tool.setuptools.packages.find]
+where = [
+    ".",
+]
