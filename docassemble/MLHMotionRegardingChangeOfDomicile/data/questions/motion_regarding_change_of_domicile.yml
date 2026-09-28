@@ -462,7 +462,7 @@ fields:
   - Is there a custody order or judgment in your family law case?: prior_order_yesno
     datatype: yesnoradio
   - What is the date of the most recent order or judgment?: recent_order
-    datatype: date
+    datatype: ThreePartsDate
     show if:
       variable: prior_order_yesno
       is: True
@@ -687,7 +687,7 @@ question: |
   When do you want to move?
 fields:
   - When do you want to move?: moving_date
-    datatype: date
+    datatype: ThreePartsDate
 ---
 id: wants parenting time change
 question: |
