@@ -10,7 +10,7 @@ review:
       % endif
   - note: |
       <hr>
-      <h2 class='h5'>Parents and Children</h2>
+      ## Parents and Children
     show if: user_ask_role
   - Edit: users.revisit
     button: |-
@@ -70,7 +70,7 @@ review:
   - note: |
       <hr>
       
-      <h2 class='h5'>Case and Court Information</h2>
+      ## Case and Court Information
     show if: docket_number
   - Edit: 
     - county_choice
@@ -97,7 +97,7 @@ review:
   - note: |
       <hr>
       
-      <h2 class='h5'>Your Request to Move</h2>
+      ## Your Request to Move
     show if: moving_reason
   - Edit:
       - moving_reason
