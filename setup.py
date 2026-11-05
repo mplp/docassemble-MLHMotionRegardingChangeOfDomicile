@@ -46,7 +46,7 @@ def find_package_data(where='.', package='', exclude=standard_exclude, exclude_d
 setup(name='docassemble.MLHMotionRegardingChangeOfDomicile',
       version='1.0.5',
       description=('A Motion Regarding Change of Domicile for use in Michigan Family Courts'),
-      long_description='# docassemble.MLHMotionRegardingChangeOfDomicile\r\n\r\nA motion regarding change of domicile in Michigan\r\n\r\n## Authors:\r\n* Rami Lorca\r\n* Hayden McGuire\r\n## Changelog:\r\n* 11/4/26   1.0.5 Fix address block bug; update heading levels; remove survey embed code\r\n* 9/28/26   1.0.4 Incorporated ThreePartsDate datatype.\r\n* 12/12/25  1.0.3 Update embedded survey; update DOB method; update formatting on instructions\r\n* 2/13/25   1.0.2 Behind-the-scenes court logic adjustment\r\n* 9/30/24   1.0.1 Update user survey\r\n* 9/18/24   1.0.0 nearly ready to launch ',
+      long_description='# docassemble.MLHMotionRegardingChangeOfDomicile\r\n\r\nA motion regarding change of domicile in Michigan\r\n\r\n## Authors:\r\n* Rami Lorca\r\n* Hayden McGuire\r\n## Changelog:\r\n* 11/4/26   1.0.5 Fix address block bug; update heading levels; remove survey embed code; fix [i] bug; review screen improvement\r\n* 9/28/26   1.0.4 Incorporated ThreePartsDate datatype.\r\n* 12/12/25  1.0.3 Update embedded survey; update DOB method; update formatting on instructions\r\n* 2/13/25   1.0.2 Behind-the-scenes court logic adjustment\r\n* 9/30/24   1.0.1 Update user survey\r\n* 9/18/24   1.0.0 nearly ready to launch ',
       long_description_content_type='text/markdown',
       author='Rami Lorca',
       author_email='hayden.mcguire113@gmail.com',
