@@ -6,7 +6,7 @@ A motion regarding change of domicile in Michigan
 * Rami Lorca
 * Hayden McGuire
 ## Changelog:
-* 11/4/26   1.0.5 Fix address block bug; update heading levels; remove survey embed code
+* 11/4/26   1.0.5 Fix address block bug; update heading levels; remove survey embed code; fix [i] bug
 * 9/28/26   1.0.4 Incorporated ThreePartsDate datatype.
 * 12/12/25  1.0.3 Update embedded survey; update DOB method; update formatting on instructions
 * 2/13/25   1.0.2 Behind-the-scenes court logic adjustment
