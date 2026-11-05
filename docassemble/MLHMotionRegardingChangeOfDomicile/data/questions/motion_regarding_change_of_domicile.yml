@@ -788,21 +788,25 @@ attachments:
     - plaintiffs_address_block: |
         % if user_ask_role == "plaintiff":
         ${ users[0].name_full() }
-        ${ users[0].address.block() }
+        ${ users[0].address.line_one() }
+        ${ users[0].address.line_two() }
         ${ word("") if users[0].no_phone_number else users[0].phone_numbers() }
         % elif user_ask_role == "defendant":
         ${ other_parties[0].name_full() }
-        ${ other_parties[0].address.block() }
+        ${ other_parties[0].address.line_one() }
+        ${ other_parties[0].address.line_two() }
         ${ word("") if other_parties[0].no_phone_number else other_parties[0].phone_numbers() }
         % endif
     - defendants_address_block: |
         % if user_ask_role == "defendant":
         ${ users[0].name_full() }
-        ${ users[0].address.block() }
+        ${ users[0].address.line_one() }
+        ${ users[0].address.line_two() }
         ${ word("") if users[0].no_phone_number else users[0].phone_numbers() }
         % elif user_ask_role == "plaintiff":
         ${ other_parties[0].name_full() }
-        ${ other_parties[0].address.block() }
+        ${ other_parties[0].address.line_one() }
+        ${ other_parties[0].address.line_two() }
         ${ word("") if other_parties[0].no_phone_number else other_parties[0].phone_numbers() }
         % endif
     - children1: ${ children[0] }
@@ -857,21 +861,25 @@ attachments:
     - plaintiffs_address_block: |
         % if user_ask_role == "plaintiff":
         ${ users[0].name_full() }
-        ${ users[0].address.block() }
+        ${ users[0].address.line_one() }
+        ${ users[0].address.line_two() }
         ${ word("") if users[0].no_phone_number else users[0].phone_numbers() }
         % elif user_ask_role == "defendant":
         ${ other_parties[0].name_full() }
-        ${ other_parties[0].address.block() }
+        ${ other_parties[0].address.line_one() }
+        ${ other_parties[0].address.line_two() }
         ${ word("") if other_parties[0].no_phone_number else other_parties[0].phone_numbers() }
         % endif
     - defendants_address_block: |
         % if user_ask_role == "defendant":
         ${ users[0].name_full() }
-        ${ users[0].address.block() }
+        ${ users[0].address.line_one() }
+        ${ users[0].address.line_two() }
         ${ word("") if users[0].no_phone_number else users[0].phone_numbers() }
         % elif user_ask_role == "plaintiff":
         ${ other_parties[0].name_full() }
-        ${ other_parties[0].address.block() }
+        ${ other_parties[0].address.line_one() }
+        ${ other_parties[0].address.line_two() }
         ${ word("") if other_parties[0].no_phone_number else other_parties[0].phone_numbers() }
         % endif
 ---
@@ -891,21 +899,25 @@ attachments:
     - plaintiffs_address_block: |
         % if user_ask_role == "plaintiff":
         ${ users[0].name_full() }
-        ${ users[0].address.block() }
+        ${ users[0].address.line_one() }
+        ${ users[0].address.line_two() }
         ${ word("") if users[0].no_phone_number else users[0].phone_numbers() }
         % elif user_ask_role == "defendant":
         ${ other_parties[0].name_full() }
-        ${ other_parties[0].address.block() }
+        ${ other_parties[0].address.line_one() }
+        ${ other_parties[0].address.line_two() }
         ${ word("") if other_parties[0].no_phone_number else other_parties[0].phone_numbers() }
         % endif
     - defendants_address_block: |
         % if user_ask_role == "defendant":
         ${ users[0].name_full() }
-        ${ users[0].address.block() }
+        ${ users[0].address.line_one() }
+        ${ users[0].address.line_two() }
         ${ word("") if users[0].no_phone_number else users[0].phone_numbers() }
         % elif user_ask_role == "plaintiff":
         ${ other_parties[0].name_full() }
-        ${ other_parties[0].address.block() }
+        ${ other_parties[0].address.line_one() }
+        ${ other_parties[0].address.line_two() }
         ${ word("") if other_parties[0].no_phone_number else other_parties[0].phone_numbers() }
         % endif
 ---
