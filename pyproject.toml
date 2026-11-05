@@ -1,12 +1,12 @@
 [build-system]
 requires = [
-    "setuptools>=80.9.0",
+    "setuptools==80.9.0",
 ]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "docassemble.MLHMotionRegardingChangeOfDomicile"
-version = "1.0.5"
+version = "1.0.4"
 description = "A Motion Regarding Change of Domicile for use in Michigan Family Courts"
 readme = "README.md"
 authors = [
