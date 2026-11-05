@@ -242,7 +242,7 @@ question: |
   % endif
 fields:
   - code: |
-      other_parties[i].name_fields(person_or_business='person')
+      other_parties[0].name_fields(person_or_business='person')
 ---
 id: other partys contact information
 sets:
